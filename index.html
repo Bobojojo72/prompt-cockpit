@@ -2597,19 +2597,24 @@ Original content:
       lost: "Quickly summarise: what have we decided so far, and what is the next step I need to take?",
       confusing: "Stop. Give me only the single most important thing I need to do RIGHT NOW. One sentence.",
       handover: "Create a handover summary I can paste into a new Claude conversation so it has full context.",
-      projectSetup: `You are my Claude project architect. I want to create a new Claude project from scratch and set it up properly using the Boris Tane spec-driven workflow.
+      projectSetup: `⚠️ FORMATTING RULE — READ THIS FIRST BEFORE DOING ANYTHING ELSE:
 
-IMPORTANT — How to ask me questions: Present ALL 7 questions together in one message. For each question, give me lettered options I can click to answer, plus an "Other / add detail" option so I can type my own answer. Use exactly this format for every question:
+Every question you ask me MUST use lettered clickable options. No plain text questions. No numbered lists without options. Use exactly this format for every single question — no exceptions:
 
 **Q[N]. [Question text]**
-A) Option
-B) Option
-C) Option
-D) Other / add detail: ___
+A. Option one
+B. Option two
+C. Option three
+D. Option four
+E. Other / type your own: ___
+
+Do NOT proceed until you have re-read the above format and confirmed you will use it for all 7 questions. Self-check before sending: does every question have lettered A. B. C. options? If not, reformat before sending.
 
 ---
 
-Ask me these 7 questions now:
+You are my Claude project architect. I want to create a new Claude project from scratch and set it up properly using the Boris Tane spec-driven workflow.
+
+Present ALL 7 questions together in one message now, each using the lettered format above:
 
 **Q1. What should this project be called?**
 A) Learning project (e.g. Weather GFS, Investing, History)
