@@ -503,6 +503,51 @@
       </div>
 
 
+      <!-- Project & Workflow Setup -->
+      <div class="mb-10">
+        <h3 class="text-sm font-black uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-4 flex items-center gap-2">
+          <span>⚙️</span> Project & Workflow Setup
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <!-- New Project Setup Card -->
+          <div class="bg-white dark:bg-stone-900 border-2 border-teal-300 dark:border-teal-700 rounded-2xl p-5 shadow-sm hover:border-teal-500 dark:hover:border-teal-500 transition-all flex flex-col justify-between template-card-item" data-keywords="new project setup folder SKILL.md project instructions boris tane spec driven workflow architecture memory">
+            <div>
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-2xl">🗂️</span>
+                <span class="bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 text-[10px] font-extrabold uppercase tracking-wide px-2 py-0.5 rounded">Workflow</span>
+              </div>
+              <h4 class="font-extrabold text-stone-900 dark:text-white text-sm mb-1">New Claude Project Set Up</h4>
+              <p class="text-stone-500 dark:text-stone-400 text-[11px] leading-relaxed mb-4">
+                Claude asks you 7 questions with clickable options, then generates your full Project Instructions, SKILL.md, folder architecture, and setup checklist — ready to copy.
+              </p>
+              <div class="flex flex-wrap gap-1.5 mb-1">
+                <span class="text-[10px] bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 px-2 py-0.5 rounded-full">Project Instructions</span>
+                <span class="text-[10px] bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 px-2 py-0.5 rounded-full">SKILL.md</span>
+                <span class="text-[10px] bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 px-2 py-0.5 rounded-full">Folder Structure</span>
+                <span class="text-[10px] bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 px-2 py-0.5 rounded-full">Setup Checklist</span>
+              </div>
+            </div>
+            <div class="flex gap-1.5 pt-3 border-t border-stone-100 dark:border-stone-800">
+              <button
+                onclick="copyStuck('projectSetup')"
+                class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs transition"
+              >
+                📋 Copy Prompt
+              </button>
+              <button
+                onclick="sendStuckToSandbox('projectSetup')"
+                class="bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 px-2 rounded-lg text-xs transition"
+                title="Send to Live Sandbox"
+              >
+                🚀 Sandbox
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <!-- Life Area Quick-Starters -->
       <div class="mb-10">
         <h3 class="text-sm font-black uppercase tracking-wider text-rose-600 dark:text-rose-400 mb-4 flex items-center gap-2">
@@ -2551,7 +2596,125 @@ Original content:
       start: "I need help. Here is what I am trying to do: [Enter your raw brainstorm ideas here]. Ask me questions to help me figure out what I actually need.",
       lost: "Quickly summarise: what have we decided so far, and what is the next step I need to take?",
       confusing: "Stop. Give me only the single most important thing I need to do RIGHT NOW. One sentence.",
-      handover: "Create a handover summary I can paste into a new Claude conversation so it has full context."
+      handover: "Create a handover summary I can paste into a new Claude conversation so it has full context.",
+      projectSetup: `You are my Claude project architect. I want to create a new Claude project from scratch and set it up properly using the Boris Tane spec-driven workflow.
+
+IMPORTANT — How to ask me questions: Present ALL 7 questions together in one message. For each question, give me lettered options I can click to answer, plus an "Other / add detail" option so I can type my own answer. Use exactly this format for every question:
+
+**Q[N]. [Question text]**
+A) Option
+B) Option
+C) Option
+D) Other / add detail: ___
+
+---
+
+Ask me these 7 questions now:
+
+**Q1. What should this project be called?**
+A) Learning project (e.g. Weather GFS, Investing, History)
+B) Sales / BDM project (e.g. BDM Cotswold, Client research)
+C) Content creation project (e.g. Wisdom Bytes, YouTube scripts)
+D) Personal / life project (e.g. Wedding, Cooking, Allotment)
+E) Other / type the name: ___
+
+**Q2. What is the goal of this project?**
+A) Learn a new skill or subject from scratch
+B) Produce content or creative output regularly
+C) Support my sales and business development work
+D) Solve a specific personal challenge or plan something
+E) Other / describe it: ___
+
+**Q3. What expert role should Claude play in this project?**
+A) World-class educator and personal tutor for this subject
+B) Senior research analyst — deep dives and summaries
+C) Professional content creator — scripts, posts, plans
+D) Strategic sales and business development advisor
+E) Other / describe the role: ___
+
+**Q4. What kinds of tasks will I typically ask Claude to do?**
+A) Teach me concepts, build learning plans, quiz me
+B) Research topics, summarise sources, produce reports
+C) Write content — scripts, posts, emails, plans
+D) Analyse deals, prospects, or market opportunities
+E) Other / describe typical tasks: ___
+
+**Q5. What will the main outputs look like?**
+A) Learning notes and structured study guides
+B) Research documents and analysis reports
+C) Written content — scripts, posts, outlines
+D) Sales intel, proposals, or client briefs
+E) Other / describe outputs: ___
+
+**Q6. What do I already know about this topic?**
+A) Complete beginner — start from zero
+B) I know the basics but want to go deeper
+C) I am intermediate — I want expert-level depth
+D) I am experienced — treat me as a peer and challenge me
+E) Other / describe your level: ___
+
+**Q7. Are there any hard rules Claude must always follow in this project?**
+A) Always write files first — never give answers directly in chat
+B) Always ask me questions before producing anything
+C) Keep everything concise — no long explanations unless I ask
+D) No rules yet — I will add them as I go
+E) Other / type your rules: ___
+
+---
+
+Once I have answered all 7 questions, generate the following in full — ready to copy and use immediately:
+
+## DELIVERABLE 1 — Project Instructions
+(Paste directly into Claude.ai → Project → Instructions field)
+
+Part A — Master Workflow (include verbatim — do not shorten or paraphrase):
+The full Boris Tane spec-driven workflow: 4 locked stages (research.md → plan.md → todo.md → implementation), the Rule of Correction, file naming conventions, and when the workflow does and does not apply.
+
+Part B — Project-Specific Instructions (tailored to my answers):
+- Role definition for Claude in this project
+- Domain knowledge and context from my answers
+- Types of tasks and output formats expected
+- Project-specific rules and constraints
+- How Claude should communicate with me (tone, depth, format)
+
+---
+
+## DELIVERABLE 2 — SKILL.md
+(Install at /mnt/skills/user/[project-name]/SKILL.md)
+
+Generate a complete SKILL.md with:
+- YAML frontmatter (name + description written to trigger on relevant requests)
+- Detailed expert role definition
+- Domain knowledge Claude needs for this project
+- Output format standards for every deliverable
+- Hard constraints and rules
+- Verification checklist Claude runs before presenting any output
+- 5 example queries showing what good use of this project looks like
+
+---
+
+## DELIVERABLE 3 — Folder Architecture
+
+Show the exact folder structure:
+/home/claude/[project-name]/
+├── research.md
+├── plan.md
+├── todo.md
+├── corrections.md
+└── [list project-specific output files this project will likely produce]
+
+---
+
+## DELIVERABLE 4 — Setup Checklist
+
+Step-by-step checklist of exactly what to do to go live:
+- [ ] Create project in Claude.ai → Projects → New Project → name it [X]
+- [ ] Open Project Instructions → paste Deliverable 1 in full
+- [ ] Install SKILL.md to /mnt/skills/user/[project-name]/SKILL.md
+- [ ] Create the folder at /home/claude/[project-name]/
+- [ ] Start first session with: [suggest the perfect first message to kick the project off]
+
+Present all 4 deliverables clearly labelled with full content — no summaries, no placeholders. Everything ready to copy.`
     };
 
     // Global App State variables
