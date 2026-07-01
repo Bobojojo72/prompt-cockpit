@@ -548,6 +548,17 @@
         </div>
       </div>
 
+      <!-- Claude Code — Marketing -->
+      <div class="mb-10">
+        <h3 class="text-sm font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1 flex items-center gap-2">
+          <span>🚀</span> Claude Code — Marketing
+        </h3>
+        <p class="text-stone-500 dark:text-stone-400 text-[11px] mb-4">
+          4 workflows, 12 prompts. Run Workflow 1 first — it produces <code class="bg-stone-100 dark:bg-stone-800 px-1 rounded">/brand/positioning.md</code>, which every later prompt loads for context. Run Prompt 12 last each session so the system compounds instead of resetting.
+        </p>
+        <div id="ccm-prompts-container"></div>
+      </div>
+
       <!-- Life Area Quick-Starters -->
       <div class="mb-10">
         <h3 class="text-sm font-black uppercase tracking-wider text-rose-600 dark:text-rose-400 mb-4 flex items-center gap-2">
@@ -2874,6 +2885,7 @@ Present all 4 deliverables clearly labelled with full content — no summaries, 
 
       renderAll();
       renderCustomPrompts();
+      renderCCMPrompts();
 
       // Close add-prompt modal on backdrop click
       document.getElementById('add-prompt-modal').addEventListener('click', function(e) {
@@ -2960,6 +2972,254 @@ Present all 4 deliverables clearly labelled with full content — no summaries, 
     }
     function _saveCustomPrompts(prompts) {
       localStorage.setItem('user_custom_prompts', JSON.stringify(prompts));
+    }
+
+    // ─── PERMANENT SECTION: Claude Code for Marketing (4 workflows / 12 prompts) ────
+    const CCM_WORKFLOWS = [
+      {
+        title: 'Workflow 1: Competitor Research & Positioning',
+        complexity: 'Moderate',
+        prompts: [
+          {
+            id: 'ccm_01', emoji: '🗺️', title: 'Map the Market',
+            description: 'Research top competitors and compile a competitive landscape summary.',
+            text: `I want to find a differentiated positioning angle for [YOUR PRODUCT/CONCEPT].
+
+Use FireCrawl or Perplexity to research the top competitors in this market: [YOUR MARKET/KEYWORD].
+
+For each competitor, pull:
+- Their primary headline and core value proposition
+- Main messaging themes and pain points they address
+- The audience they appear to target
+
+Compile findings into a competitive landscape summary. Identify the dominant messaging patterns and what's already saturated.`
+          },
+          {
+            id: 'ccm_02', emoji: '🔍', title: 'Find the Gap',
+            description: 'Identify unclaimed positioning angles competitors are missing.',
+            text: `Based on everything you found, what is the gap in this market? What are competitors NOT saying, NOT addressing, or NOT owning?
+
+Give me 3 positioning angles ranked by strength. For each, include:
+- The core statement
+- Why it's differentiated
+- A sample headline
+- Who it speaks to`
+          },
+          {
+            id: 'ccm_03', emoji: '🔒', title: 'Lock the Angle',
+            description: 'Save your chosen positioning into /brand/positioning.md for all future workflows.',
+            text: `I'm going with positioning angle [NUMBER].
+
+Create a brand context file and save it to /brand/positioning.md. Include:
+- Positioning statement (one sentence)
+- Core message and angle
+- Target audience profile
+- Top 3 pain points we address
+- What we are NOT (how we differ from competitors)
+- Sample H1 headline
+- Tone of voice direction
+
+This file will be referenced by all future workflows.`
+          }
+        ]
+      },
+      {
+        title: 'Workflow 2: Lead Magnet Builder',
+        complexity: 'Moderate',
+        prompts: [
+          {
+            id: 'ccm_04', emoji: '🧲', title: 'Research Competitor Lead Magnets',
+            description: 'Audit competitor lead magnets and recommend 3 differentiated concepts.',
+            text: `Load /brand/positioning.md.
+
+Research what lead magnets competitors are already offering in the [YOUR MARKET] space. Look for:
+- Common types (checklists, templates, quizzes, calculators)
+- What's oversaturated
+- What formats are underused or missing entirely
+
+Recommend 3 lead magnet concepts that:
+1. Match our positioning angle
+2. Are NOT what competitors are already doing
+3. Deliver immediate, tangible value
+4. Could be built as an interactive tool
+
+For each: format, title, core value delivered, and why it works.`
+          },
+          {
+            id: 'ccm_05', emoji: '🛠️', title: 'Build the Lead Magnet',
+            description: 'Turn your chosen concept into a deployable interactive HTML tool.',
+            text: `I'm going with concept [NUMBER].
+
+Build this as a fully interactive HTML tool I can deploy. Include:
+- Clean, professional design (no purple gradients, no generic fonts)
+- 5–7 interactive questions or inputs with personalized results
+- A results screen that creates urgency to learn more
+- A clear CTA at the end (email capture or product link)
+- Mobile responsive layout
+
+Use tone and positioning from /brand/positioning.md.
+
+Save as lead-magnet.html.`
+          },
+          {
+            id: 'ccm_06', emoji: '✍️', title: 'Landing Page Copy for the Lead Magnet',
+            description: 'Write punchy landing page copy to promote the lead magnet.',
+            text: `Write the landing page copy to promote this lead magnet. Reference /brand/positioning.md for tone.
+
+Include:
+- H1 headline — bold, specific, tied to the transformation
+- Subheadline — one sentence expanding on the promise
+- 3 bullet points — what they'll get
+- Social proof placeholder
+- CTA button copy (not "Submit")
+- 2–3 sentence block for skeptics below the fold
+
+Direct and punchy. No fluff. Every sentence earns its place.`
+          }
+        ]
+      },
+      {
+        title: 'Workflow 3: One-Shot Landing Page Builder',
+        complexity: 'Simple',
+        prompts: [
+          {
+            id: 'ccm_07', emoji: '📝', title: 'Brief the Page',
+            description: 'Brief Claude on a new landing page and get clarifying questions before it builds.',
+            text: `I need a landing page for [PRODUCT/OFFER NAME].
+
+Load /brand/positioning.md if it exists. Otherwise use:
+- Product: [one sentence]
+- Target audience: [who it's for]
+- Core benefit: [the #1 transformation or outcome]
+- Tone: [direct / conversational / bold]
+- CTA: [what you want them to do]
+
+Before building, ask me 3 clarifying questions that will meaningfully improve the output. Then confirm the plan before writing any code.`
+          },
+          {
+            id: 'ccm_08', emoji: '🎨', title: 'Build with Design Constraints',
+            description: 'Build the landing page with strict anti-generic design rules.',
+            text: `Build the landing page now. Design requirements:
+
+- No purple gradients, no generic fonts (Inter, Roboto, Arial), no default AI layouts
+- Distinctive font pairing from Google Fonts
+- 2–3 color palette that fits the brand tone
+- Real visual hierarchy — the headline should be impossible to miss
+- Sections: hero, 3 benefits, social proof placeholder, CTA
+- Mobile responsive, fast-loading, no external dependencies except Google Fonts
+
+Save as index.html. Tell me what design choices you made and why.`
+          },
+          {
+            id: 'ccm_09', emoji: '🚀', title: 'Deploy to the Web',
+            description: 'Get step-by-step terminal commands to push the page live via GitHub + Vercel/Netlify.',
+            text: `Walk me through the fastest way to get this landing page live from my terminal right now.
+
+Assume I have (or can set up) a GitHub account and Vercel or Netlify (free tier).
+
+Give me the exact commands to:
+1. Initialize a GitHub repo
+2. Push the index.html file
+3. Connect to Vercel/Netlify and deploy
+4. Get a live URL I can share
+
+Explain each command in plain language before I run it.`
+          }
+        ]
+      },
+      {
+        title: 'Workflow 4: Email Welcome Sequence',
+        complexity: 'Simple',
+        prompts: [
+          {
+            id: 'ccm_10', emoji: '📧', title: 'Map the Sequence',
+            description: 'Plan the logic of a 3-email welcome sequence before writing any copy.',
+            text: `I need a 3-email welcome sequence for people who signed up for: [LEAD MAGNET NAME].
+
+Load /brand/positioning.md for context.
+
+Before writing, map the sequence logic:
+- Email 1 (Day 0): What's the immediate "aha"?
+- Email 2 (Day 2): What objection or question is most common at this stage?
+- Email 3 (Day 4): What's the bridge to our core offer?
+
+Show me the map first. I'll approve before you write.`
+          },
+          {
+            id: 'ccm_11', emoji: '💌', title: 'Write the Emails',
+            description: 'Write all 3 welcome emails with subject lines, previews, and CTAs.',
+            text: `Write all 3 emails. For each include:
+- Subject line + one A/B variant
+- Preview text (90 characters max)
+- Email body (plain conversational copy — no headers, minimal formatting)
+- One clear CTA
+
+Tone: direct and punchy, short sentences, sound like a real person, lead with value not "thanks for signing up." Each email should be readable in under 90 seconds.
+
+Reference the lead magnet and our positioning angle throughout — these shouldn't read like generic nurture emails.`
+          },
+          {
+            id: 'ccm_12', emoji: '✅', title: 'Close the Session',
+            description: 'Update claude.md with what was built, what worked, and next steps.',
+            text: `Update the claude.md file with:
+1. What we built today (list of outputs with file names)
+2. What worked well
+3. What to improve next session
+4. Suggested next steps
+5. Any brand context learnings to remember
+
+Format as a clean update to the existing claude.md.`
+          }
+        ]
+      }
+    ];
+
+    // Flat lookup for copy/sandbox handlers
+    const CCM_PROMPTS_FLAT = {};
+    CCM_WORKFLOWS.forEach(wf => wf.prompts.forEach(p => { CCM_PROMPTS_FLAT[p.id] = p; }));
+
+    function copyCCMPrompt(id) {
+      const p = CCM_PROMPTS_FLAT[id];
+      if (p) copyToClipboard(p.text, '"' + p.title + '" copied!');
+    }
+    function sendCCMToSandbox(id) {
+      const p = CCM_PROMPTS_FLAT[id];
+      if (p) {
+        switchTab('playground');
+        document.getElementById("playground-chat-input").value = p.text;
+        showToast("Prompt sent to Live AI Playground!");
+      }
+    }
+
+    function renderCCMPrompts() {
+      const container = document.getElementById('ccm-prompts-container');
+      if (!container) return;
+      container.innerHTML = CCM_WORKFLOWS.map(wf => `
+        <div class="mb-6 last:mb-0">
+          <div class="flex items-center gap-2 mb-3">
+            <h4 class="text-xs font-black uppercase tracking-wider text-indigo-700 dark:text-indigo-400">${escHtml(wf.title)}</h4>
+            <span class="text-[10px] bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full font-bold">${escHtml(wf.complexity)}</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            ${wf.prompts.map(p => `
+              <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm hover:border-indigo-400 dark:hover:border-indigo-600 transition-all flex flex-col justify-between template-card-item" data-keywords="${escHtml((p.title + ' ' + p.description + ' claude code marketing').toLowerCase())}">
+                <div>
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xl">${p.emoji}</span>
+                    <span class="bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 text-[10px] font-extrabold uppercase tracking-wide px-2 py-0.5 rounded">Claude Code — Marketing</span>
+                  </div>
+                  <h5 class="font-extrabold text-stone-900 dark:text-white text-sm mb-1">${escHtml(p.title)}</h5>
+                  <p class="text-stone-500 dark:text-stone-400 text-[11px] leading-relaxed mb-3">${escHtml(p.description)}</p>
+                </div>
+                <div class="flex gap-1.5 pt-3 border-t border-stone-100 dark:border-stone-800">
+                  <button onclick="copyCCMPrompt('${p.id}')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs transition">📋 Copy</button>
+                  <button onclick="sendCCMToSandbox('${p.id}')" class="bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 px-2 rounded-lg text-xs transition" title="Send to Live Sandbox">🚀</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
     }
 
     function openAddPromptModal() {
