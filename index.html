@@ -95,7 +95,7 @@
                 Prompt Engineering Cockpit
               </h1>
               <p class="text-amber-200 text-xs sm:text-sm font-medium mt-0.5">
-                Integrated BDM Intelligent Suite
+                Your Personal AI Prompt Command Centre
               </p>
             </div>
           </div>
@@ -151,7 +151,7 @@
         <input
           type="text"
           id="global-search-bar"
-          placeholder="Search skills, prompts, playbooks, or tasks... (e.g. apollo, cold, allotment, Speedman)"
+          placeholder="Search skills, prompts, playbooks, or tasks... (e.g. research, email, recipe, marketing)"
           class="block w-full pl-11 pr-24 py-3 bg-transparent border-0 rounded-lg text-stone-100 placeholder-amber-200/50 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm sm:text-base transition"
         />
         <div class="absolute inset-y-0 right-0 pr-3 flex items-center gap-2">
@@ -235,14 +235,7 @@
           id="tab-btn-rules"
           class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-amber-800 dark:hover:text-amber-500 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
         >
-          📋 BDM Rules
-        </button>
-        <button
-          onclick="switchTab('playground')"
-          id="tab-btn-playground"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-rose-700 dark:hover:text-rose-400 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
-        >
-          🤖 Live AI Playground
+          📋 Writing Rules
         </button>
       </nav>
     </div>
@@ -318,9 +311,9 @@
       <!-- Fallback No Skills Found View -->
       <div id="no-skills-fallback" class="hidden bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-12 text-center shadow-sm">
         <div class="text-5xl mb-4">🔍</div>
-        <h3 class="text-lg font-bold text-stone-800 dark:text-stone-200">No matching packaging skills matched your query</h3>
+        <h3 class="text-lg font-bold text-stone-800 dark:text-stone-200">No skills matched your query</h3>
         <p class="text-stone-500 dark:text-stone-400 text-sm mt-2 max-w-md mx-auto">
-          We couldn't locate any pre-configured skill for that search string. Try looking for keywords like "allotment", "lead", "spreadsheet", or "CRM".
+          We couldn't locate any pre-configured skill for that search string. Try looking for keywords like "research", "email", "spreadsheet", or "pdf".
         </p>
         <button
           onclick="resetSkillsSearch()"
@@ -337,7 +330,7 @@
         <div>
           <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900 dark:text-white">Top 30 Prompt Library</h2>
           <p class="text-stone-600 dark:text-stone-400 text-sm">
-            Meticulously engineered prompt blueprints covering cold outbound, operational rebuttals, territory intel, and personal productivity. Type into input fields to build your prompts in real-time.
+            Meticulously engineered prompt blueprints covering research, business strategy, content creation, writing, and personal productivity. Type into input fields to build your prompts in real-time.
           </p>
         </div>
         
@@ -399,18 +392,11 @@
               </p>
             </div>
             <div class="flex gap-1.5 pt-3 border-t border-stone-100 dark:border-stone-800">
-              <button 
+              <button
                 onclick="copyStuck('start')"
                 class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs transition"
               >
                 📋 Copy
-              </button>
-              <button 
-                onclick="sendStuckToSandbox('start')"
-                class="bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-800 text-stone-800 dark:text-stone-200 px-2 rounded-lg text-xs transition"
-                title="Send to Live Sandbox"
-              >
-                🚀 Sandbox
               </button>
             </div>
           </div>
@@ -425,17 +411,11 @@
               </p>
             </div>
             <div class="flex gap-1.5 pt-3 border-t border-stone-100 dark:border-stone-800">
-              <button 
+              <button
                 onclick="copyStuck('lost')"
                 class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs transition"
               >
                 📋 Copy
-              </button>
-              <button 
-                onclick="sendStuckToSandbox('lost')"
-                class="bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-800 text-stone-800 dark:text-stone-200 px-2 rounded-lg text-xs transition"
-              >
-                🚀 Sandbox
               </button>
             </div>
           </div>
@@ -450,17 +430,11 @@
               </p>
             </div>
             <div class="flex gap-1.5 pt-3 border-t border-stone-100 dark:border-stone-800">
-              <button 
+              <button
                 onclick="copyStuck('confusing')"
                 class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs transition"
               >
                 📋 Copy
-              </button>
-              <button 
-                onclick="sendStuckToSandbox('confusing')"
-                class="bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-800 text-stone-800 dark:text-stone-200 px-2 rounded-lg text-xs transition"
-              >
-                🚀 Sandbox
               </button>
             </div>
           </div>
@@ -475,17 +449,11 @@
               </p>
             </div>
             <div class="flex gap-1.5 pt-3 border-t border-stone-100 dark:border-stone-800">
-              <button 
+              <button
                 onclick="copyStuck('handover')"
                 class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs transition"
               >
                 📋 Copy
-              </button>
-              <button 
-                onclick="sendStuckToSandbox('handover')"
-                class="bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-800 text-stone-800 dark:text-stone-200 px-2 rounded-lg text-xs transition"
-              >
-                🚀 Sandbox
               </button>
             </div>
           </div>
@@ -534,13 +502,6 @@
                 class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs transition"
               >
                 📋 Copy Prompt
-              </button>
-              <button
-                onclick="sendStuckToSandbox('projectSetup')"
-                class="bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 px-2 rounded-lg text-xs transition"
-                title="Send to Live Sandbox"
-              >
-                🚀 Sandbox
               </button>
             </div>
           </div>
@@ -710,12 +671,12 @@
           <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm hover:border-rose-400 dark:hover:border-rose-600 transition-all">
             <div class="flex items-center gap-2 mb-3">
               <span class="text-2xl">💼</span>
-              <span class="text-xs font-black uppercase text-rose-600 dark:text-rose-400 tracking-wide">BDM Work</span>
+              <span class="text-xs font-black uppercase text-rose-600 dark:text-rose-400 tracking-wide">Sales & Outreach</span>
             </div>
             <div class="space-y-2">
               <button class="w-full text-left text-[11px] text-stone-700 dark:text-stone-300 bg-stone-50 dark:bg-stone-950 p-2.5 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition leading-relaxed cursor-pointer"
                 data-copy="Write a cold outreach email to a [prospect role] at a [company type]. Our product is [product/service]. Use British English. No em-dashes. No paragraph starting with I. Single clear CTA at the end."
-                data-toast="BDM cold email starter copied!" onclick="quickCopy(this)">
+                data-toast="Cold email starter copied!" onclick="quickCopy(this)">
                 ✉️ "Write a cold email to [prospect type]"
               </button>
               <button class="w-full text-left text-[11px] text-stone-700 dark:text-stone-300 bg-stone-50 dark:bg-stone-950 p-2.5 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition leading-relaxed cursor-pointer"
@@ -1090,12 +1051,12 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
                 onclick="clearEmailDraft()"
                 class="text-xs text-stone-500 hover:text-rose-500 font-bold transition"
               >
-                Clear Sandbox
+                Clear Editor
               </button>
             </div>
 
             <p class="text-stone-600 dark:text-stone-400 text-xs mb-4 leading-relaxed">
-              Paste any outbound email or message draft. This lab checks it against the BDM writing rules — banned filler terms, improper paragraph openings, em-dashes, and weak closings. Most useful for work emails and cold outreach.
+              Paste any outbound email or message draft. This lab checks it against the writing rules — banned filler terms, improper paragraph openings, em-dashes, and weak closings. Most useful for work emails and outreach.
             </p>
 
             <div class="relative">
@@ -1123,14 +1084,6 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
               🪄 Magical Auto-Fix
             </button>
             <button
-              onclick="triggerAISmartRewrite()"
-              id="ai-rewrite-btn"
-              class="bg-purple-600 hover:bg-purple-700 text-stone-100 font-extrabold py-3 px-4 rounded-xl shadow-sm transition text-sm flex items-center justify-center gap-1.5"
-              title="Rewrites your draft beautifully using Gemini Flash according to BDM rules"
-            >
-              ✨ AI Rewrite
-            </button>
-            <button
               onclick="loadDemoViolations()"
               class="bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-750 px-3 rounded-xl text-xs font-bold transition"
             >
@@ -1156,7 +1109,7 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
           <!-- Quick Reference Instant Swapper -->
           <div class="bg-stone-900 dark:bg-stone-950 text-stone-100 rounded-2xl p-5 shadow-sm border border-stone-800">
             <div class="flex items-center justify-between mb-3">
-              <h4 class="text-xs font-black uppercase text-amber-400 tracking-widest">Instant BDM Slang Swapper</h4>
+              <h4 class="text-xs font-black uppercase text-amber-400 tracking-widest">Instant Slang Swapper</h4>
               <span class="text-[9px] bg-amber-900/40 text-amber-300 border border-amber-800 px-2 py-0.5 rounded-full font-bold">Swap Chart</span>
             </div>
             <div id="slang-mini-swapper" class="space-y-2.5 max-h-48 overflow-y-auto text-xs pr-1">
@@ -1173,7 +1126,7 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
       <div class="mb-6">
         <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900 dark:text-white">Interaction & Sparring Playbooks</h2>
         <p class="text-stone-600 dark:text-stone-400 text-sm">
-          These represent the highly optimized prompting pathways from the "⚡ QUICK START" dashboard. Pick a mode, specify the topic inside the dynamic playground elements, and get custom system blueprints on the fly.
+          These represent the highly optimized prompting pathways from the "⚡ QUICK START" dashboard. Pick a mode, specify your topic, and get custom system blueprints on the fly.
         </p>
       </div>
 
@@ -1246,7 +1199,7 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
                 id="architect-task-input"
                 oninput="generateArchitectPrompt()"
                 class="w-full h-36 p-3 border border-stone-300 dark:border-stone-700 rounded-xl bg-stone-50 dark:bg-stone-950 font-mono text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 text-stone-800 dark:text-stone-200 transition"
-                placeholder="E.g., I'm trying to draft a follow-up sequence for a logistics prospect. Focus on their dependency on plastic void fill and recommend a paper alternative."
+                placeholder="E.g., I'm trying to draft a follow-up email to a potential client. Focus on the problem they mentioned and suggest a clear next step."
               ></textarea>
             </div>
 
@@ -1254,8 +1207,8 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
             <div class="bg-stone-50 dark:bg-stone-950 p-4 rounded-xl border border-stone-200 dark:border-stone-800">
               <div class="flex items-center justify-between">
                 <div>
-                  <span class="block text-xs font-bold text-stone-800 dark:text-stone-200">Inject Cotswold BDM Email Rules</span>
-                  <span class="text-[10px] text-stone-500 dark:text-stone-400">For BDM / email work only — British English, no em-dashes, no 'I' openers, single CTA, sign-off.</span>
+                  <span class="block text-xs font-bold text-stone-800 dark:text-stone-200">Inject Email Writing Rules</span>
+                  <span class="text-[10px] text-stone-500 dark:text-stone-400">For email work — no em-dashes, no 'I' openers, single CTA, confident close, sign-off.</span>
                 </div>
                 <label class="relative inline-flex items-center cursor-pointer">
                   <input
@@ -1275,12 +1228,6 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
                 class="flex-1 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 text-xs py-2 px-4 rounded-xl font-bold transition"
               >
                 Clear Settings
-              </button>
-              <button
-                onclick="sendArchitectToPlayground()"
-                class="flex-1 bg-rose-600 hover:bg-rose-700 text-white text-xs py-2 px-4 rounded-xl font-bold transition flex items-center justify-center gap-1"
-              >
-                🚀 Run in Playground
               </button>
             </div>
           </div>
@@ -1310,191 +1257,43 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
               📋 Copy Prompt for Claude Workspace
             </button>
             <span class="block text-[10px] text-stone-400 text-center leading-relaxed">
-              Copy this system prompt and paste directly inside Claude or custom GPT instructions. It completely enforces the strict BDM writing logic.
+              Copy this system prompt and paste directly inside Claude or custom GPT instructions. It enforces your selected skills, modes, and writing rules.
             </span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- TAB 7: BDM REFERENCE MANUAL -->
+    <!-- TAB 7: WRITING RULES REFERENCE -->
     <section id="tab-content-rules" class="tab-content">
       <div class="space-y-8">
         <div class="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-6 shadow-sm">
-          <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900 dark:text-white">Packaging & BDM Outreach Rules</h2>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900 dark:text-white">Email & Outreach Writing Rules</h2>
           <p class="text-stone-600 dark:text-stone-400 text-sm mt-1">
-            Official BDM Playbook parameters. These writing constraints, products, and swaps guarantee maximum conversions while keeping brand cohesion tight.
+            Writing constraints that keep your emails sounding human — no AI clichés, no corporate filler, no robotic patterns. Apply these to any professional email or message.
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
-          <!-- Non Negotiable List -->
-          <div class="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-6 shadow-sm">
-            <h3 class="text-lg font-black text-stone-900 dark:text-white mb-4 border-b border-stone-100 dark:border-stone-800 pb-2 flex items-center gap-2">
-              <span class="text-rose-500">🛑</span> Non-Negotiable Rules
-            </h3>
-            <div id="rules-list-container" class="space-y-4">
-              <!-- Rendered dynamically -->
-            </div>
-          </div>
-
-          <!-- Product Recommendation Table -->
-          <div class="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-6 shadow-sm flex flex-col justify-between">
-            <div>
-              <h3 class="text-lg font-black text-stone-900 dark:text-white mb-4 border-b border-stone-100 dark:border-stone-800 pb-2 flex items-center gap-2">
-                <span class="text-emerald-500">📦</span> Product Matchmaker
-              </h3>
-              <p class="text-stone-600 dark:text-stone-400 text-xs mb-4">
-                We always attempt to steer prospects towards carbon-neutral, highly reusable paper equivalents. Maintain neutral curiosity unless their setup is verified.
-              </p>
-              <div class="overflow-x-auto">
-                <table class="min-w-full text-xs text-left border-collapse">
-                  <thead>
-                    <tr class="border-b border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950">
-                      <th class="py-2.5 px-3 font-bold text-stone-700 dark:text-stone-300">Their Current Layout</th>
-                      <th class="py-2.5 px-3 font-bold text-emerald-800 dark:text-emerald-400">Recommended Upgrade</th>
-                    </tr>
-                  </thead>
-                  <tbody id="product-mappings-tbody">
-                    <!-- Loaded dynamically -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div class="bg-amber-950/80 text-amber-200 rounded-xl p-4 text-xs mt-6 border-l-4 border-amber-500 leading-relaxed">
-              <strong class="block text-white font-bold mb-1">Cold Strategy Hook:</strong>
-              "We focus on operational flow and local proximity, not price catalogs. Pitch a quick 20-minute on-site warehouse walkthrough next time you're nearby to explore potential optimization fits."
-            </div>
+        <!-- Non Negotiable List -->
+        <div class="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-6 shadow-sm">
+          <h3 class="text-lg font-black text-stone-900 dark:text-white mb-4 border-b border-stone-100 dark:border-stone-800 pb-2 flex items-center gap-2">
+            <span class="text-rose-500">🛑</span> Non-Negotiable Rules
+          </h3>
+          <div id="rules-list-container" class="space-y-4">
+            <!-- Rendered dynamically -->
           </div>
         </div>
 
         <!-- Slang list full -->
         <div class="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-6 shadow-sm">
           <h3 class="text-lg font-black text-stone-900 dark:text-white mb-4 border-b border-stone-100 dark:border-stone-800 pb-2">
-            Banned Slang & Corporate clichés Swapping Ledger
+            Banned Slang & Corporate Clichés Swapping Ledger
           </h3>
           <p class="text-stone-600 dark:text-stone-400 text-xs mb-4">
-            AI-style writing triggers immediate rejection. Delete generic corporate boilerplate in favor of punchy British alternatives:
+            AI-style writing gets ignored. Delete generic corporate boilerplate in favour of plain, direct alternatives:
           </p>
           <div id="full-slang-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <!-- Rendered dynamically -->
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 8: LIVE AI PLAYGROUND -->
-    <section id="tab-content-playground" class="tab-content">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        <!-- Chat Control Options -->
-        <div class="lg:col-span-4 space-y-6">
-          <div class="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-6 shadow-sm">
-            <h2 class="text-lg font-extrabold text-stone-900 dark:text-white mb-2 flex items-center gap-2">
-              <span>🤖</span> AI Sandbox
-            </h2>
-            <p class="text-stone-600 dark:text-stone-400 text-xs leading-relaxed mb-3">
-              Directly interrogate your prompt recipes inside the cockpit. Connects to Google's ultra-fast <strong>Gemini 2.5 Flash</strong> model to deliver immediate text generation and email drafts.
-            </p>
-            <div class="bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 rounded-lg p-2.5 mb-4 flex items-start gap-2">
-              <span class="text-sky-500 flex-shrink-0 text-sm">ℹ️</span>
-              <p class="text-[10px] text-sky-800 dark:text-sky-300 leading-relaxed"><strong>Heads up:</strong> This sandbox uses <strong>Gemini</strong>, not Claude. Results here may differ from what you get in Claude Cowork. Use it for quick drafts and rough testing — then run the real thing in Cowork.</p>
-            </div>
-
-            <div class="space-y-4">
-              <div>
-                <label class="block text-[10px] font-black uppercase text-stone-600 dark:text-stone-400 tracking-wider mb-1">
-                  Active Persona Anchor
-                </label>
-                <select 
-                  id="playground-persona-select"
-                  class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-300 dark:border-stone-700 rounded-xl p-2.5 text-xs text-stone-800 dark:text-stone-200 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                >
-                  <option value="cotswold-coach">General Assistant (Default)</option>
-                  <option value="cotswold-coach">BDM Work Coach</option>
-                  <option value="raw-rewriter">BDM Email Rewriter</option>
-                  <option value="critical-prospect">Gary — Sceptical Prospect</option>
-                  <option value="home-lifestyle">Home, Garden &amp; Lifestyle Helper</option>
-                  <option value="wisdom-bytes">Wisdom Bytes — Non-Technical Explainer</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-[10px] font-black uppercase text-stone-600 dark:text-stone-400 tracking-wider mb-1">
-                  Search Grounding
-                </label>
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" id="playground-search-toggle" class="sr-only peer">
-                  <div class="w-9 h-5 bg-stone-300 dark:bg-stone-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-600"></div>
-                  <span class="text-xs text-stone-650 dark:text-stone-350 ml-2">Google Search Grounding</span>
-                </label>
-              </div>
-
-              <div class="pt-2">
-                <button
-                  onclick="clearChatLog()"
-                  class="w-full bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 text-xs py-2 rounded-lg font-bold transition"
-                >
-                  Clear Chat Logs
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Quick Tip Panel -->
-          <div class="bg-gradient-to-br from-rose-950 to-stone-900 text-rose-200 rounded-2xl p-5 border border-rose-900/60 text-xs leading-relaxed shadow-sm">
-            <h4 class="font-extrabold text-white mb-1.5 flex items-center gap-1">
-              💡 BDM Playground Strategy
-            </h4>
-            <p>
-              Ask the "Gary (Procurement)" persona to look at your proposed pitch email. He'll give you a brutally honest response representing a standard busy manufacturing manager, allowing you to test objections before sending.
-            </p>
-          </div>
-        </div>
-
-        <!-- Interactive Chat Terminal -->
-        <div class="lg:col-span-8 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-5 shadow-sm flex flex-col justify-between h-[600px]">
-          
-          <!-- Chat Log Viewport -->
-          <div 
-            id="chat-messages-log" 
-            class="flex-1 overflow-y-auto space-y-4 mb-4 pr-2 text-xs sm:text-sm"
-          >
-            <!-- Initial Prompt coach message -->
-            <div class="flex items-start gap-3">
-              <div class="bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 p-2 rounded-xl text-lg font-bold">🤖</div>
-              <div class="bg-stone-100 dark:bg-stone-950/40 p-3 rounded-2xl border border-stone-200/60 dark:border-stone-800 max-w-[85%]">
-                <p class="font-bold text-stone-800 dark:text-white text-xs mb-1">Playbook Coach</p>
-                <p class="leading-relaxed text-stone-700 dark:text-stone-305">
-                  Welcome to the Sandbox. Type any draft check request, ask questions about your accounts, or test your prompt assemblies directly with Gemini!
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Loading Progress bar -->
-          <div id="playground-loading-bar" class="hidden pb-2 text-xs text-rose-500 font-bold flex items-center gap-1.5 animate-pulse">
-            <span class="inline-block w-2.5 h-2.5 bg-rose-500 rounded-full"></span> 
-            <span>Gemini is synthesizing response...</span>
-          </div>
-
-          <!-- Chat Input -->
-          <div class="relative bg-stone-50 dark:bg-stone-950 rounded-2xl border border-stone-350 dark:border-stone-750 p-2 flex gap-2">
-            <textarea
-              id="playground-chat-input"
-              rows="2"
-              onkeydown="handlePlaygroundKeydown(event)"
-              placeholder="Ask a question, write an email, or test a pitch..."
-              class="flex-1 bg-transparent border-0 text-xs sm:text-sm focus:outline-none focus:ring-0 text-stone-900 dark:text-white resize-none"
-            ></textarea>
-            <button
-              onclick="sendMessageToPlayground()"
-              class="bg-rose-600 hover:bg-rose-700 text-white font-extrabold px-5 rounded-xl text-xs transition flex items-center justify-center"
-            >
-              Send
-            </button>
           </div>
         </div>
       </div>
@@ -1878,15 +1677,6 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
 
       <div class="space-y-4">
         <div>
-          <label class="block text-[10px] font-black uppercase text-stone-600 dark:text-stone-400 mb-1">Custom Gemini API Key Override (Optional)</label>
-          <input 
-            type="password" 
-            id="settings-api-key" 
-            placeholder="AI Playground operates keyless inside Canvas..."
-            class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-300 dark:border-stone-700 rounded-xl p-2.5 text-xs text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-          >
-        </div>
-        <div>
           <label class="block text-[10px] font-black uppercase text-stone-600 dark:text-stone-400 mb-1">Custom Sign-off String</label>
           <input 
             type="text" 
@@ -1925,13 +1715,11 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
   </div>
 
   <footer class="border-t border-stone-200 dark:border-stone-800 pt-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-stone-500 transition-colors duration-200">
-    <p>© 2026 BDM Prompt Cockpit • Built for Claude Workspace</p>
-    <p class="mt-1">Built to guarantee B2B conversions and instant tone compliance checks.</p>
+    <p>© 2026 Prompt Engineering Cockpit • Built for Claude</p>
+    <p class="mt-1">Your personal library of prompts, skills, and writing tools.</p>
   </footer>
 
   <script>
-    const apiKey = "";
-
     // Comprehensive sheet corpus containing exactly 127 items (deduplicated)
     const SKILLS_DATA = [
       { id: "15-cowork-skills:animated-website", category: "15 Cowork Skills", name: "15-cowork-skills:animated-website", icon: "🎬", when: "Want to showcase video or visual timelines on a custom landing page.", does: "Turn any video into a luxury scroll-animated website with parallax effects.", keywords: ["website", "video", "parallax", "landing", "animation"] },
@@ -2737,7 +2525,6 @@ Present all 4 deliverables clearly labelled with full content — no summaries, 
     let currentSearchQuery = "";
     let activeCategoryFilter = "All";
     let activePromptFilter = "All";
-    let systemApiKey = localStorage.getItem("cotswold_api_key") || "";
     let systemSignoff = localStorage.getItem("cotswold_signoff") || "Best regards,";
     let customSkillsList = JSON.parse(localStorage.getItem("cotswold_custom_skills") || "[]");
 
@@ -2880,7 +2667,6 @@ Present all 4 deliverables clearly labelled with full content — no summaries, 
       }
 
       // Initialize config inputs
-      document.getElementById("settings-api-key").value = systemApiKey;
       document.getElementById("settings-signoff").value = systemSignoff;
 
       renderAll();
@@ -2956,9 +2742,7 @@ Present all 4 deliverables clearly labelled with full content — no summaries, 
       document.getElementById("settings-modal").classList.add("hidden");
     }
     function saveSettings() {
-      systemApiKey = document.getElementById("settings-api-key").value.trim();
       systemSignoff = document.getElementById("settings-signoff").value.trim();
-      localStorage.setItem("cotswold_api_key", systemApiKey);
       localStorage.setItem("cotswold_signoff", systemSignoff);
       closeSettingsModal();
       generateArchitectPrompt();
@@ -3174,21 +2958,13 @@ Format as a clean update to the existing claude.md.`
       }
     ];
 
-    // Flat lookup for copy/sandbox handlers
+    // Flat lookup for copy handlers
     const CCM_PROMPTS_FLAT = {};
     CCM_WORKFLOWS.forEach(wf => wf.prompts.forEach(p => { CCM_PROMPTS_FLAT[p.id] = p; }));
 
     function copyCCMPrompt(id) {
       const p = CCM_PROMPTS_FLAT[id];
       if (p) copyToClipboard(p.text, '"' + p.title + '" copied!');
-    }
-    function sendCCMToSandbox(id) {
-      const p = CCM_PROMPTS_FLAT[id];
-      if (p) {
-        switchTab('playground');
-        document.getElementById("playground-chat-input").value = p.text;
-        showToast("Prompt sent to Live AI Playground!");
-      }
     }
 
     function renderCCMPrompts() {
@@ -3213,7 +2989,6 @@ Format as a clean update to the existing claude.md.`
                 </div>
                 <div class="flex gap-1.5 pt-3 border-t border-stone-100 dark:border-stone-800">
                   <button onclick="copyCCMPrompt('${p.id}')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs transition">📋 Copy</button>
-                  <button onclick="sendCCMToSandbox('${p.id}')" class="bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 px-2 rounded-lg text-xs transition" title="Send to Live Sandbox">🚀</button>
                 </div>
               </div>
             `).join('')}
@@ -3341,7 +3116,6 @@ Format as a clean update to the existing claude.md.`
       if (tabName === 'quick-modes') activeBtn.classList.add('bg-indigo-700', 'text-white', 'shadow-sm');
       if (tabName === 'architect') activeBtn.classList.add('bg-purple-700', 'text-white', 'shadow-sm');
       if (tabName === 'rules') activeBtn.classList.add('bg-amber-800', 'text-white', 'shadow-sm');
-      if (tabName === 'playground') activeBtn.classList.add('bg-rose-700', 'text-white', 'shadow-sm');
       if (tabName === 'claude-code') activeBtn.classList.add('bg-sky-700', 'text-white', 'shadow-sm');
       if (tabName === 'notebooklm') { activeBtn.classList.add('bg-teal-700', 'text-white', 'shadow-sm'); initNotebookLM(); }
 
@@ -3534,9 +3308,6 @@ Format as a clean update to the existing claude.md.`
             <button onclick="copyCompiledPrompt('${prompt.id}')" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white text-xs py-2 px-3 rounded-lg font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
               📋 Copy Prompt
             </button>
-            <button onclick="sendPromptToPlayground('${prompt.id}')" class="bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs py-2 px-3 rounded-lg font-bold transition">
-              🚀 Run in Sandbox
-            </button>
           </div>
         `;
         container.appendChild(card);
@@ -3575,15 +3346,6 @@ Format as a clean update to the existing claude.md.`
       }
     }
 
-    function sendPromptToPlayground(promptId) {
-      const previewBlock = document.getElementById(`prompt-preview-block-${promptId}`);
-      if (previewBlock) {
-        switchTab('playground');
-        document.getElementById("playground-chat-input").value = previewBlock.innerText;
-        showToast("Prompt successfully transferred to Live AI Playground!");
-      }
-    }
-
     function renderInteractiveTemplates() {
       const container = document.getElementById("quickstart-builders-grid");
       container.innerHTML = "";
@@ -3609,7 +3371,7 @@ Format as a clean update to the existing claude.md.`
               <input 
                 type="text" 
                 id="field-${mode.id}-topic"
-                placeholder="e.g. paper cushioning trial"
+                placeholder="e.g. planning a garden makeover"
                 oninput="compileSingleTemplate('${mode.id}')"
                 class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-300 dark:border-stone-700 rounded-lg p-2 text-xs text-stone-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500"
               >
@@ -3623,9 +3385,6 @@ Format as a clean update to the existing claude.md.`
           <div class="flex gap-2 pt-3 border-t border-stone-100 dark:border-stone-800">
             <button onclick="copyTemplatePrompt('${mode.id}')" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs py-2 rounded-lg transition shadow-sm">
               📋 Copy Prompt
-            </button>
-            <button onclick="sendTemplateToSandbox('${mode.id}')" class="bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs py-2 px-3 rounded-lg font-bold transition">
-              🚀 Sandbox
             </button>
           </div>
         `;
@@ -3641,13 +3400,9 @@ Format as a clean update to the existing claude.md.`
 
       const inputEl = document.getElementById(`field-${modeId}-topic`);
       const userValue = inputEl && inputEl.value.trim() ? inputEl.value.trim() : "";
-      
+
       if (userValue) {
-        text = mode.template.replace("switching Reading warehouse accounts entirely to PaperWave rolls", userValue)
-                            .replace("PaperJet crimped paper structural protection", userValue)
-                            .replace("Oxfordshire 3PL procurement manager", userValue)
-                            .replace("migrating our spreadsheet lead systems to Airtable", userValue)
-                            .replace("regional distribution hubs opening near Greenford this month", userValue);
+        text = mode.template.replace(/\[[^\]]+\]/, userValue);
       }
 
       const previewBlock = document.getElementById(`template-preview-${modeId}`);
@@ -3663,27 +3418,10 @@ Format as a clean update to the existing claude.md.`
       }
     }
 
-    function sendTemplateToSandbox(modeId) {
-      const previewBlock = document.getElementById(`template-preview-${modeId}`);
-      if (previewBlock) {
-        switchTab('playground');
-        document.getElementById("playground-chat-input").value = previewBlock.innerText;
-        showToast("Template sent to Live AI Playground.");
-      }
-    }
-
     // Stuck Actions
     function copyStuck(key) {
       if (STUCK_PROMPTS[key]) {
         copyToClipboard(STUCK_PROMPTS[key], "Stuck helper copied!");
-      }
-    }
-
-    function sendStuckToSandbox(key) {
-      if (STUCK_PROMPTS[key]) {
-        switchTab('playground');
-        document.getElementById("playground-chat-input").value = STUCK_PROMPTS[key];
-        showToast("Helper sent to Live AI Playground.");
       }
     }
 
@@ -3835,7 +3573,7 @@ Format as a clean update to the existing claude.md.`
     }
 
     function loadDemoViolations() {
-      document.getElementById("email-draft-input").value = "I hope this email finds you well Gary.\n\nI just wanted to quickly reach out to touch base to see if you leverage paper void fill — let me know your thoughts. Worth a quick visit?";
+      document.getElementById("email-draft-input").value = "I hope this email finds you well Gary.\n\nI just wanted to quickly reach out to touch base to see if you leverage our new service — let me know your thoughts. Worth a quick chat?";
       scanEmailCompliance();
     }
 
@@ -3865,7 +3603,7 @@ Format as a clean update to the existing claude.md.`
             flags.push({
               rule: "Paragraph begins with 'I'",
               finding: `Paragraph ${idx + 1} begins with 'I': "${trimmed.substring(0, 30)}..."`,
-              fix: "Flip sentence order to place the prospect or logistics challenge first. (e.g. Change 'I am writing to' to 'Your local delivery path')"
+              fix: "Flip sentence order to place the reader or their situation first. (e.g. Change 'I am writing to' to 'Your team recently')"
             });
           }
         }
@@ -3888,7 +3626,7 @@ Format as a clean update to the existing claude.md.`
         });
       }
 
-      COTSWOLD_RULES.bannedWords.forEach(phrase => {
+      WRITING_RULES.bannedWords.forEach(phrase => {
         const escapedWord = phrase.bad.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const regex = new RegExp(`\\b${escapedWord}\\b`, 'gi');
         if (regex.test(lowerDraft)) {
@@ -3908,8 +3646,8 @@ Format as a clean update to the existing claude.md.`
               <div class="flex items-center gap-3 mb-4">
                 <span class="text-3xl">🎉</span>
                 <div>
-                  <h3 class="text-lg font-black tracking-tight">Fully Playbook Compliant!</h3>
-                  <p class="text-xs opacity-80">This draft passes all BDM tone guidelines.</p>
+                  <h3 class="text-lg font-black tracking-tight">Fully Compliant!</h3>
+                  <p class="text-xs opacity-80">This draft passes all writing guidelines.</p>
                 </div>
               </div>
               <div class="bg-white/80 dark:bg-stone-900/60 rounded-xl p-4 border border-emerald-200 dark:border-emerald-900 text-xs sm:text-sm">
@@ -3967,7 +3705,7 @@ Format as a clean update to the existing claude.md.`
 
       draft = draft.replace(/—/g, ', ').replace(/--/g, ', ');
 
-      COTSWOLD_RULES.bannedWords.forEach(phrase => {
+      WRITING_RULES.bannedWords.forEach(phrase => {
         if (!phrase.bad) return;
         const escaped = phrase.bad.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const regex = new RegExp(escaped, 'gi');
@@ -3987,8 +3725,8 @@ Format as a clean update to the existing claude.md.`
       showToast("Auto-Fix applied — please review the changes!");
     }
 
-    // ─── MISSING DATA: COTSWOLD_RULES ─────────────────────────────────────────
-    const COTSWOLD_RULES = {
+    // ─── MISSING DATA: WRITING_RULES ─────────────────────────────────────────
+    const WRITING_RULES = {
       bannedWords: [
         { bad: "just wanted to quickly reach out", good: "writing to introduce myself" },
         { bad: "touch base",            good: "follow up" },
@@ -4013,15 +3751,13 @@ Format as a clean update to the existing claude.md.`
       ],
       nonNegotiable: [
         "No em-dashes (— or --). Replace with commas or full stops.",
-        "Never start a paragraph with \'I\'. Flip to lead with the prospect or the challenge.",
-        "Exactly one CTA per email — no more, no less.",
+        "Never start a paragraph with \'I\'. Flip to lead with the reader or their situation.",
+        "Exactly one call to action per email — no more, no less.",
         "Close on a warm, confident forward statement — never a question.",
-        "Standard British English spelling throughout.",
+        "Consistent spelling throughout (pick British or American and stick to it).",
         "No bullet lists in outbound emails — continuous prose only.",
-        "Never mention competitor names directly in pitches.",
-        "Always pitch a site walkthrough, not a \'sales call\'.",
-        "Lead with operational value, not price catalogs.",
-        "Paper products only — position as sustainable upgrade from plastic."
+        "Lead with the value to the reader, not your product or credentials.",
+        "Keep it short — if a sentence adds nothing, cut it."
       ]
     };
 
@@ -4105,33 +3841,16 @@ Format as a clean update to the existing claude.md.`
     function renderGuidelines() {
       const rulesContainer = document.getElementById("rules-list-container");
       if (rulesContainer) {
-        rulesContainer.innerHTML = COTSWOLD_RULES.nonNegotiable.map((rule, idx) => `
+        rulesContainer.innerHTML = WRITING_RULES.nonNegotiable.map((rule, idx) => `
           <div class="flex items-start gap-3 py-2 border-b border-stone-100 dark:border-stone-800 last:border-0">
             <span class="bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 w-6 h-6 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0 mt-0.5">${idx + 1}</span>
             <p class="text-stone-700 dark:text-stone-300 text-sm leading-relaxed">${rule}</p>
           </div>`).join("");
       }
 
-      const productMappings = [
-        { current: "Plastic bubble wrap",     upgrade: "PaperWave — doorstep recyclable air cushions" },
-        { current: "Heavy bubble roll",        upgrade: "PaperJet — fastest paper cushioning machine" },
-        { current: "Polystyrene chips",        upgrade: "Speedman paper void fill rolls" },
-        { current: "Plastic air pillows",      upgrade: "PaperWave compact perforated rolls" },
-        { current: "Foam wrap sheets",         upgrade: "Speedman interleaved tissue paper" },
-        { current: "Cardboard crumple",        upgrade: "Speedman Geo — hexagonal paper lattice" }
-      ];
-      const tbody = document.getElementById("product-mappings-tbody");
-      if (tbody) {
-        tbody.innerHTML = productMappings.map((row, idx) => `
-          <tr class="border-b border-stone-100 dark:border-stone-800 last:border-0 ${idx % 2 === 0 ? '' : 'bg-stone-50 dark:bg-stone-950'}">
-            <td class="py-2.5 px-3 text-stone-700 dark:text-stone-300">${row.current}</td>
-            <td class="py-2.5 px-3 text-emerald-700 dark:text-emerald-400 font-semibold">${row.upgrade}</td>
-          </tr>`).join("");
-      }
-
       const slangGrid = document.getElementById("full-slang-grid");
       if (slangGrid) {
-        slangGrid.innerHTML = COTSWOLD_RULES.bannedWords.map(phrase => `
+        slangGrid.innerHTML = WRITING_RULES.bannedWords.map(phrase => `
           <div class="flex items-center justify-between gap-3 bg-stone-50 dark:bg-stone-950 rounded-xl p-3 border border-stone-200 dark:border-stone-800">
             <div class="flex-1 min-w-0">
               <span class="text-[10px] font-black uppercase text-rose-500 block mb-0.5">Banned</span>
@@ -4150,7 +3869,7 @@ Format as a clean update to the existing claude.md.`
     function renderMiniSwapper() {
       const container = document.getElementById("slang-mini-swapper");
       if (!container) return;
-      container.innerHTML = COTSWOLD_RULES.bannedWords.slice(0, 10).map(phrase => `
+      container.innerHTML = WRITING_RULES.bannedWords.slice(0, 10).map(phrase => `
         <div class="flex items-center justify-between gap-2 py-1.5 border-b border-stone-100 dark:border-stone-800 last:border-0">
           <span class="text-rose-400 line-through text-[10px] font-mono flex-1 truncate">${phrase.bad}</span>
           <span class="text-stone-400 text-[10px] flex-shrink-0">→</span>
@@ -4246,12 +3965,12 @@ Format as a clean update to the existing claude.md.`
 
       if (taskText.trim()) prompt += `TASK / CONTEXT:\n${taskText}\n\n`;
       if (useRules) {
-        prompt += "COTSWOLD BDM EMAIL RULES:\n";
-        COTSWOLD_RULES.nonNegotiable.forEach((r, i) => { prompt += `${i + 1}. ${r}\n`; });
+        prompt += "EMAIL WRITING RULES:\n";
+        WRITING_RULES.nonNegotiable.forEach((r, i) => { prompt += `${i + 1}. ${r}\n`; });
         prompt += `\nSign off all emails with: ${systemSignoff}`;
       }
       if (!prompt.trim()) {
-        prompt = "Configure the options above to build your custom system prompt.\n\nThis Assembler will inject:\n• /skill slash command\n• Interaction mode instruction (with placeholders pre-filled)\n• Your task or scenario\n• Cotswold BDM email rules (optional — toggle on only for email/sales work)";
+        prompt = "Configure the options above to build your custom system prompt.\n\nThis Assembler will inject:\n• /skill slash command\n• Interaction mode instruction (with placeholders pre-filled)\n• Your task or scenario\n• Email writing rules (optional — toggle on only for email/sales work)";
       }
       const preview = document.getElementById("architect-prompt-preview");
       if (preview) preview.innerText = prompt;
@@ -4260,16 +3979,6 @@ Format as a clean update to the existing claude.md.`
     function copyArchitectPrompt() {
       const preview = document.getElementById("architect-prompt-preview");
       if (preview) copyToClipboard(preview.innerText, "System prompt copied to clipboard!");
-    }
-
-    function sendArchitectToPlayground() {
-      const preview = document.getElementById("architect-prompt-preview");
-      if (preview && preview.innerText.trim()) {
-        switchTab("playground");
-        const inp = document.getElementById("playground-chat-input");
-        if (inp) inp.value = preview.innerText;
-        showToast("Prompt blueprint sent to Live AI Playground!");
-      }
     }
 
     function resetArchitectForm() {
@@ -4304,96 +4013,6 @@ Format as a clean update to the existing claude.md.`
       }
     }
 
-    // ─── PLAYGROUND ───────────────────────────────────────────────────────────
-    let chatHistory = [];
-
-    function clearChatLog() {
-      chatHistory = [];
-      const log = document.getElementById("chat-messages-log");
-      if (log) {
-        log.innerHTML = `
-          <div class="flex items-start gap-3">
-            <div class="bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 p-2 rounded-xl text-lg font-bold">🤖</div>
-            <div class="bg-stone-100 dark:bg-stone-950/40 p-3 rounded-2xl border border-stone-200/60 dark:border-stone-800 max-w-[85%]">
-              <p class="font-bold text-stone-800 dark:text-white text-xs mb-1">Playbook Coach</p>
-              <p class="leading-relaxed text-stone-700 dark:text-stone-300 text-xs">Chat cleared. What can I help you with?</p>
-            </div>
-          </div>`;
-      }
-      showToast("Chat logs cleared.");
-    }
-
-    function handlePlaygroundKeydown(event) {
-      if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        sendMessageToPlayground();
-      }
-    }
-
-    function sendMessageToPlayground() {
-      const inp = document.getElementById("playground-chat-input");
-      const msg = inp?.value.trim();
-      if (!msg) return;
-      addChatMessage("user", msg);
-      inp.value = "";
-      const bar = document.getElementById("playground-loading-bar");
-      if (bar) bar.classList.remove("hidden");
-      setTimeout(() => {
-        if (bar) bar.classList.add("hidden");
-        const persona = document.getElementById("playground-persona-select")?.value || "cotswold-coach";
-        addChatMessage("assistant", generateLocalResponse(msg, persona));
-      }, 900);
-    }
-
-    function generateLocalResponse(message, persona) {
-      const m = message.toLowerCase();
-      if (persona === "critical-prospect") {
-        if (m.includes("paper") || m.includes("packag") || m.includes("wrap"))
-          return "Look, we\'ve been using bubble wrap for years and it works fine. What\'s the actual cost difference? I don\'t have time for a pitch — we\'ve got 200 orders going out today.";
-        return "Send me a brochure and I\'ll look at it when I get a chance. I\'m not convinced this is for us right now.";
-      }
-      if (persona === "home-lifestyle") {
-        if (m.includes("recipe") || m.includes("cook") || m.includes("ingredient") || m.includes("meal"))
-          return "Great question! For that kind of dish I\'d suggest keeping it simple — use what you have. What\'s your cooking skill level and how much time do you have? Connect your Gemini API key for full recipe building.";
-        if (m.includes("allotment") || m.includes("garden") || m.includes("plant") || m.includes("sow"))
-          return "This time of year is great for getting ahead. UK growing is very weather-dependent — what\'s your plot size? Add your Gemini key in System Config for personalised advice.";
-        if (m.includes("wedding") || m.includes("venue") || m.includes("dress"))
-          return "Wedding planning is all about getting the big three booked first: venue, photographer, and caterer. Everything else flows from those. What\'s your rough guest count?";
-        return "Happy to help with home, garden, cooking, shopping or lifestyle questions! For full AI responses, add your Gemini API key in ⚙️ System Config.";
-      }
-      if (persona === "wisdom-bytes") {
-        return "Let me explain that in plain language — no jargon, just the simple version. " + (m.includes("ai") ? "AI is basically a very well-read assistant that has read almost everything on the internet and can answer your questions. The key is to give it clear instructions." : "Think of it like asking a very knowledgeable friend for help. The more context you give them, the better their answer will be.") + " Does that make sense so far? What part would you like me to explain more?";
-      }
-      if (persona === "raw-rewriter")
-        return `Here\'s a BDM-compliant rewrite of:\n\n"${message}"\n\nReminder: no em-dashes, no paragraph starting with \'I\', close on a clear forward statement. Connect your Gemini API key in System Config for full AI rewrites.`;
-      if (m.includes("email") || m.includes("pitch") || m.includes("outreach"))
-        return "For BDM outreach, three anchors: (1) Lead with their operational challenge, not your product. (2) Reference proximity and next-day stock availability. (3) End on a single concrete next step — a date, not a question. Want me to review a draft?";
-      if (m.includes("objection") || m.includes("rebuttal") || m.includes("pushback"))
-        return "When they say \'happy with current supplier\', try: \'That\'s great to hear — the best operators usually are. We simply offer a local backup stock option that removes delivery risk entirely.\' Then pitch the walkthrough.";
-      if (m.includes("paperwave") || m.includes("paper wave"))
-        return "PaperWave is doorstep-recyclable perforated paper cushioning — positions as the sustainable upgrade from plastic bubble wrap. Key pitch: same protective performance, no plastic guilt, and our Basingstoke depot means next-day delivery across the Berks/Oxon patch.";
-      return "Ask me about cold outreach, objection handling, or paste a draft email to review against the BDM Playbook rules. For full AI responses, add your Gemini API key in ⚙️ System Config.";
-    }
-
-    function addChatMessage(role, content) {
-      const log = document.getElementById("chat-messages-log");
-      if (!log) return;
-      chatHistory.push({ role, content });
-      const div = document.createElement("div");
-      div.className = `flex items-start gap-3${role === "user" ? " flex-row-reverse" : ""}`;
-      const avatar = role === "user"
-        ? `<div class="bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 p-2 rounded-xl text-xs font-black flex-shrink-0">You</div>`
-        : `<div class="bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 p-2 rounded-xl text-lg font-bold flex-shrink-0">🤖</div>`;
-      const safeContent = content.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
-      const bubble = role === "user"
-        ? `<div class="bg-amber-50 dark:bg-amber-950/60 p-3 rounded-2xl border border-amber-200 dark:border-amber-900 max-w-[85%] text-xs text-stone-800 dark:text-stone-200 leading-relaxed">${safeContent}</div>`
-        : `<div class="bg-stone-100 dark:bg-stone-950/40 p-3 rounded-2xl border border-stone-200/60 dark:border-stone-800 max-w-[85%]"><p class="font-bold text-stone-800 dark:text-white text-xs mb-1">Playbook Coach</p><p class="leading-relaxed text-stone-700 dark:text-stone-300 text-xs">${safeContent}</p></div>`;
-      div.innerHTML = role === "user" ? bubble + avatar : avatar + bubble;
-      log.appendChild(div);
-      log.scrollTop = log.scrollHeight;
-    }
-
-    // ─── AI REWRITE (requires Gemini key) ────────────────────────────────────
     // ─── NOTEBOOKLM HUB ──────────────────────────────────────────────────────────
 
     function escHtml(s) {
@@ -4897,16 +4516,6 @@ Format as a clean update to the existing claude.md.`
           </div>
           <p class="text-[10px] text-stone-400 dark:text-stone-500 mt-2">💡 <strong>Power move:</strong> Generate the same content in two orientations. Landscape for your blog/deck, portrait for social. One generation cycle, two channels covered.</p>
         </div>`;
-    }
-
-    function triggerAISmartRewrite() {
-      const draft = document.getElementById("email-draft-input")?.value || "";
-      if (!draft.trim()) { showToast("Draft editor is empty. Paste content first!"); return; }
-      if (!systemApiKey) {
-        showToast("Add your Gemini API key in ⚙️ System Config to use AI Rewrite.");
-        return;
-      }
-      showToast("AI Rewrite: Connect Gemini API key in System Config for this feature.");
     }
 
   </script>
