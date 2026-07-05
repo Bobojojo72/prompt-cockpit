@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prompt Engineering Cockpit</title>
+  <meta name="description" content="A free, private, client-side command centre for your AI prompts - searchable prompt library, fill-in templates, prompt builder and writing audit lab. Works for sales, gardening, life admin and everything in between.">
+  <meta property="og:title" content="Prompt Engineering Cockpit">
+  <meta property="og:description" content="Your AI prompt command centre - prompt library, templates, builder and audit lab. Free and private: everything stays in your browser.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#1c1917">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231c1917'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -65,6 +71,26 @@
       background: #78716c;
     }
 
+    /* Active tab (single accent, applied by switchTab) */
+    .tab-active {
+      background: #d97706 !important;
+      color: #fff !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+
+    /* Command palette result row */
+    .palette-row { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:12px; cursor:pointer; }
+    .palette-row.selected { background: rgba(217,119,6,.12); }
+    .dark .palette-row.selected { background: rgba(217,119,6,.22); }
+
+    /* In-place copied flash */
+    .copied-flash { background:#059669 !important; color:#fff !important; border-color:#059669 !important; transition: none !important; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      html { scroll-behavior: auto; }
+    }
+
     /* Tab transitions */
     .tab-content {
       display: none;
@@ -82,85 +108,70 @@
 <body class="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-800 dark:text-stone-100 font-sans antialiased pb-16 flex flex-col justify-between transition-colors duration-200">
 
   <!-- Main Top Bar & Header -->
-  <header class="bg-gradient-to-r from-amber-950 via-amber-900 to-stone-950 text-stone-100 border-b-4 border-amber-600 shadow-md">
-    <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-        
-        <!-- Brand Title Info -->
-        <div>
-          <div class="flex items-center gap-3">
-            <span class="text-4xl animate-pulse">⚡</span>
-            <div>
-              <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-amber-300 via-amber-100 to-white bg-clip-text text-transparent">
-                Prompt Engineering Cockpit
-              </h1>
-              <p class="text-amber-200 text-xs sm:text-sm font-medium mt-0.5">
-                Your Personal AI Prompt Command Centre
-              </p>
-            </div>
+  <header class="bg-stone-900 text-stone-100 border-b border-stone-800">
+    <div class="max-w-7xl mx-auto px-4 py-5 sm:px-6 lg:px-8">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+
+        <!-- Brand -->
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-xl select-none">&#9889;</span>
+          <div>
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Prompt Engineering Cockpit</h1>
+            <p class="text-stone-400 text-xs sm:text-sm mt-0.5">Your AI prompt command centre &mdash; for work, home and everything in between</p>
           </div>
         </div>
 
-        <!-- Quick Stats Dashboard Panel & Config Action buttons -->
-        <div class="flex flex-wrap items-center gap-3 sm:gap-4">
-          
-          <!-- Skill Counter Widget -->
-          <div class="bg-amber-950/60 backdrop-blur-sm px-4 py-2 rounded-xl border border-amber-800/80 text-center min-w-[100px] shadow-sm">
-            <div id="quick-skills-stat" class="text-xl font-extrabold text-amber-300">127</div>
-            <div class="text-[10px] uppercase tracking-wider font-bold text-amber-200/70">Claude Skills</div>
+        <!-- Stats + controls -->
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="hidden sm:flex items-center gap-4 text-xs text-stone-400 mr-3">
+            <span><span id="quick-skills-stat" class="font-bold text-stone-100">127</span> skills</span>
+            <span><span class="font-bold text-stone-100">30</span> prompts</span>
+            <span><span class="font-bold text-stone-100">8</span> life areas</span>
           </div>
-          
-          <!-- Prompts Counter Widget -->
-          <div class="bg-amber-950/60 backdrop-blur-sm px-4 py-2 rounded-xl border border-amber-800/80 text-center min-w-[100px] shadow-sm">
-            <div class="text-xl font-extrabold text-amber-300">30</div>
-            <div class="text-[10px] uppercase tracking-wider font-bold text-amber-200/70">Best Prompts</div>
-          </div>
-          
-          <!-- Compliance Standard Badge -->
-          <div class="bg-emerald-950/60 backdrop-blur-sm px-4 py-2 rounded-xl border border-emerald-800/80 text-center min-w-[100px] shadow-sm">
-            <div class="text-xl font-extrabold text-emerald-300">8</div>
-            <div class="text-[10px] uppercase tracking-wider font-bold text-amber-200/70">Life Areas</div>
-          </div>
-
-          <!-- Utility Controls -->
-          <div class="flex flex-col gap-1.5 ml-2">
-            <button 
-              onclick="toggleDarkMode()" 
-              id="theme-toggle-btn"
-              class="bg-stone-800/80 hover:bg-stone-700/80 border border-stone-700 px-3 py-1 rounded-lg text-xs font-bold text-amber-300 flex items-center gap-1.5 transition"
-            >
-              🌙 Dark Mode
-            </button>
-            <button 
-              onclick="openSettingsModal()" 
-              class="bg-amber-600/20 hover:bg-amber-600/40 border border-amber-600/50 px-3 py-1 rounded-lg text-xs font-bold text-amber-200 flex items-center gap-1.5 transition"
-            >
-              ⚙️ System Config
-            </button>
-          </div>
+          <button
+            onclick="openCommandPalette()"
+            class="hidden md:flex items-center gap-2 bg-stone-800 hover:bg-stone-700 border border-stone-700 px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-300 transition"
+          >
+            Quick find
+            <kbd class="text-[10px] text-stone-400 border border-stone-600 rounded px-1 py-0.5">Ctrl K</kbd>
+          </button>
+          <button
+            onclick="toggleDarkMode()"
+            id="theme-toggle-btn"
+            class="bg-stone-800 hover:bg-stone-700 border border-stone-700 px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-300 transition"
+          >
+            &#127769; Dark Mode
+          </button>
+          <button
+            onclick="openSettingsModal()"
+            class="bg-stone-800 hover:bg-stone-700 border border-stone-700 px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-300 transition"
+          >
+            &#9881;&#65039; Settings
+          </button>
         </div>
       </div>
 
-      <!-- Live Search / Core Filter Bar -->
-      <div class="mt-6 relative max-w-2xl bg-amber-950/40 rounded-xl border border-amber-700/40 p-1">
+      <!-- Live Search -->
+      <div class="mt-5 relative max-w-2xl">
         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-          <svg class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg class="h-4 w-4 text-stone-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
         <input
           type="text"
           id="global-search-bar"
-          placeholder="Search skills, prompts, playbooks, or tasks... (e.g. research, email, recipe, marketing)"
-          class="block w-full pl-11 pr-24 py-3 bg-transparent border-0 rounded-lg text-stone-100 placeholder-amber-200/50 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm sm:text-base transition"
+          placeholder="Search skills, prompts and templates&hellip;"
+          class="block w-full pl-10 pr-24 py-3 bg-stone-800/80 border border-stone-700 rounded-xl text-stone-100 placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm transition"
         />
         <div class="absolute inset-y-0 right-0 pr-3 flex items-center gap-2">
           <button
             id="clear-search-btn"
-            class="hidden text-amber-300 hover:text-white text-xs font-bold bg-amber-900/60 px-2 py-1 rounded transition"
+            class="hidden text-stone-300 hover:text-white text-xs font-bold bg-stone-700 px-2 py-1 rounded transition"
           >
             Clear
           </button>
+          <kbd class="hidden md:inline text-[10px] text-stone-500 border border-stone-700 rounded px-1.5 py-0.5">/</kbd>
         </div>
       </div>
     </div>
@@ -169,74 +180,61 @@
   <!-- Navigation Sticky Tabs Bar -->
   <div class="sticky top-0 z-10 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 shadow-sm transition-colors duration-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <nav class="flex -mb-px space-x-2 md:space-x-6 overflow-x-auto py-2.5" aria-label="Tabs">
+      <nav class="flex -mb-px space-x-1.5 md:space-x-2 overflow-x-auto py-2.5" aria-label="Tabs">
         <button
           onclick="switchTab('skills')"
           id="tab-btn-skills"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all bg-amber-700 text-white shadow-sm flex items-center gap-1.5"
+          class="tab-button tab-active whitespace-nowrap px-4 py-2 font-semibold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5"
         >
-          🛠️ Claude Cowork Skills (<span id="skills-count">127</span>)
-        </button>
-        <button
-          onclick="switchTab('claude-code')"
-          id="tab-btn-claude-code"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-sky-700 dark:hover:text-sky-400 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
-        >
-          ⚡ Claude Code
-          <span class="bg-sky-100 dark:bg-sky-950 text-sky-900 dark:text-sky-200 px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide">CLI</span>
+          &#128736;&#65039; Skills <span class="opacity-70">(<span id="skills-count">127</span>)</span>
         </button>
         <button
           onclick="switchTab('prompts')"
           id="tab-btn-prompts"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
+          class="tab-button whitespace-nowrap px-4 py-2 font-semibold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5"
         >
-          🔥 30 Best Prompts
-          <span class="bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-200 px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide">Elite</span>
+          &#128293; Prompts
         </button>
         <button
           onclick="switchTab('templates')"
           id="tab-btn-templates"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
+          class="tab-button whitespace-nowrap px-4 py-2 font-semibold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5"
         >
-          📋 My Prompt Templates
-          <span class="bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-200 px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide">Toolkit</span>
-        </button>
-        <button
-          onclick="switchTab('notebooklm')"
-          id="tab-btn-notebooklm"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-teal-700 dark:hover:text-teal-400 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
-        >
-          📓 NotebookLM
-          <span class="bg-teal-100 dark:bg-teal-950 text-teal-900 dark:text-teal-200 px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide">Hub</span>
-        </button>
-        <button
-          onclick="switchTab('verifier')"
-          id="tab-btn-verifier"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-400 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
-        >
-          ✅ Interactive Audit Lab
-        </button>
-        <button
-          onclick="switchTab('quick-modes')"
-          id="tab-btn-quick-modes"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
-        >
-          ⚡ Quick Start Playbooks
+          &#128203; Templates
         </button>
         <button
           onclick="switchTab('architect')"
           id="tab-btn-architect"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-purple-700 dark:hover:text-purple-400 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
+          class="tab-button whitespace-nowrap px-4 py-2 font-semibold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5"
         >
-          🏗️ Prompt Architect
+          &#127959;&#65039; Prompt Architect
         </button>
         <button
-          onclick="switchTab('rules')"
-          id="tab-btn-rules"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-amber-800 dark:hover:text-amber-500 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
+          onclick="switchTab('verifier')"
+          id="tab-btn-verifier"
+          class="tab-button whitespace-nowrap px-4 py-2 font-semibold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5"
         >
-          📋 Writing Rules
+          &#9989; Audit Lab
         </button>
+
+        <div class="relative flex-shrink-0">
+          <button
+            onclick="toggleReferenceMenu(event)"
+            id="tab-btn-reference"
+            class="tab-button whitespace-nowrap px-4 py-2 font-semibold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5"
+          >
+            &#128218; Reference <span class="text-[10px] opacity-60">&#9662;</span>
+          </button>
+          <div
+            id="reference-menu"
+            class="hidden absolute left-0 top-full mt-1 w-56 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl shadow-xl p-1.5 z-20"
+          >
+            <button id="tab-btn-claude-code" onclick="switchTab('claude-code')" class="tab-button w-full text-left px-3 py-2 rounded-lg text-sm font-semibold text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-2">&#9889; Claude Code CLI</button>
+            <button id="tab-btn-notebooklm" onclick="switchTab('notebooklm')" class="tab-button w-full text-left px-3 py-2 rounded-lg text-sm font-semibold text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-2">&#128211; NotebookLM</button>
+            <button id="tab-btn-rules" onclick="switchTab('rules')" class="tab-button w-full text-left px-3 py-2 rounded-lg text-sm font-semibold text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-2">&#128221; Writing Rules</button>
+            <button id="tab-btn-quick-modes" onclick="switchTab('quick-modes')" class="tab-button w-full text-left px-3 py-2 rounded-lg text-sm font-semibold text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-2">&#128640; Quick Start Playbooks</button>
+          </div>
+        </div>
       </nav>
     </div>
   </div>
@@ -247,7 +245,7 @@
     <section id="tab-content-skills" class="tab-content active">
       <div class="mb-4 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
         <div>
-          <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900 dark:text-white">Claude Skills Library</h2>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900 dark:text-white">Skills Library <span id="skills-results-badge" class="align-middle ml-1 text-xs font-bold text-stone-500 dark:text-stone-400 bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded-full"></span></h2>
           <p class="text-stone-600 dark:text-stone-400 text-sm mt-0.5">
             127 skills across 15 categories — find yours, copy the trigger, and paste into Claude Cowork.
           </p>
@@ -328,7 +326,7 @@
     <section id="tab-content-prompts" class="tab-content">
       <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900 dark:text-white">Top 30 Prompt Library</h2>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900 dark:text-white">Prompt Library <span id="prompts-results-badge" class="align-middle ml-1 text-xs font-bold text-stone-500 dark:text-stone-400 bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded-full"></span></h2>
           <p class="text-stone-600 dark:text-stone-400 text-sm">
             Meticulously engineered prompt blueprints covering research, business strategy, content creation, writing, and personal productivity. Type into input fields to build your prompts in real-time.
           </p>
@@ -3174,41 +3172,29 @@ Format as a clean update to the existing claude.md.`
     }
 
     // Tab switcher
+    const REFERENCE_TABS = ['claude-code', 'notebooklm', 'rules', 'quick-modes'];
     function switchTab(tabName) {
-      // Deactivate all tab controls
-      document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.classList.remove('bg-amber-700', 'bg-emerald-700', 'bg-indigo-700', 'bg-purple-700', 'bg-amber-800', 'bg-rose-700', 'bg-sky-700', 'bg-teal-700', 'text-white', 'shadow-sm');
-        btn.classList.add('text-stone-600', 'dark:text-stone-400', 'hover:bg-stone-50', 'dark:hover:bg-stone-800');
-      });
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('tab-active'));
+      document.querySelectorAll('.tab-content').forEach(section => section.classList.remove('active'));
 
-      // Deactivate contents
-      document.querySelectorAll('.tab-content').forEach(section => {
-        section.classList.remove('active');
-      });
-
-      // Activate selected tab styling
       const activeBtn = document.getElementById(`tab-btn-${tabName}`);
-      activeBtn.classList.remove('text-stone-600', 'dark:text-stone-400', 'hover:bg-stone-50', 'dark:hover:bg-stone-800');
-      
-      if (tabName === 'skills') activeBtn.classList.add('bg-amber-700', 'text-white', 'shadow-sm');
-      if (tabName === 'prompts') activeBtn.classList.add('bg-amber-700', 'text-white', 'shadow-sm');
-      if (tabName === 'templates') activeBtn.classList.add('bg-amber-700', 'text-white', 'shadow-sm');
-      if (tabName === 'verifier') activeBtn.classList.add('bg-emerald-700', 'text-white', 'shadow-sm');
-      if (tabName === 'quick-modes') activeBtn.classList.add('bg-indigo-700', 'text-white', 'shadow-sm');
-      if (tabName === 'architect') activeBtn.classList.add('bg-purple-700', 'text-white', 'shadow-sm');
-      if (tabName === 'rules') activeBtn.classList.add('bg-amber-800', 'text-white', 'shadow-sm');
-      if (tabName === 'claude-code') activeBtn.classList.add('bg-sky-700', 'text-white', 'shadow-sm');
-      if (tabName === 'notebooklm') { activeBtn.classList.add('bg-teal-700', 'text-white', 'shadow-sm'); initNotebookLM(); }
+      if (activeBtn) activeBtn.classList.add('tab-active');
+      const refBtn = document.getElementById('tab-btn-reference');
+      if (refBtn && REFERENCE_TABS.includes(tabName)) refBtn.classList.add('tab-active');
+      if (typeof closeReferenceMenu === 'function') closeReferenceMenu();
 
+      if (tabName === 'notebooklm') initNotebookLM();
       document.getElementById(`tab-content-${tabName}`).classList.add('active');
     }
 
     function renderCategoryFilters(skills) {
       const categories = ["All"];
+      const catCounts = {};
       skills.forEach(s => {
         if (!categories.includes(s.category)) {
           categories.push(s.category);
         }
+        catCounts[s.category] = (catCounts[s.category] || 0) + 1;
       });
 
       const container = document.getElementById("category-filter-container");
@@ -3222,7 +3208,7 @@ Format as a clean update to the existing claude.md.`
             onclick="setCategoryFilter('${cat}')"
             class="px-3 py-1.5 rounded-full text-xs font-bold transition whitespace-nowrap ${activeStyles}"
           >
-            ${cat}
+            ${cat === "All" ? "All (" + skills.length + ")" : cat + " (" + (catCounts[cat] || 0) + ")"}
           </button>
         `;
       }).join("");
@@ -3264,6 +3250,7 @@ Format as a clean update to the existing claude.md.`
 
         const card = document.createElement("div");
         card.className = "bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 hover:border-amber-500 hover:shadow-md transition-all p-5 flex flex-col justify-between skill-card";
+        if (skill.id) card.id = "skill-card-" + skill.id;
 
         const keywordsArray = Array.isArray(skill.keywords) ? skill.keywords : [];
         const displayName = getDisplayName(skill);
@@ -3317,6 +3304,8 @@ Format as a clean update to the existing claude.md.`
     function renderBestPrompts() {
       // Setup dynamic filtering pills for prompts
       const categories = ["All", ...new Set(BEST_PROMPTS_DATA.map(p => p.category))];
+      const promptCatCounts = {};
+      BEST_PROMPTS_DATA.forEach(p => { promptCatCounts[p.category] = (promptCatCounts[p.category] || 0) + 1; });
       const pillContainer = document.getElementById("prompts-category-pills");
       pillContainer.innerHTML = categories.map(cat => {
         const isActive = activePromptFilter === cat;
@@ -3328,7 +3317,7 @@ Format as a clean update to the existing claude.md.`
             onclick="setPromptFilter('${cat}')"
             class="px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${activeStyles}"
           >
-            ${cat}
+            ${cat === "All" ? "All (" + BEST_PROMPTS_DATA.length + ")" : cat + " (" + (promptCatCounts[cat] || 0) + ")"}
           </button>
         `;
       }).join("");
@@ -3529,6 +3518,9 @@ Format as a clean update to the existing claude.md.`
         }
       });
 
+      const skillsBadge = document.getElementById("skills-results-badge");
+      if (skillsBadge) skillsBadge.textContent = visibleSkills + " of " + skillCards.length;
+
       // 2. Filter Prompts
       const promptCards = document.querySelectorAll(".prompt-card-item");
       let visiblePrompts = 0;
@@ -3547,6 +3539,9 @@ Format as a clean update to the existing claude.md.`
           card.classList.add("hidden");
         }
       });
+
+      const promptsBadge = document.getElementById("prompts-results-badge");
+      if (promptsBadge) promptsBadge.textContent = visiblePrompts + " of " + promptCards.length;
 
       // 3. Filter My Prompt Templates Tab Items
       const templateCards = document.querySelectorAll(".template-card-item");
@@ -4599,6 +4594,224 @@ Format as a clean update to the existing claude.md.`
         </div>`;
     }
 
+  </script>
+
+  <!-- Command Palette -->
+  <div
+    id="command-palette"
+    class="hidden fixed inset-0 z-[60] bg-stone-950/60 backdrop-blur-sm flex items-start justify-center pt-[12vh] px-4"
+  >
+    <div class="w-full max-w-xl bg-white dark:bg-stone-900 rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-700 overflow-hidden">
+      <div class="flex items-center gap-2 px-4 border-b border-stone-100 dark:border-stone-800">
+        <svg class="h-4 w-4 text-stone-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input
+          id="palette-input"
+          type="text"
+          placeholder="Jump to any skill, prompt or template&hellip;"
+          autocomplete="off"
+          class="w-full py-3.5 bg-transparent text-sm text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none"
+        >
+        <kbd class="text-[10px] text-stone-400 border border-stone-200 dark:border-stone-700 rounded px-1.5 py-0.5 flex-shrink-0">Esc</kbd>
+      </div>
+      <div id="palette-results" class="max-h-80 overflow-y-auto p-2"></div>
+    </div>
+  </div>
+
+  <script>
+    // ─── REFERENCE DROPDOWN ────────────────────────────────────────────────
+    function toggleReferenceMenu(event) {
+      event.stopPropagation();
+      document.getElementById('reference-menu').classList.toggle('hidden');
+    }
+    function closeReferenceMenu() {
+      const m = document.getElementById('reference-menu');
+      if (m) m.classList.add('hidden');
+    }
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#reference-menu') && !e.target.closest('#tab-btn-reference')) closeReferenceMenu();
+    });
+
+    // ─── COPY BUTTON IN-PLACE FLASH ────────────────────────────────────────
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn || btn.dataset.copyFlashing) return;
+      if (!/copy/i.test(btn.textContent)) return;
+      const original = btn.innerHTML;
+      btn.dataset.copyFlashing = '1';
+      btn.classList.add('copied-flash');
+      btn.innerHTML = '&#10003; Copied';
+      setTimeout(() => {
+        btn.innerHTML = original;
+        btn.classList.remove('copied-flash');
+        delete btn.dataset.copyFlashing;
+      }, 1300);
+    });
+
+    // ─── COMMAND PALETTE ───────────────────────────────────────────────────
+    let paletteItems = [];
+    let paletteSelected = 0;
+
+    function buildPaletteIndex() {
+      const items = [];
+      const allSkills = [...SKILLS_DATA, ...(typeof customSkillsList !== 'undefined' ? customSkillsList : [])];
+      allSkills.forEach(s => items.push({
+        type: 'Skill',
+        icon: s.icon || '\u{1F6E0}',
+        title: (typeof getDisplayName === 'function' ? getDisplayName(s) : s.name) || s.name,
+        sub: s.category || '',
+        hay: ((s.name || '') + ' ' + (s.does || '') + ' ' + (s.when || '') + ' ' + (Array.isArray(s.keywords) ? s.keywords.join(' ') : '')).toLowerCase(),
+        go: () => {
+          setCategoryFilter('All');
+          const sb = document.getElementById('global-search-bar');
+          sb.value = '';
+          sb.dispatchEvent(new Event('input'));
+          switchTab('skills');
+          requestAnimationFrame(() => {
+            const el = document.getElementById('skill-card-' + s.id);
+            if (el) { el.scrollIntoView({ block: 'center' }); flashElement(el); }
+          });
+        }
+      }));
+      BEST_PROMPTS_DATA.forEach(p => items.push({
+        type: 'Prompt',
+        icon: '\u{1F525}',
+        title: p.title,
+        sub: p.category || '',
+        hay: (p.title + ' ' + (p.description || '') + ' ' + (p.category || '')).toLowerCase(),
+        go: () => {
+          setPromptFilter('All');
+          switchTab('prompts');
+          requestAnimationFrame(() => {
+            const block = document.getElementById('prompt-preview-block-' + p.id);
+            const card = block ? block.closest('.prompt-card-item') : null;
+            if (card) { card.scrollIntoView({ block: 'center' }); flashElement(card); }
+          });
+        }
+      }));
+      INTERACTION_TEMPLATES.forEach(t => items.push({
+        type: 'Template',
+        icon: '\u{1F4CB}',
+        title: t.title,
+        sub: t.tagline || '',
+        hay: (t.title + ' ' + (t.tagline || '') + ' ' + (t.template || '')).toLowerCase(),
+        go: () => {
+          switchTab('templates');
+          requestAnimationFrame(() => {
+            const block = document.getElementById('template-preview-' + t.id);
+            const card = block ? block.closest('.template-card-item') : null;
+            const target = card || block;
+            if (target) { target.scrollIntoView({ block: 'center' }); flashElement(target); }
+          });
+        }
+      }));
+      return items;
+    }
+
+    function flashElement(el) {
+      el.style.outline = '2px solid #d97706';
+      el.style.outlineOffset = '3px';
+      el.style.borderRadius = el.style.borderRadius || '16px';
+      setTimeout(() => { el.style.outline = ''; el.style.outlineOffset = ''; }, 1600);
+    }
+
+    function openCommandPalette() {
+      document.getElementById('command-palette').classList.remove('hidden');
+      const input = document.getElementById('palette-input');
+      input.value = '';
+      renderPaletteResults('');
+      setTimeout(() => input.focus(), 30);
+    }
+    function closeCommandPalette() {
+      document.getElementById('command-palette').classList.add('hidden');
+    }
+
+    function renderPaletteResults(query) {
+      const q = query.toLowerCase().trim();
+      const index = buildPaletteIndex();
+      let matches;
+      if (!q) {
+        matches = index.slice(0, 8);
+      } else {
+        matches = index
+          .map(item => {
+            let score = -1;
+            const t = item.title.toLowerCase();
+            if (t.startsWith(q)) score = 3;
+            else if (t.includes(q)) score = 2;
+            else if (item.hay.includes(q)) score = 1;
+            return { item, score };
+          })
+          .filter(x => x.score > 0)
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 8)
+          .map(x => x.item);
+      }
+      paletteItems = matches;
+      paletteSelected = 0;
+      const box = document.getElementById('palette-results');
+      if (!matches.length) {
+        box.innerHTML = '<div class="px-4 py-6 text-center text-sm text-stone-400">No matches &mdash; try a different word</div>';
+        return;
+      }
+      box.innerHTML = matches.map((m, i) => `
+        <div class="palette-row ${i === 0 ? 'selected' : ''}" data-palette-idx="${i}">
+          <span class="text-lg flex-shrink-0">${m.icon}</span>
+          <div class="min-w-0 flex-1">
+            <div class="text-sm font-semibold text-stone-900 dark:text-white truncate">${m.title}</div>
+            <div class="text-[11px] text-stone-400 truncate">${m.sub}</div>
+          </div>
+          <span class="text-[10px] font-bold uppercase tracking-wide text-stone-400 bg-stone-100 dark:bg-stone-800 px-1.5 py-0.5 rounded flex-shrink-0">${m.type}</span>
+        </div>`).join('');
+      box.querySelectorAll('.palette-row').forEach(row => {
+        row.addEventListener('click', () => executePaletteItem(parseInt(row.dataset.paletteIdx, 10)));
+        row.addEventListener('mousemove', () => setPaletteSelection(parseInt(row.dataset.paletteIdx, 10)));
+      });
+    }
+
+    function setPaletteSelection(i) {
+      paletteSelected = i;
+      document.querySelectorAll('.palette-row').forEach((row, idx) => row.classList.toggle('selected', idx === i));
+    }
+
+    function executePaletteItem(i) {
+      const item = paletteItems[i];
+      if (!item) return;
+      closeCommandPalette();
+      item.go();
+    }
+
+    document.getElementById('palette-input').addEventListener('input', (e) => renderPaletteResults(e.target.value));
+    document.getElementById('command-palette').addEventListener('click', (e) => {
+      if (e.target.id === 'command-palette') closeCommandPalette();
+    });
+
+    // ─── KEYBOARD SHORTCUTS ────────────────────────────────────────────────
+    document.addEventListener('keydown', (e) => {
+      const paletteOpen = !document.getElementById('command-palette').classList.contains('hidden');
+
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        paletteOpen ? closeCommandPalette() : openCommandPalette();
+        return;
+      }
+      if (paletteOpen) {
+        if (e.key === 'Escape') { closeCommandPalette(); }
+        else if (e.key === 'ArrowDown') { e.preventDefault(); setPaletteSelection(Math.min(paletteSelected + 1, paletteItems.length - 1)); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); setPaletteSelection(Math.max(paletteSelected - 1, 0)); }
+        else if (e.key === 'Enter') { e.preventDefault(); executePaletteItem(paletteSelected); }
+        return;
+      }
+      if (e.key === 'Escape') { closeReferenceMenu(); return; }
+      const tag = (e.target.tagName || '').toLowerCase();
+      if (e.key === '/' && tag !== 'input' && tag !== 'textarea' && !e.target.isContentEditable) {
+        e.preventDefault();
+        const sb = document.getElementById('global-search-bar');
+        sb.focus();
+        sb.scrollIntoView({ block: 'center' });
+      }
+    });
   </script>
 </body>
 </html>
