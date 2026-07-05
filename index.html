@@ -1686,6 +1686,32 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
           >
         </div>
 
+        <div>
+          <label class="block text-[10px] font-black uppercase text-stone-600 dark:text-stone-400 mb-1">My Context Block</label>
+          <textarea
+            id="settings-context"
+            rows="5"
+            placeholder="Paste your personal context here - who you are, what you sell, how you write. Tick the box below to prepend it to every prompt you copy."
+            class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-300 dark:border-stone-700 rounded-xl p-2.5 text-xs text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+          ></textarea>
+          <label class="flex items-center gap-2 mt-2 text-xs text-stone-600 dark:text-stone-400 font-bold cursor-pointer">
+            <input type="checkbox" id="settings-context-toggle" class="accent-amber-600">
+            Prepend my context when copying prompts
+          </label>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-black uppercase text-stone-600 dark:text-stone-400 mb-1">Backup &amp; Restore</label>
+          <p class="text-[11px] text-stone-500 dark:text-stone-400 mb-2">
+            Your saved prompts, pins and notes live only in this browser. Download a backup now and again and keep it somewhere safe.
+          </p>
+          <div class="flex gap-2">
+            <button type="button" onclick="exportCockpitData()" class="flex-1 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs">&#11015; Download Backup</button>
+            <button type="button" onclick="document.getElementById('import-data-file').click()" class="flex-1 px-3 py-2 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 text-stone-700 dark:text-stone-300 font-bold rounded-lg text-xs">&#11014; Restore Backup</button>
+            <input type="file" id="import-data-file" accept=".json,application/json" class="hidden" onchange="importCockpitData(event)">
+          </div>
+        </div>
+
         <div class="flex justify-end gap-2 pt-2">
           <button 
             type="button" 
@@ -2736,6 +2762,9 @@ Present all 4 deliverables clearly labelled with full content — no summaries, 
       document.getElementById("add-skill-form").reset();
     }
     function openSettingsModal() {
+      document.getElementById("settings-signoff").value = systemSignoff;
+      document.getElementById("settings-context").value = localStorage.getItem("user_context_block") || "";
+      document.getElementById("settings-context-toggle").checked = localStorage.getItem("context_prepend_enabled") === "1";
       document.getElementById("settings-modal").classList.remove("hidden");
     }
     function closeSettingsModal() {
@@ -2744,9 +2773,61 @@ Present all 4 deliverables clearly labelled with full content — no summaries, 
     function saveSettings() {
       systemSignoff = document.getElementById("settings-signoff").value.trim();
       localStorage.setItem("cotswold_signoff", systemSignoff);
+      localStorage.setItem("user_context_block", document.getElementById("settings-context").value.trim());
+      localStorage.setItem("context_prepend_enabled", document.getElementById("settings-context-toggle").checked ? "1" : "0");
       closeSettingsModal();
       generateArchitectPrompt();
       showToast("Configurations saved successfully!");
+    }
+
+    // ─── MY CONTEXT PREPEND ──────────────────────────────────────────────────
+    function getContextPrefix() {
+      if (localStorage.getItem("context_prepend_enabled") !== "1") return "";
+      const block = (localStorage.getItem("user_context_block") || "").trim();
+      return block ? block + "\n\n---\n\n" : "";
+    }
+
+    // ─── BACKUP & RESTORE ────────────────────────────────────────────────────
+    const BACKUP_KEYS = ["cotswold_signoff", "cotswold_custom_skills", "pinned_skills", "recent_skills", "skill_usage_counts", "user_custom_prompts", "user_context_block", "context_prepend_enabled", "theme"];
+    function exportCockpitData() {
+      const data = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (BACKUP_KEYS.includes(k) || k.startsWith("skill_note_")) data[k] = localStorage.getItem(k);
+      }
+      const payload = { app: "prompt-cockpit", exported: new Date().toISOString(), data: data };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "prompt-cockpit-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast("Backup downloaded — keep it somewhere safe!");
+    }
+    function importCockpitData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          const data = parsed.data || parsed;
+          let count = 0;
+          Object.keys(data).forEach(k => {
+            if (BACKUP_KEYS.includes(k) || k.startsWith("skill_note_")) {
+              localStorage.setItem(k, data[k]);
+              count++;
+            }
+          });
+          if (!count) { showToast("No cockpit data found in that file."); return; }
+          showToast("Restored " + count + " items — reloading...");
+          setTimeout(() => location.reload(), 900);
+        } catch (e) {
+          showToast("That file is not a valid cockpit backup.");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = "";
     }
 
     // ─── CUSTOM PROMPT TEMPLATES ─────────────────────────────────────────────────
@@ -3037,7 +3118,7 @@ Format as a clean update to the existing claude.md.`
 
     function copyCustomPromptById(id) {
       const p = getCustomPrompts().find(x => x.id === id);
-      if (p) copyToClipboard(p.text, '"' + p.title + '" copied!');
+      if (p) copyToClipboard(getContextPrefix() + p.text, '"' + p.title + '" copied!');
     }
 
     function renderCustomPrompts() {
@@ -3235,7 +3316,7 @@ Format as a clean update to the existing claude.md.`
 
     function renderBestPrompts() {
       // Setup dynamic filtering pills for prompts
-      const categories = ["All", "Research & Learning", "Business & Strategy", "Content & Marketing", "Writing & Communication", "Productivity & Growth", "Personal Development"];
+      const categories = ["All", ...new Set(BEST_PROMPTS_DATA.map(p => p.category))];
       const pillContainer = document.getElementById("prompts-category-pills");
       pillContainer.innerHTML = categories.map(cat => {
         const isActive = activePromptFilter === cat;
@@ -3342,7 +3423,7 @@ Format as a clean update to the existing claude.md.`
     function copyCompiledPrompt(promptId) {
       const previewBlock = document.getElementById(`prompt-preview-block-${promptId}`);
       if (previewBlock) {
-        copyToClipboard(previewBlock.innerText, "Compiled prompt copied to clipboard!");
+        copyToClipboard(getContextPrefix() + previewBlock.innerText, "Compiled prompt copied to clipboard!");
       }
     }
 
@@ -3414,7 +3495,7 @@ Format as a clean update to the existing claude.md.`
     function copyTemplatePrompt(modeId) {
       const previewBlock = document.getElementById(`template-preview-${modeId}`);
       if (previewBlock) {
-        copyToClipboard(previewBlock.innerText, "Template prompt copied to clipboard!");
+        copyToClipboard(getContextPrefix() + previewBlock.innerText, "Template prompt copied to clipboard!");
       }
     }
 
