@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prompt Engineering Cockpit</title>
+  <meta name="description" content="A free, private, client-side command centre for your AI prompts - searchable prompt library, fill-in templates, prompt builder and writing audit lab. Works for sales, gardening, life admin and everything in between.">
+  <meta property="og:title" content="Prompt Engineering Cockpit">
+  <meta property="og:description" content="Your AI prompt command centre - prompt library, templates, builder and audit lab. Free and private: everything stays in your browser.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#1c1917">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231c1917'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -11,7 +17,7 @@
   <!-- Plus Jakarta Sans & JetBrains Mono Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   
   <script>
     tailwind.config = {
@@ -65,6 +71,56 @@
       background: #78716c;
     }
 
+    /* Active tab (single accent, applied by switchTab) */
+    .tab-active {
+      background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+      color: #fff !important;
+      box-shadow: 0 2px 8px -2px rgba(217,119,6,.5);
+    }
+
+    /* Sidebar */
+    .side-group-label {
+      font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+      color: #78716c; padding: 0 12px 7px;
+    }
+    .side-nav-item {
+      width: 100%; display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; border-radius: 12px; font-size: 13px; font-weight: 600;
+      color: #d6d3d1; text-align: left; transition: background .15s, color .15s;
+    }
+    .side-nav-item:hover { background: rgba(255,255,255,.06); color: #fff; }
+    .side-nav-item.side-active {
+      background: linear-gradient(135deg, rgba(245,158,11,.22), rgba(217,119,6,.12));
+      color: #fbbf24;
+      box-shadow: inset 0 0 0 1px rgba(245,158,11,.28);
+    }
+    .guide-tile {
+      width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 15px;
+    }
+
+    /* Card hover lift */
+    .skill-card, .prompt-card-item, .template-card-item {
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .skill-card:hover, .prompt-card-item:hover, .template-card-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px -10px rgba(0,0,0,.22);
+    }
+
+    /* Command palette result row */
+    .palette-row { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:12px; cursor:pointer; }
+    .palette-row.selected { background: rgba(217,119,6,.12); }
+    .dark .palette-row.selected { background: rgba(217,119,6,.22); }
+
+    /* In-place copied flash */
+    .copied-flash { background:#059669 !important; color:#fff !important; border-color:#059669 !important; transition: none !important; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      html { scroll-behavior: auto; }
+    }
+
     /* Tab transitions */
     .tab-content {
       display: none;
@@ -78,164 +134,513 @@
       to   { opacity: 1; transform: translateY(0); }
     }
   </style>
+
+  <!-- ═══ THE INSTRUMENT — monochrome graphite command panel; colour reserved for the language ═══ -->
+  <style id="obsidian-theme">
+    :root {
+      /* Graphite instrument field */
+      --bg-canvas:   #0A0A0B;
+      --bg-panel:    #131316;   /* dock / wells */
+      --bg-raised:   #1B1B1F;   /* cards */
+      --bg-recessed: #0C0C0E;   /* inputs / code */
+      --hairline:        rgba(255,255,255,.07);
+      --hairline-strong: rgba(255,255,255,.12);
+      --hairline-top:    rgba(255,255,255,.05);
+
+      /* Ink */
+      --ink-hi:  #EDEDEF;
+      --ink-mid: #9A9AA2;
+      --ink-low: #5C5C64;
+
+      /* Reserved signal — the ONLY colour: the language + one live dot */
+      --phosphor: #7DFF9B;
+      --phosphor-dim: rgba(125,255,155,.16);
+      --amber: #E0A45C;                 /* Audit Lab warnings only */
+      --amber-bg: rgba(224,164,92,.10);
+
+      --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+      --elev: 0 1px 2px rgba(0,0,0,.5), 0 14px 40px -18px rgba(0,0,0,.8);
+    }
+
+    body, .font-sans { font-family: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif !important; }
+    h1, h2, h3, h4 { font-family: 'Space Grotesk', 'Hanken Grotesk', sans-serif; }
+    header h1, aside .text-white.font-bold { font-family: 'Space Grotesk', sans-serif !important; }
+    h1, h2, h3, h4 { letter-spacing: -0.025em; }
+    button { transition: all .3s var(--ease); }
+
+    /* ── Field: near-flat graphite, a single faint machined vignette ── */
+    .dark body {
+      background:
+        radial-gradient(1200px 800px at 50% -20%, rgba(255,255,255,.025), transparent 55%),
+        var(--bg-canvas) !important;
+      background-attachment: fixed;
+    }
+
+    /* ── Palette transplant: warm stone → cool graphite ── */
+    .dark [class*="dark:bg-stone-950"] { background-color: rgba(10,10,11,.72) !important; }
+    .dark [class*="dark:bg-stone-900"] { background-color: rgba(27,27,31,.6) !important; }
+    .dark [class*="dark:bg-stone-800"] { background-color: rgba(38,38,44,.5) !important; }
+    .dark [class*="dark:border-stone-800"] { border-color: var(--hairline) !important; }
+    .dark [class*="dark:border-stone-700"] { border-color: var(--hairline-strong) !important; }
+    .dark [class*="dark:text-stone-300"] { color: #CACAD0 !important; }
+    .dark [class*="dark:text-stone-400"] { color: var(--ink-mid) !important; }
+    .dark [class*="dark:text-stone-500"] { color: var(--ink-low) !important; }
+    .dark [class*="dark:text-white"], .dark .text-white { color: var(--ink-hi) !important; }
+
+    /* ── Accent transplant: amber → MONOCHROME machined controls ── */
+    /* Primary buttons: brushed graphite, hairline, ink text; phosphor only on hover */
+    .dark [class~="bg-amber-500"], .dark [class~="bg-amber-600"], .dark [class~="bg-amber-700"] {
+      background-image: none !important;
+      background-color: rgba(255,255,255,.06) !important;
+      color: var(--ink-hi) !important;
+      border: 1px solid var(--hairline-strong) !important;
+      box-shadow: inset 0 1px 0 var(--hairline-top);
+    }
+    .dark [class~="bg-amber-500"]:hover, .dark [class~="bg-amber-600"]:hover, .dark [class~="bg-amber-700"]:hover,
+    .dark [class*="hover:bg-amber-7"]:hover {
+      background-color: rgba(125,255,155,.10) !important;
+      border-color: rgba(125,255,155,.40) !important;
+      color: var(--phosphor) !important;
+      filter: none !important;
+    }
+    .dark [class~="bg-amber-50"], .dark [class~="bg-amber-100"],
+    .dark [class*="bg-amber-950"], .dark [class*="bg-amber-900"] {
+      background-color: rgba(255,255,255,.04) !important;
+      background-image: none !important;
+    }
+    .dark [class*="dark:text-amber-400"], .dark [class*="dark:text-amber-300"],
+    .dark [class*="text-amber-600"], .dark [class*="text-amber-700"],
+    .dark [class*="text-amber-900"], .dark [class*="dark:text-amber-200"] { color: var(--ink-mid) !important; }
+    .dark [class*="border-amber-2"], .dark [class*="border-amber-4"], .dark [class*="border-amber-6"],
+    .dark [class*="dark:border-amber-8"], .dark [class*="dark:border-amber-9"] { border-color: var(--hairline-strong) !important; }
+    .dark [class*="hover:border-amber-500"]:hover { border-color: rgba(125,255,155,.40) !important; }
+    .dark [class*="ring-amber-500"] { --tw-ring-color: rgba(255,255,255,.25) !important; }
+    /* Brand tiles: no violet gradient — machined graphite chip */
+    [class*="from-amber-4"], [class*="from-amber-9"], [class*="to-amber-6"] {
+      background-image: linear-gradient(160deg, #26262B, #141417) !important;
+      box-shadow: inset 0 1px 0 var(--hairline-top), 0 2px 8px -2px rgba(0,0,0,.6);
+      border: 1px solid var(--hairline) !important;
+    }
+
+    /* ── Cards: machined panels, mono eyebrow, quiet ── */
+    .dark .skill-card, .dark .prompt-card-item, .dark .template-card-item {
+      position: relative; overflow: hidden;
+      background: var(--bg-raised) !important;
+      border: 1px solid var(--hairline) !important;
+      border-radius: 14px !important;
+      box-shadow: var(--elev), inset 0 1px 0 var(--hairline-top);
+      transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s var(--ease);
+    }
+    .dark .skill-card:hover, .dark .prompt-card-item:hover, .dark .template-card-item:hover {
+      transform: translateY(-3px);
+      border-color: rgba(125,255,155,.28) !important;
+      box-shadow: var(--elev), 0 0 0 1px rgba(125,255,155,.18), inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    /* Monochrome cursor spotlight */
+    .dark .skill-card::before, .dark .prompt-card-item::before, .dark .template-card-item::before {
+      content: ''; position: absolute; inset: 0; opacity: 0; pointer-events: none;
+      transition: opacity .3s var(--ease);
+      background: radial-gradient(220px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,.05), transparent 65%);
+      z-index: 0;
+    }
+    .dark .skill-card:hover::before, .dark .prompt-card-item:hover::before, .dark .template-card-item:hover::before { opacity: 1; }
+    .dark .skill-card > *, .dark .prompt-card-item > *, .dark .template-card-item > * { position: relative; z-index: 1; }
+
+    /* Category badges & "WHEN TO TRIGGER" labels → quiet mono eyebrows */
+    .dark .skill-card [class*="uppercase"], .dark .prompt-card-item [class*="uppercase"],
+    .dark .template-card-item [class*="uppercase"] {
+      font-family: var(--mono) !important;
+      font-weight: 500 !important;
+      letter-spacing: .12em !important;
+      color: var(--ink-low) !important;
+      background: transparent !important;
+      border: none !important;
+    }
+
+    /* ── Dock: brushed graphite instrument ── */
+    @media (min-width: 1024px) {
+      aside {
+        top: 1rem !important; bottom: 1rem !important; left: 1rem !important;
+        width: 264px !important; border-radius: 16px;
+        border: 1px solid var(--hairline) !important;
+        transition: width .3s var(--ease);
+        animation: powerOn .5s var(--ease) both;
+      }
+      aside.dock-collapsed { width: 76px !important; }
+      aside.dock-collapsed .side-group-label,
+      aside.dock-collapsed .dock-hide,
+      aside.dock-collapsed .side-nav-item > span.flex-1,
+      aside.dock-collapsed #side-skills-count,
+      aside.dock-collapsed .pt-6 > div,
+      aside.dock-collapsed .px-4.pb-5 { display: none; }
+      aside.dock-collapsed .side-nav-item { justify-content: center; padding-left: 6px; padding-right: 6px; }
+      aside.dock-collapsed .border-t { flex-direction: column; }
+      aside.dock-collapsed + div { margin-left: 108px !important; }
+      aside.dock-collapsed #dock-toggle svg { transform: rotate(180deg); }
+    }
+    @keyframes powerOn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+    .dark aside {
+      background: linear-gradient(180deg, rgba(24,24,28,.9), rgba(15,15,18,.9)) !important;
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-color: var(--hairline) !important;
+      box-shadow: 0 24px 64px -22px rgba(0,0,0,.8), inset 0 1px 0 var(--hairline-top);
+    }
+    aside { background: #131316; }
+    .side-group-label { font-family: var(--mono) !important; letter-spacing: .16em !important; color: var(--ink-low) !important; }
+    .side-nav-item.side-active {
+      background: rgba(255,255,255,.055) !important;
+      color: var(--ink-hi) !important;
+      box-shadow: inset 0 0 0 1px var(--hairline-strong), inset 2px 0 0 var(--phosphor) !important;
+    }
+    #dock-toggle svg { transition: transform .3s var(--ease); }
+
+    /* ── Header → HUD readout ── */
+    .dark header { background: transparent !important; border-color: var(--hairline) !important; }
+    .dark header input#global-search-bar {
+      background: var(--bg-recessed) !important; border-color: var(--hairline) !important;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,.5);
+    }
+    .dark header button, .dark aside button:not(.side-nav-item) {
+      background: rgba(255,255,255,.04) !important; border-color: var(--hairline) !important;
+    }
+    .dark header button:hover, .dark aside button:not(.side-nav-item):hover {
+      background: rgba(255,255,255,.08) !important; border-color: var(--hairline-strong) !important;
+    }
+    /* Machined wordmark (solid near-white, robust) */
+    .dark header h1, .dark aside .text-white.font-bold {
+      color: var(--ink-hi) !important;
+      -webkit-text-fill-color: var(--ink-hi) !important;
+      background: none !important;
+      letter-spacing: -0.03em;
+    }
+    /* Brand chip (mobile + dock): amber opacity variants -> machined graphite */
+    .dark [class*="bg-amber-500/"] {
+      background-color: rgba(255,255,255,.05) !important;
+      border-color: var(--hairline) !important;
+    }
+    .dark [class*="border-amber-500/"] { border-color: var(--hairline) !important; }
+    /* Section header as instrument readout + live phosphor dot */
+    #desktop-page-title { position: relative; padding-left: 18px; }
+    #desktop-page-title::before {
+      content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--phosphor); box-shadow: 0 0 10px 1px rgba(125,255,155,.6);
+      animation: pulseDot 2.4s var(--ease) infinite;
+    }
+    @keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+    #desktop-page-sub { font-family: var(--mono) !important; text-transform: uppercase; letter-spacing: .14em; font-size: 10px !important; color: var(--ink-low) !important; }
+
+    /* ── Active tab (mobile): machined, phosphor underline ── */
+    .tab-active {
+      background: rgba(255,255,255,.07) !important;
+      color: var(--ink-hi) !important;
+      box-shadow: inset 0 -2px 0 var(--phosphor) !important;
+    }
+    .palette-row.selected { background: rgba(255,255,255,.06) !important; }
+    .dark .palette-row.selected { background: rgba(255,255,255,.08) !important; }
+
+    /* ── THE LANGUAGE: phosphor terminal previews ── */
+    .dark [id^="prompt-preview-block-"], .dark [id^="template-preview-"],
+    .dark pre, .dark textarea.font-mono, .dark #architect-output {
+      color: var(--phosphor) !important; font-family: var(--mono) !important;
+    }
+    .dark [class*="font-mono"][class*="dark:bg-stone-950"] {
+      background: var(--bg-recessed) !important; border-color: var(--hairline) !important;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,.55);
+    }
+    /* Copy actions relate to capturing the language → phosphor on hover */
+    .dark button:hover [class*="Copy"], .dark [onclick*="copy" i]:hover { color: var(--phosphor) !important; }
+
+    /* ── Modals & palette: graphite glass ── */
+    .dark #settings-modal > div, .dark #command-palette > div,
+    .dark #custom-skill-modal > div, .dark #add-prompt-modal > div {
+      background: rgba(19,19,22,.92) !important;
+      backdrop-filter: blur(26px); -webkit-backdrop-filter: blur(26px);
+      border-color: var(--hairline-strong) !important;
+      box-shadow: 0 36px 100px -22px rgba(0,0,0,.8);
+    }
+    #palette-input { font-family: var(--mono) !important; }
+
+    /* ── Inputs, kbd, selection, scrollbar ── */
+    .dark input[type="text"], .dark input[type="search"], .dark textarea, .dark select {
+      background-color: var(--bg-recessed) !important; border-color: var(--hairline-strong) !important;
+      color: var(--ink-hi) !important; box-shadow: inset 0 1px 2px rgba(0,0,0,.5);
+    }
+    .dark input:focus, .dark textarea:focus, .dark select:focus {
+      --tw-ring-color: rgba(125,255,155,.35) !important; border-color: rgba(125,255,155,.35) !important;
+    }
+    .dark kbd { background: rgba(255,255,255,.05) !important; border-color: var(--hairline-strong) !important; color: var(--ink-mid) !important; font-family: var(--mono) !important; }
+    ::selection { background: rgba(125,255,155,.28); color: #EDEDEF; }
+    .dark ::-webkit-scrollbar-thumb { background: #2A2A30 !important; }
+    .dark ::-webkit-scrollbar-thumb:hover { background: #3A3A42 !important; }
+    .dark ::-webkit-scrollbar-track { background: transparent !important; }
+
+    /* ── Audit Lab warnings: reserved amber ── */
+    .dark [class*="text-rose-"], .dark [class*="text-red-"] { color: var(--amber) !important; }
+    .dark [class~="bg-rose-600"], .dark [class~="bg-rose-700"] { background-image: none !important; background-color: rgba(224,164,92,.5) !important; color: #0A0A0B !important; }
+    .dark [class*="bg-rose-950"], .dark [class*="bg-rose-900"], .dark [class~="bg-rose-100"], .dark [class~="bg-rose-50"] { background-color: var(--amber-bg) !important; }
+    .dark [class*="border-rose-"] { border-color: rgba(224,164,92,.28) !important; }
+    /* Pass states share the phosphor language */
+    .dark [class*="text-emerald-"], .dark [class*="text-green-"] { color: var(--phosphor) !important; }
+    .dark [class~="bg-emerald-600"], .dark [class~="bg-emerald-700"] { background-image: none !important; background-color: rgba(125,255,155,.16) !important; color: var(--phosphor) !important; }
+    .dark [class*="bg-emerald-950"], .dark [class*="bg-emerald-900"], .dark [class~="bg-emerald-100"], .dark [class~="bg-emerald-50"], .dark [class*="bg-green-950"] { background-color: var(--phosphor-dim) !important; }
+    .dark [class*="border-emerald-"], .dark [class*="border-green-"] { border-color: rgba(125,255,155,.24) !important; }
+
+    /* One orchestrated reveal on section change */
+    .tab-content.active { animation: sectionIn .28s var(--ease) both; }
+    @keyframes sectionIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; }
+    }
+    @media (min-width: 1024px) { main { padding-top: 2.25rem; padding-bottom: 4rem; } }
+  </style>
+
 </head>
-<body class="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-800 dark:text-stone-100 font-sans antialiased pb-16 flex flex-col justify-between transition-colors duration-200">
+<body class="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-800 dark:text-stone-100 font-sans antialiased pb-16 transition-colors duration-200">
+
+  <!-- Desktop Sidebar -->
+  <aside class="hidden lg:flex fixed inset-y-0 left-0 w-72 z-30 flex-col bg-stone-900 border-r border-stone-800">
+    <div class="px-5 pt-6 pb-5 flex items-center gap-3">
+      <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-lg shadow-lg shadow-amber-900/40 select-none">&#9889;</span>
+      <div>
+        <div class="text-white font-bold text-[15px] leading-tight tracking-tight">Prompt Cockpit</div>
+        <div class="text-stone-500 text-[11px] font-medium">Engineering suite</div>
+      </div>
+    </div>
+
+    <div class="px-4 pb-5">
+      <button
+        onclick="openCommandPalette()"
+        class="w-full flex items-center justify-between bg-stone-800/70 hover:bg-stone-800 border border-stone-700/60 rounded-xl px-3 py-2.5 text-xs text-stone-400 hover:text-stone-200 transition"
+      >
+        <span class="flex items-center gap-2">
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          Quick find&hellip;
+        </span>
+        <kbd class="text-[10px] text-stone-500 border border-stone-700 rounded px-1.5 py-0.5">Ctrl K</kbd>
+      </button>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto px-3 pb-4 space-y-6">
+      <div>
+        <div class="side-group-label">Workspace</div>
+        <button class="side-nav-item side-active" data-tab="skills" onclick="switchTab('skills')">
+          <span class="guide-tile bg-amber-500/15">&#128736;&#65039;</span>
+          <span class="flex-1">Skills Library</span>
+          <span id="side-skills-count" class="text-[10px] font-bold text-stone-500 bg-stone-800 rounded-full px-2 py-0.5">127</span>
+        </button>
+        <button class="side-nav-item" data-tab="prompts" onclick="switchTab('prompts')">
+          <span class="guide-tile bg-orange-500/15">&#128293;</span>
+          <span class="flex-1">Prompt Library</span>
+        </button>
+        <button class="side-nav-item" data-tab="templates" onclick="switchTab('templates')">
+          <span class="guide-tile bg-rose-500/15">&#128203;</span>
+          <span class="flex-1">My Templates</span>
+        </button>
+      </div>
+
+      <div>
+        <div class="side-group-label">Build &amp; Check</div>
+        <button class="side-nav-item" data-tab="architect" onclick="switchTab('architect')">
+          <span class="guide-tile bg-purple-500/15">&#127959;&#65039;</span>
+          <span class="flex-1">Prompt Architect</span>
+        </button>
+        <button class="side-nav-item" data-tab="verifier" onclick="switchTab('verifier')">
+          <span class="guide-tile bg-emerald-500/15">&#9989;</span>
+          <span class="flex-1">Audit Lab</span>
+        </button>
+      </div>
+
+      <div>
+        <div class="side-group-label">Tool Guides</div>
+        <button class="side-nav-item" data-tab="claude-code" onclick="switchTab('claude-code')">
+          <span class="guide-tile bg-sky-500/20 text-sky-300">&#9889;</span>
+          <span class="flex-1">
+            <span class="block">Claude Code CLI</span>
+            <span class="block text-[10px] font-medium text-stone-500">Terminal AI workflows</span>
+          </span>
+        </button>
+        <button class="side-nav-item" data-tab="notebooklm" onclick="switchTab('notebooklm')">
+          <span class="guide-tile bg-teal-500/20 text-teal-300">&#128211;</span>
+          <span class="flex-1">
+            <span class="block">NotebookLM</span>
+            <span class="block text-[10px] font-medium text-stone-500">Research &amp; audio hub</span>
+          </span>
+        </button>
+        <button class="side-nav-item" data-tab="rules" onclick="switchTab('rules')">
+          <span class="guide-tile bg-amber-500/20 text-amber-300">&#128221;</span>
+          <span class="flex-1">
+            <span class="block">Writing Rules</span>
+            <span class="block text-[10px] font-medium text-stone-500">House style constraints</span>
+          </span>
+        </button>
+        <button class="side-nav-item" data-tab="quick-modes" onclick="switchTab('quick-modes')">
+          <span class="guide-tile bg-indigo-500/20 text-indigo-300">&#128640;</span>
+          <span class="flex-1">
+            <span class="block">Quick Start Playbooks</span>
+            <span class="block text-[10px] font-medium text-stone-500">Guided AI sessions</span>
+          </span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="px-4 py-4 border-t border-stone-800 flex items-center gap-2">
+      <button onclick="openSettingsModal()" class="flex-1 flex items-center justify-center gap-1.5 bg-stone-800 hover:bg-stone-700 border border-stone-700 px-3 py-2 rounded-lg text-xs font-semibold text-stone-300 transition">&#9881;&#65039;<span class="dock-hide"> Settings</span></button>
+      <button onclick="toggleDarkMode()" title="Toggle theme" class="w-10 flex items-center justify-center bg-stone-800 hover:bg-stone-700 border border-stone-700 py-2 rounded-lg text-xs text-stone-300 transition">&#127763;</button>
+      <button onclick="toggleDock()" id="dock-toggle" title="Collapse dock" class="w-10 flex items-center justify-center bg-stone-800 hover:bg-stone-700 border border-stone-700 py-2 rounded-lg text-stone-300 transition">
+        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <div class="lg:ml-72">
 
   <!-- Main Top Bar & Header -->
-  <header class="bg-gradient-to-r from-amber-950 via-amber-900 to-stone-950 text-stone-100 border-b-4 border-amber-600 shadow-md">
-    <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-        
-        <!-- Brand Title Info -->
-        <div>
-          <div class="flex items-center gap-3">
-            <span class="text-4xl animate-pulse">⚡</span>
-            <div>
-              <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-amber-300 via-amber-100 to-white bg-clip-text text-transparent">
-                Prompt Engineering Cockpit
-              </h1>
-              <p class="text-amber-200 text-xs sm:text-sm font-medium mt-0.5">
-                Your Personal AI Prompt Command Centre
-              </p>
-            </div>
+  <header class="bg-stone-900 text-stone-100 border-b border-stone-800">
+    <div class="max-w-7xl mx-auto px-4 py-5 sm:px-6 lg:px-8">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+
+        <!-- Brand (mobile only - sidebar carries it on desktop) -->
+        <div class="flex items-center gap-3 lg:hidden">
+          <span class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-xl select-none">&#9889;</span>
+          <div>
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Prompt Engineering Cockpit</h1>
+            <p class="text-stone-400 text-xs sm:text-sm mt-0.5">Your AI prompt command centre &mdash; for work, home and everything in between</p>
           </div>
         </div>
 
-        <!-- Quick Stats Dashboard Panel & Config Action buttons -->
-        <div class="flex flex-wrap items-center gap-3 sm:gap-4">
-          
-          <!-- Skill Counter Widget -->
-          <div class="bg-amber-950/60 backdrop-blur-sm px-4 py-2 rounded-xl border border-amber-800/80 text-center min-w-[100px] shadow-sm">
-            <div id="quick-skills-stat" class="text-xl font-extrabold text-amber-300">127</div>
-            <div class="text-[10px] uppercase tracking-wider font-bold text-amber-200/70">Claude Skills</div>
-          </div>
-          
-          <!-- Prompts Counter Widget -->
-          <div class="bg-amber-950/60 backdrop-blur-sm px-4 py-2 rounded-xl border border-amber-800/80 text-center min-w-[100px] shadow-sm">
-            <div class="text-xl font-extrabold text-amber-300">30</div>
-            <div class="text-[10px] uppercase tracking-wider font-bold text-amber-200/70">Best Prompts</div>
-          </div>
-          
-          <!-- Compliance Standard Badge -->
-          <div class="bg-emerald-950/60 backdrop-blur-sm px-4 py-2 rounded-xl border border-emerald-800/80 text-center min-w-[100px] shadow-sm">
-            <div class="text-xl font-extrabold text-emerald-300">8</div>
-            <div class="text-[10px] uppercase tracking-wider font-bold text-amber-200/70">Life Areas</div>
-          </div>
+        <!-- Desktop page context -->
+        <div class="hidden lg:block">
+          <h2 id="desktop-page-title" class="text-xl font-bold tracking-tight text-white">Skills Library</h2>
+          <p id="desktop-page-sub" class="text-stone-400 text-xs mt-0.5">Browse and trigger 127 Claude skills</p>
+        </div>
 
-          <!-- Utility Controls -->
-          <div class="flex flex-col gap-1.5 ml-2">
-            <button 
-              onclick="toggleDarkMode()" 
-              id="theme-toggle-btn"
-              class="bg-stone-800/80 hover:bg-stone-700/80 border border-stone-700 px-3 py-1 rounded-lg text-xs font-bold text-amber-300 flex items-center gap-1.5 transition"
-            >
-              🌙 Dark Mode
-            </button>
-            <button 
-              onclick="openSettingsModal()" 
-              class="bg-amber-600/20 hover:bg-amber-600/40 border border-amber-600/50 px-3 py-1 rounded-lg text-xs font-bold text-amber-200 flex items-center gap-1.5 transition"
-            >
-              ⚙️ System Config
-            </button>
+        <!-- Stats + controls -->
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="hidden sm:flex items-center gap-4 text-xs text-stone-400 mr-3">
+            <span><span id="quick-skills-stat" class="font-bold text-stone-100">127</span> skills</span>
+            <span><span class="font-bold text-stone-100">30</span> prompts</span>
+            <span><span class="font-bold text-stone-100">8</span> life areas</span>
           </div>
+          <button
+            onclick="openCommandPalette()"
+            class="hidden md:flex items-center gap-2 bg-stone-800 hover:bg-stone-700 border border-stone-700 px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-300 transition"
+          >
+            Quick find
+            <kbd class="text-[10px] text-stone-400 border border-stone-600 rounded px-1 py-0.5">Ctrl K</kbd>
+          </button>
+          <button
+            onclick="toggleDarkMode()"
+            id="theme-toggle-btn"
+            class="bg-stone-800 hover:bg-stone-700 border border-stone-700 px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-300 transition"
+          >
+            &#127769; Dark Mode
+          </button>
+          <button
+            onclick="openSettingsModal()"
+            class="bg-stone-800 hover:bg-stone-700 border border-stone-700 px-3 py-1.5 rounded-lg text-xs font-semibold text-stone-300 transition"
+          >
+            &#9881;&#65039; Settings
+          </button>
         </div>
       </div>
 
-      <!-- Live Search / Core Filter Bar -->
-      <div class="mt-6 relative max-w-2xl bg-amber-950/40 rounded-xl border border-amber-700/40 p-1">
+      <!-- Live Search -->
+      <div class="mt-5 relative max-w-2xl">
         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-          <svg class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg class="h-4 w-4 text-stone-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
         <input
           type="text"
           id="global-search-bar"
-          placeholder="Search skills, prompts, playbooks, or tasks... (e.g. research, email, recipe, marketing)"
-          class="block w-full pl-11 pr-24 py-3 bg-transparent border-0 rounded-lg text-stone-100 placeholder-amber-200/50 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm sm:text-base transition"
+          placeholder="Search skills, prompts and templates&hellip;"
+          class="block w-full pl-10 pr-24 py-3 bg-stone-800/80 border border-stone-700 rounded-xl text-stone-100 placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm transition"
         />
         <div class="absolute inset-y-0 right-0 pr-3 flex items-center gap-2">
           <button
             id="clear-search-btn"
-            class="hidden text-amber-300 hover:text-white text-xs font-bold bg-amber-900/60 px-2 py-1 rounded transition"
+            class="hidden text-stone-300 hover:text-white text-xs font-bold bg-stone-700 px-2 py-1 rounded transition"
           >
             Clear
           </button>
+          <kbd class="hidden md:inline text-[10px] text-stone-500 border border-stone-700 rounded px-1.5 py-0.5">/</kbd>
         </div>
       </div>
     </div>
   </header>
 
   <!-- Navigation Sticky Tabs Bar -->
-  <div class="sticky top-0 z-10 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 shadow-sm transition-colors duration-200">
+  <div class="lg:hidden sticky top-0 z-10 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 shadow-sm transition-colors duration-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <nav class="flex -mb-px space-x-2 md:space-x-6 overflow-x-auto py-2.5" aria-label="Tabs">
+      <nav class="flex -mb-px space-x-1.5 md:space-x-2 overflow-x-auto py-2.5" aria-label="Tabs">
         <button
           onclick="switchTab('skills')"
           id="tab-btn-skills"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all bg-amber-700 text-white shadow-sm flex items-center gap-1.5"
+          class="tab-button tab-active whitespace-nowrap px-4 py-2 font-semibold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5"
         >
-          🛠️ Claude Cowork Skills (<span id="skills-count">127</span>)
-        </button>
-        <button
-          onclick="switchTab('claude-code')"
-          id="tab-btn-claude-code"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-sky-700 dark:hover:text-sky-400 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
-        >
-          ⚡ Claude Code
-          <span class="bg-sky-100 dark:bg-sky-950 text-sky-900 dark:text-sky-200 px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide">CLI</span>
+          &#128736;&#65039; Skills <span class="opacity-70">(<span id="skills-count">127</span>)</span>
         </button>
         <button
           onclick="switchTab('prompts')"
           id="tab-btn-prompts"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
+          class="tab-button whitespace-nowrap px-4 py-2 font-semibold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5"
         >
-          🔥 30 Best Prompts
-          <span class="bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-200 px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide">Elite</span>
+          &#128293; Prompts
         </button>
         <button
           onclick="switchTab('templates')"
           id="tab-btn-templates"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
+          class="tab-button whitespace-nowrap px-4 py-2 font-semibold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5"
         >
-          📋 My Prompt Templates
-          <span class="bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-200 px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide">Toolkit</span>
-        </button>
-        <button
-          onclick="switchTab('notebooklm')"
-          id="tab-btn-notebooklm"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-teal-700 dark:hover:text-teal-400 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
-        >
-          📓 NotebookLM
-          <span class="bg-teal-100 dark:bg-teal-950 text-teal-900 dark:text-teal-200 px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide">Hub</span>
-        </button>
-        <button
-          onclick="switchTab('verifier')"
-          id="tab-btn-verifier"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-400 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
-        >
-          ✅ Interactive Audit Lab
-        </button>
-        <button
-          onclick="switchTab('quick-modes')"
-          id="tab-btn-quick-modes"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
-        >
-          ⚡ Quick Start Playbooks
+          &#128203; Templates
         </button>
         <button
           onclick="switchTab('architect')"
           id="tab-btn-architect"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-purple-700 dark:hover:text-purple-400 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
+          class="tab-button whitespace-nowrap px-4 py-2 font-semibold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5"
         >
-          🏗️ Prompt Architect
+          &#127959;&#65039; Prompt Architect
+        </button>
+        <button
+          onclick="switchTab('verifier')"
+          id="tab-btn-verifier"
+          class="tab-button whitespace-nowrap px-4 py-2 font-semibold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5"
+        >
+          &#9989; Audit Lab
+        </button>
+
+        <span class="self-center flex-shrink-0 w-px h-6 bg-stone-200 dark:bg-stone-700 mx-1" aria-hidden="true"></span>
+        <button
+          onclick="switchTab('claude-code')"
+          id="tab-btn-claude-code"
+          class="tab-button whitespace-nowrap px-3.5 py-2 font-semibold text-sm rounded-xl transition-all text-sky-700 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/40 hover:bg-sky-100 dark:hover:bg-sky-900/50 flex items-center gap-1.5"
+        >
+          &#9889; Claude Code
+        </button>
+        <button
+          onclick="switchTab('notebooklm')"
+          id="tab-btn-notebooklm"
+          class="tab-button whitespace-nowrap px-3.5 py-2 font-semibold text-sm rounded-xl transition-all text-teal-700 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40 hover:bg-teal-100 dark:hover:bg-teal-900/50 flex items-center gap-1.5"
+        >
+          &#128211; NotebookLM
         </button>
         <button
           onclick="switchTab('rules')"
           id="tab-btn-rules"
-          class="tab-button whitespace-nowrap px-4 py-2 font-bold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:text-amber-800 dark:hover:text-amber-500 hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center gap-1.5"
+          class="tab-button whitespace-nowrap px-3.5 py-2 font-semibold text-sm rounded-xl transition-all text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/50 flex items-center gap-1.5"
         >
-          📋 Writing Rules
+          &#128221; Rules
+        </button>
+        <button
+          onclick="switchTab('quick-modes')"
+          id="tab-btn-quick-modes"
+          class="tab-button whitespace-nowrap px-3.5 py-2 font-semibold text-sm rounded-xl transition-all text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 flex items-center gap-1.5"
+        >
+          &#128640; Playbooks
         </button>
       </nav>
     </div>
@@ -247,7 +652,7 @@
     <section id="tab-content-skills" class="tab-content active">
       <div class="mb-4 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
         <div>
-          <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900 dark:text-white">Claude Skills Library</h2>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900 dark:text-white">Skills Library <span id="skills-results-badge" class="align-middle ml-1 text-xs font-bold text-stone-500 dark:text-stone-400 bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded-full"></span></h2>
           <p class="text-stone-600 dark:text-stone-400 text-sm mt-0.5">
             127 skills across 15 categories — find yours, copy the trigger, and paste into Claude Cowork.
           </p>
@@ -328,7 +733,7 @@
     <section id="tab-content-prompts" class="tab-content">
       <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900 dark:text-white">Top 30 Prompt Library</h2>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900 dark:text-white">Prompt Library <span id="prompts-results-badge" class="align-middle ml-1 text-xs font-bold text-stone-500 dark:text-stone-400 bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded-full"></span></h2>
           <p class="text-stone-600 dark:text-stone-400 text-sm">
             Meticulously engineered prompt blueprints covering research, business strategy, content creation, writing, and personal productivity. Type into input fields to build your prompts in real-time.
           </p>
@@ -1686,6 +2091,32 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
           >
         </div>
 
+        <div>
+          <label class="block text-[10px] font-black uppercase text-stone-600 dark:text-stone-400 mb-1">My Context Block</label>
+          <textarea
+            id="settings-context"
+            rows="5"
+            placeholder="Paste your personal context here - who you are, what you sell, how you write. Tick the box below to prepend it to every prompt you copy."
+            class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-300 dark:border-stone-700 rounded-xl p-2.5 text-xs text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+          ></textarea>
+          <label class="flex items-center gap-2 mt-2 text-xs text-stone-600 dark:text-stone-400 font-bold cursor-pointer">
+            <input type="checkbox" id="settings-context-toggle" class="accent-amber-600">
+            Prepend my context when copying prompts
+          </label>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-black uppercase text-stone-600 dark:text-stone-400 mb-1">Backup &amp; Restore</label>
+          <p class="text-[11px] text-stone-500 dark:text-stone-400 mb-2">
+            Your saved prompts, pins and notes live only in this browser. Download a backup now and again and keep it somewhere safe.
+          </p>
+          <div class="flex gap-2">
+            <button type="button" onclick="exportCockpitData()" class="flex-1 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs">&#11015; Download Backup</button>
+            <button type="button" onclick="document.getElementById('import-data-file').click()" class="flex-1 px-3 py-2 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 text-stone-700 dark:text-stone-300 font-bold rounded-lg text-xs">&#11014; Restore Backup</button>
+            <input type="file" id="import-data-file" accept=".json,application/json" class="hidden" onchange="importCockpitData(event)">
+          </div>
+        </div>
+
         <div class="flex justify-end gap-2 pt-2">
           <button 
             type="button" 
@@ -1718,6 +2149,7 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
     <p>© 2026 Prompt Engineering Cockpit • Built for Claude</p>
     <p class="mt-1">Your personal library of prompts, skills, and writing tools.</p>
   </footer>
+  </div><!-- /content wrapper -->
 
   <script>
     // Comprehensive sheet corpus containing exactly 127 items (deduplicated)
@@ -2658,7 +3090,7 @@ Present all 4 deliverables clearly labelled with full content — no summaries, 
 
     window.onload = function() {
       // Apply saved dark mode preference
-      if (localStorage.getItem("theme") === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+      if (localStorage.getItem("theme") !== "light") {
         document.documentElement.classList.add("dark");
         document.getElementById("theme-toggle-btn").innerText = "☀️ Light Mode";
       } else {
@@ -2717,6 +3149,8 @@ Present all 4 deliverables clearly labelled with full content — no summaries, 
       if (statValEl) statValEl.innerText = skillsCount;
       const countLabelEl = document.getElementById("skills-count");
       if (countLabelEl) countLabelEl.innerText = skillsCount;
+      const sideCountEl = document.getElementById("side-skills-count");
+      if (sideCountEl) sideCountEl.innerText = skillsCount;
     }
 
     // Theme Management
@@ -2736,6 +3170,9 @@ Present all 4 deliverables clearly labelled with full content — no summaries, 
       document.getElementById("add-skill-form").reset();
     }
     function openSettingsModal() {
+      document.getElementById("settings-signoff").value = systemSignoff;
+      document.getElementById("settings-context").value = localStorage.getItem("user_context_block") || "";
+      document.getElementById("settings-context-toggle").checked = localStorage.getItem("context_prepend_enabled") === "1";
       document.getElementById("settings-modal").classList.remove("hidden");
     }
     function closeSettingsModal() {
@@ -2744,9 +3181,61 @@ Present all 4 deliverables clearly labelled with full content — no summaries, 
     function saveSettings() {
       systemSignoff = document.getElementById("settings-signoff").value.trim();
       localStorage.setItem("cotswold_signoff", systemSignoff);
+      localStorage.setItem("user_context_block", document.getElementById("settings-context").value.trim());
+      localStorage.setItem("context_prepend_enabled", document.getElementById("settings-context-toggle").checked ? "1" : "0");
       closeSettingsModal();
       generateArchitectPrompt();
       showToast("Configurations saved successfully!");
+    }
+
+    // ─── MY CONTEXT PREPEND ──────────────────────────────────────────────────
+    function getContextPrefix() {
+      if (localStorage.getItem("context_prepend_enabled") !== "1") return "";
+      const block = (localStorage.getItem("user_context_block") || "").trim();
+      return block ? block + "\n\n---\n\n" : "";
+    }
+
+    // ─── BACKUP & RESTORE ────────────────────────────────────────────────────
+    const BACKUP_KEYS = ["cotswold_signoff", "cotswold_custom_skills", "pinned_skills", "recent_skills", "skill_usage_counts", "user_custom_prompts", "user_context_block", "context_prepend_enabled", "theme"];
+    function exportCockpitData() {
+      const data = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (BACKUP_KEYS.includes(k) || k.startsWith("skill_note_")) data[k] = localStorage.getItem(k);
+      }
+      const payload = { app: "prompt-cockpit", exported: new Date().toISOString(), data: data };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "prompt-cockpit-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast("Backup downloaded — keep it somewhere safe!");
+    }
+    function importCockpitData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          const data = parsed.data || parsed;
+          let count = 0;
+          Object.keys(data).forEach(k => {
+            if (BACKUP_KEYS.includes(k) || k.startsWith("skill_note_")) {
+              localStorage.setItem(k, data[k]);
+              count++;
+            }
+          });
+          if (!count) { showToast("No cockpit data found in that file."); return; }
+          showToast("Restored " + count + " items — reloading...");
+          setTimeout(() => location.reload(), 900);
+        } catch (e) {
+          showToast("That file is not a valid cockpit backup.");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = "";
     }
 
     // ─── CUSTOM PROMPT TEMPLATES ─────────────────────────────────────────────────
@@ -3037,7 +3526,7 @@ Format as a clean update to the existing claude.md.`
 
     function copyCustomPromptById(id) {
       const p = getCustomPrompts().find(x => x.id === id);
-      if (p) copyToClipboard(p.text, '"' + p.title + '" copied!');
+      if (p) copyToClipboard(getContextPrefix() + p.text, '"' + p.title + '" copied!');
     }
 
     function renderCustomPrompts() {
@@ -3093,41 +3582,47 @@ Format as a clean update to the existing claude.md.`
     }
 
     // Tab switcher
+    const REFERENCE_TABS = ['claude-code', 'notebooklm', 'rules', 'quick-modes'];
     function switchTab(tabName) {
-      // Deactivate all tab controls
-      document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.classList.remove('bg-amber-700', 'bg-emerald-700', 'bg-indigo-700', 'bg-purple-700', 'bg-amber-800', 'bg-rose-700', 'bg-sky-700', 'bg-teal-700', 'text-white', 'shadow-sm');
-        btn.classList.add('text-stone-600', 'dark:text-stone-400', 'hover:bg-stone-50', 'dark:hover:bg-stone-800');
-      });
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('tab-active'));
+      document.querySelectorAll('.tab-content').forEach(section => section.classList.remove('active'));
 
-      // Deactivate contents
-      document.querySelectorAll('.tab-content').forEach(section => {
-        section.classList.remove('active');
-      });
-
-      // Activate selected tab styling
       const activeBtn = document.getElementById(`tab-btn-${tabName}`);
-      activeBtn.classList.remove('text-stone-600', 'dark:text-stone-400', 'hover:bg-stone-50', 'dark:hover:bg-stone-800');
-      
-      if (tabName === 'skills') activeBtn.classList.add('bg-amber-700', 'text-white', 'shadow-sm');
-      if (tabName === 'prompts') activeBtn.classList.add('bg-amber-700', 'text-white', 'shadow-sm');
-      if (tabName === 'templates') activeBtn.classList.add('bg-amber-700', 'text-white', 'shadow-sm');
-      if (tabName === 'verifier') activeBtn.classList.add('bg-emerald-700', 'text-white', 'shadow-sm');
-      if (tabName === 'quick-modes') activeBtn.classList.add('bg-indigo-700', 'text-white', 'shadow-sm');
-      if (tabName === 'architect') activeBtn.classList.add('bg-purple-700', 'text-white', 'shadow-sm');
-      if (tabName === 'rules') activeBtn.classList.add('bg-amber-800', 'text-white', 'shadow-sm');
-      if (tabName === 'claude-code') activeBtn.classList.add('bg-sky-700', 'text-white', 'shadow-sm');
-      if (tabName === 'notebooklm') { activeBtn.classList.add('bg-teal-700', 'text-white', 'shadow-sm'); initNotebookLM(); }
+      if (activeBtn) activeBtn.classList.add('tab-active');
+      const refBtn = document.getElementById('tab-btn-reference');
+      if (refBtn && REFERENCE_TABS.includes(tabName)) refBtn.classList.add('tab-active');
+      if (typeof closeReferenceMenu === 'function') closeReferenceMenu();
 
+      document.querySelectorAll('.side-nav-item').forEach(b => b.classList.toggle('side-active', b.dataset.tab === tabName));
+      const TAB_META = {
+        'skills': ['Skills Library', 'Browse and trigger 127 Claude skills'],
+        'prompts': ['Prompt Library', 'Battle-tested prompts with fill-in fields'],
+        'templates': ['My Templates', 'Interaction modes and your saved prompts'],
+        'architect': ['Prompt Architect', 'Assemble a system prompt from modules'],
+        'verifier': ['Audit Lab', 'Scan any text against your writing rules'],
+        'claude-code': ['Claude Code CLI', 'Terminal AI workflow guide'],
+        'notebooklm': ['NotebookLM Hub', 'Research and audio studio guide'],
+        'rules': ['Writing Rules', 'House style and writing constraints'],
+        'quick-modes': ['Quick Start Playbooks', 'Guided AI working sessions']
+      };
+      const titleEl = document.getElementById('desktop-page-title');
+      if (titleEl && TAB_META[tabName]) {
+        titleEl.textContent = TAB_META[tabName][0];
+        document.getElementById('desktop-page-sub').textContent = TAB_META[tabName][1];
+      }
+
+      if (tabName === 'notebooklm') initNotebookLM();
       document.getElementById(`tab-content-${tabName}`).classList.add('active');
     }
 
     function renderCategoryFilters(skills) {
       const categories = ["All"];
+      const catCounts = {};
       skills.forEach(s => {
         if (!categories.includes(s.category)) {
           categories.push(s.category);
         }
+        catCounts[s.category] = (catCounts[s.category] || 0) + 1;
       });
 
       const container = document.getElementById("category-filter-container");
@@ -3141,7 +3636,7 @@ Format as a clean update to the existing claude.md.`
             onclick="setCategoryFilter('${cat}')"
             class="px-3 py-1.5 rounded-full text-xs font-bold transition whitespace-nowrap ${activeStyles}"
           >
-            ${cat}
+            ${cat === "All" ? "All (" + skills.length + ")" : cat + " (" + (catCounts[cat] || 0) + ")"}
           </button>
         `;
       }).join("");
@@ -3183,6 +3678,7 @@ Format as a clean update to the existing claude.md.`
 
         const card = document.createElement("div");
         card.className = "bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 hover:border-amber-500 hover:shadow-md transition-all p-5 flex flex-col justify-between skill-card";
+        if (skill.id) card.id = "skill-card-" + skill.id;
 
         const keywordsArray = Array.isArray(skill.keywords) ? skill.keywords : [];
         const displayName = getDisplayName(skill);
@@ -3235,7 +3731,9 @@ Format as a clean update to the existing claude.md.`
 
     function renderBestPrompts() {
       // Setup dynamic filtering pills for prompts
-      const categories = ["All", "Research & Learning", "Business & Strategy", "Content & Marketing", "Writing & Communication", "Productivity & Growth", "Personal Development"];
+      const categories = ["All", ...new Set(BEST_PROMPTS_DATA.map(p => p.category))];
+      const promptCatCounts = {};
+      BEST_PROMPTS_DATA.forEach(p => { promptCatCounts[p.category] = (promptCatCounts[p.category] || 0) + 1; });
       const pillContainer = document.getElementById("prompts-category-pills");
       pillContainer.innerHTML = categories.map(cat => {
         const isActive = activePromptFilter === cat;
@@ -3247,7 +3745,7 @@ Format as a clean update to the existing claude.md.`
             onclick="setPromptFilter('${cat}')"
             class="px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${activeStyles}"
           >
-            ${cat}
+            ${cat === "All" ? "All (" + BEST_PROMPTS_DATA.length + ")" : cat + " (" + (promptCatCounts[cat] || 0) + ")"}
           </button>
         `;
       }).join("");
@@ -3342,7 +3840,7 @@ Format as a clean update to the existing claude.md.`
     function copyCompiledPrompt(promptId) {
       const previewBlock = document.getElementById(`prompt-preview-block-${promptId}`);
       if (previewBlock) {
-        copyToClipboard(previewBlock.innerText, "Compiled prompt copied to clipboard!");
+        copyToClipboard(getContextPrefix() + previewBlock.innerText, "Compiled prompt copied to clipboard!");
       }
     }
 
@@ -3414,7 +3912,7 @@ Format as a clean update to the existing claude.md.`
     function copyTemplatePrompt(modeId) {
       const previewBlock = document.getElementById(`template-preview-${modeId}`);
       if (previewBlock) {
-        copyToClipboard(previewBlock.innerText, "Template prompt copied to clipboard!");
+        copyToClipboard(getContextPrefix() + previewBlock.innerText, "Template prompt copied to clipboard!");
       }
     }
 
@@ -3448,6 +3946,9 @@ Format as a clean update to the existing claude.md.`
         }
       });
 
+      const skillsBadge = document.getElementById("skills-results-badge");
+      if (skillsBadge) skillsBadge.textContent = visibleSkills + " of " + skillCards.length;
+
       // 2. Filter Prompts
       const promptCards = document.querySelectorAll(".prompt-card-item");
       let visiblePrompts = 0;
@@ -3466,6 +3967,9 @@ Format as a clean update to the existing claude.md.`
           card.classList.add("hidden");
         }
       });
+
+      const promptsBadge = document.getElementById("prompts-results-badge");
+      if (promptsBadge) promptsBadge.textContent = visiblePrompts + " of " + promptCards.length;
 
       // 3. Filter My Prompt Templates Tab Items
       const templateCards = document.querySelectorAll(".template-card-item");
@@ -4518,6 +5022,245 @@ Format as a clean update to the existing claude.md.`
         </div>`;
     }
 
+  </script>
+
+  <!-- Command Palette -->
+  <div
+    id="command-palette"
+    class="hidden fixed inset-0 z-[60] bg-stone-950/60 backdrop-blur-sm flex items-start justify-center pt-[12vh] px-4"
+  >
+    <div class="w-full max-w-xl bg-white dark:bg-stone-900 rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-700 overflow-hidden">
+      <div class="flex items-center gap-2 px-4 border-b border-stone-100 dark:border-stone-800">
+        <svg class="h-4 w-4 text-stone-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input
+          id="palette-input"
+          type="text"
+          placeholder="Jump to any skill, prompt or template&hellip;"
+          autocomplete="off"
+          class="w-full py-3.5 bg-transparent text-sm text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none"
+        >
+        <kbd class="text-[10px] text-stone-400 border border-stone-200 dark:border-stone-700 rounded px-1.5 py-0.5 flex-shrink-0">Esc</kbd>
+      </div>
+      <div id="palette-results" class="max-h-80 overflow-y-auto p-2"></div>
+    </div>
+  </div>
+
+  <script>
+    // ─── REFERENCE DROPDOWN ────────────────────────────────────────────────
+    function toggleReferenceMenu(event) {
+      event.stopPropagation();
+      document.getElementById('reference-menu').classList.toggle('hidden');
+    }
+    function closeReferenceMenu() {
+      const m = document.getElementById('reference-menu');
+      if (m) m.classList.add('hidden');
+    }
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#reference-menu') && !e.target.closest('#tab-btn-reference')) closeReferenceMenu();
+    });
+
+    // ─── COPY BUTTON IN-PLACE FLASH ────────────────────────────────────────
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn || btn.dataset.copyFlashing) return;
+      if (!/copy/i.test(btn.textContent)) return;
+      const original = btn.innerHTML;
+      btn.dataset.copyFlashing = '1';
+      btn.classList.add('copied-flash');
+      btn.innerHTML = '&#10003; Copied';
+      setTimeout(() => {
+        btn.innerHTML = original;
+        btn.classList.remove('copied-flash');
+        delete btn.dataset.copyFlashing;
+      }, 1300);
+    });
+
+    // ─── COMMAND PALETTE ───────────────────────────────────────────────────
+    let paletteItems = [];
+    let paletteSelected = 0;
+
+    function buildPaletteIndex() {
+      const items = [];
+      const allSkills = [...SKILLS_DATA, ...(typeof customSkillsList !== 'undefined' ? customSkillsList : [])];
+      allSkills.forEach(s => items.push({
+        type: 'Skill',
+        icon: s.icon || '\u{1F6E0}',
+        title: (typeof getDisplayName === 'function' ? getDisplayName(s) : s.name) || s.name,
+        sub: s.category || '',
+        hay: ((s.name || '') + ' ' + (s.does || '') + ' ' + (s.when || '') + ' ' + (Array.isArray(s.keywords) ? s.keywords.join(' ') : '')).toLowerCase(),
+        go: () => {
+          setCategoryFilter('All');
+          const sb = document.getElementById('global-search-bar');
+          sb.value = '';
+          sb.dispatchEvent(new Event('input'));
+          switchTab('skills');
+          requestAnimationFrame(() => {
+            const el = document.getElementById('skill-card-' + s.id);
+            if (el) { el.scrollIntoView({ block: 'center' }); flashElement(el); }
+          });
+        }
+      }));
+      BEST_PROMPTS_DATA.forEach(p => items.push({
+        type: 'Prompt',
+        icon: '\u{1F525}',
+        title: p.title,
+        sub: p.category || '',
+        hay: (p.title + ' ' + (p.description || '') + ' ' + (p.category || '')).toLowerCase(),
+        go: () => {
+          setPromptFilter('All');
+          switchTab('prompts');
+          requestAnimationFrame(() => {
+            const block = document.getElementById('prompt-preview-block-' + p.id);
+            const card = block ? block.closest('.prompt-card-item') : null;
+            if (card) { card.scrollIntoView({ block: 'center' }); flashElement(card); }
+          });
+        }
+      }));
+      INTERACTION_TEMPLATES.forEach(t => items.push({
+        type: 'Template',
+        icon: '\u{1F4CB}',
+        title: t.title,
+        sub: t.tagline || '',
+        hay: (t.title + ' ' + (t.tagline || '') + ' ' + (t.template || '')).toLowerCase(),
+        go: () => {
+          switchTab('templates');
+          requestAnimationFrame(() => {
+            const block = document.getElementById('template-preview-' + t.id);
+            const card = block ? block.closest('.template-card-item') : null;
+            const target = card || block;
+            if (target) { target.scrollIntoView({ block: 'center' }); flashElement(target); }
+          });
+        }
+      }));
+      return items;
+    }
+
+    function flashElement(el) {
+      el.style.outline = '2px solid #d97706';
+      el.style.outlineOffset = '3px';
+      el.style.borderRadius = el.style.borderRadius || '16px';
+      setTimeout(() => { el.style.outline = ''; el.style.outlineOffset = ''; }, 1600);
+    }
+
+    function openCommandPalette() {
+      document.getElementById('command-palette').classList.remove('hidden');
+      const input = document.getElementById('palette-input');
+      input.value = '';
+      renderPaletteResults('');
+      setTimeout(() => input.focus(), 30);
+    }
+    function closeCommandPalette() {
+      document.getElementById('command-palette').classList.add('hidden');
+    }
+
+    function renderPaletteResults(query) {
+      const q = query.toLowerCase().trim();
+      const index = buildPaletteIndex();
+      let matches;
+      if (!q) {
+        matches = index.slice(0, 8);
+      } else {
+        matches = index
+          .map(item => {
+            let score = -1;
+            const t = item.title.toLowerCase();
+            if (t.startsWith(q)) score = 3;
+            else if (t.includes(q)) score = 2;
+            else if (item.hay.includes(q)) score = 1;
+            return { item, score };
+          })
+          .filter(x => x.score > 0)
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 8)
+          .map(x => x.item);
+      }
+      paletteItems = matches;
+      paletteSelected = 0;
+      const box = document.getElementById('palette-results');
+      if (!matches.length) {
+        box.innerHTML = '<div class="px-4 py-6 text-center text-sm text-stone-400">No matches &mdash; try a different word</div>';
+        return;
+      }
+      box.innerHTML = matches.map((m, i) => `
+        <div class="palette-row ${i === 0 ? 'selected' : ''}" data-palette-idx="${i}">
+          <span class="text-lg flex-shrink-0">${m.icon}</span>
+          <div class="min-w-0 flex-1">
+            <div class="text-sm font-semibold text-stone-900 dark:text-white truncate">${m.title}</div>
+            <div class="text-[11px] text-stone-400 truncate">${m.sub}</div>
+          </div>
+          <span class="text-[10px] font-bold uppercase tracking-wide text-stone-400 bg-stone-100 dark:bg-stone-800 px-1.5 py-0.5 rounded flex-shrink-0">${m.type}</span>
+        </div>`).join('');
+      box.querySelectorAll('.palette-row').forEach(row => {
+        row.addEventListener('click', () => executePaletteItem(parseInt(row.dataset.paletteIdx, 10)));
+        row.addEventListener('mousemove', () => setPaletteSelection(parseInt(row.dataset.paletteIdx, 10)));
+      });
+    }
+
+    function setPaletteSelection(i) {
+      paletteSelected = i;
+      document.querySelectorAll('.palette-row').forEach((row, idx) => row.classList.toggle('selected', idx === i));
+    }
+
+    function executePaletteItem(i) {
+      const item = paletteItems[i];
+      if (!item) return;
+      closeCommandPalette();
+      item.go();
+    }
+
+    document.getElementById('palette-input').addEventListener('input', (e) => renderPaletteResults(e.target.value));
+    document.getElementById('command-palette').addEventListener('click', (e) => {
+      if (e.target.id === 'command-palette') closeCommandPalette();
+    });
+
+    // ─── KEYBOARD SHORTCUTS ────────────────────────────────────────────────
+    document.addEventListener('keydown', (e) => {
+      const paletteOpen = !document.getElementById('command-palette').classList.contains('hidden');
+
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        paletteOpen ? closeCommandPalette() : openCommandPalette();
+        return;
+      }
+      if (paletteOpen) {
+        if (e.key === 'Escape') { closeCommandPalette(); }
+        else if (e.key === 'ArrowDown') { e.preventDefault(); setPaletteSelection(Math.min(paletteSelected + 1, paletteItems.length - 1)); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); setPaletteSelection(Math.max(paletteSelected - 1, 0)); }
+        else if (e.key === 'Enter') { e.preventDefault(); executePaletteItem(paletteSelected); }
+        return;
+      }
+      if (e.key === 'Escape') { closeReferenceMenu(); return; }
+      const tag = (e.target.tagName || '').toLowerCase();
+      if (e.key === '/' && tag !== 'input' && tag !== 'textarea' && !e.target.isContentEditable) {
+        e.preventDefault();
+        const sb = document.getElementById('global-search-bar');
+        sb.focus();
+        sb.scrollIntoView({ block: 'center' });
+      }
+    });
+  </script>
+
+  <script>
+    // Cursor-tracking glow position on glass cards
+    document.addEventListener('pointermove', (e) => {
+      const card = e.target.closest('.skill-card, .prompt-card-item, .template-card-item');
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    }, { passive: true });
+
+    // Collapsible dock with persistence
+    function toggleDock() {
+      const a = document.querySelector('aside');
+      a.classList.toggle('dock-collapsed');
+      localStorage.setItem('dock_collapsed', a.classList.contains('dock-collapsed') ? '1' : '0');
+    }
+    if (localStorage.getItem('dock_collapsed') === '1') {
+      document.querySelector('aside').classList.add('dock-collapsed');
+    }
   </script>
 </body>
 </html>
