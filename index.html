@@ -2286,6 +2286,272 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
     // 30 best prompts
     const BEST_PROMPTS_DATA = [
       {
+        id: "prompt-improver",
+        category: "Prompt Engineering",
+        title: "The Prompt Improver",
+        description: "Upgrade any weak prompt into one that works reliably, even on free AI models.",
+        fields: [ { "key": "current_prompt", "label": "Your current prompt", "placeholder": "paste the prompt you want to improve" } ],
+        template: `Act as a prompt engineer who specialises in making prompts work reliably on free and lower-powered AI models. Upgrade the prompt below.
+
+Apply whichever of these it is missing:
+1. A clear role, and the specific audience the output is for.
+2. A short example of what good output looks like (the single biggest reliability fix).
+3. Hard constraints instead of vague asks: word counts, banned words, required structure.
+4. An instruction to ask me up to 3 questions before writing if anything is unclear.
+5. A final self-check step where the model verifies its output against the rules.
+6. Clearly marked [PLACEHOLDERS] for the parts I change each time.
+
+Return the upgraded prompt in a code block, then 3 lines on what you changed and why it will behave better.
+
+MY PROMPT:
+{{current_prompt}}`
+      },
+      {
+        id: "prompt-debugger",
+        category: "Prompt Engineering",
+        title: "The Prompt Debugger",
+        description: "Find out why a prompt underperformed and get the minimal and robust fixes.",
+        fields: [
+          { "key": "my_prompt", "label": "The prompt you used", "placeholder": "paste it" },
+          { "key": "what_i_got", "label": "What you got", "placeholder": "the disappointing part" },
+          { "key": "what_i_wanted", "label": "What you wanted", "placeholder": "describe the result you were after" }
+        ],
+        template: `A prompt did not give me what I wanted. Diagnose it like an engineer instead of just rewriting it.
+
+MY PROMPT: {{my_prompt}}
+WHAT I GOT (the disappointing part): {{what_i_got}}
+WHAT I ACTUALLY WANTED: {{what_i_wanted}}
+
+Give me:
+1. Root cause in one sentence: which words in my prompt caused the bad behaviour.
+2. The minimal fix: the smallest change that solves it.
+3. The robust fix: a rewritten prompt that also prevents the next likely failure.
+4. One thing I clearly wanted but never actually asked for.`
+      },
+      {
+        id: "prompt-interviewer",
+        category: "Prompt Engineering",
+        title: "The Prompt Interviewer",
+        description: "The AI interviews you, then writes the perfect reusable prompt for your goal.",
+        fields: [ { "key": "goal", "label": "What you want the prompt to do", "placeholder": "e.g. turn messy notes into a tidy weekly summary" } ],
+        template: `I want to end up with a reusable prompt for this goal: {{goal}}
+
+Interview me to build it. Ask ONE question at a time, up to 6 questions, covering: who the output is for, what good looks like, what bad looks like, the format I need, and what changes each time I use it. Show me a wrong example early so I can react to it.
+
+Then write the final reusable prompt in a code block with [PLACEHOLDERS] for the changeable parts, following: role, context, task, hard rules, example, self-check.`
+      },
+      {
+        id: "sales-cold-email",
+        category: "Sales",
+        title: "Cold Outreach Email",
+        description: "A them-first cold email built on a real observation, with three subject lines.",
+        fields: [
+          { "key": "recipient", "label": "Who it is to", "placeholder": "name and/or role" },
+          { "key": "company", "label": "Company + what they do", "placeholder": "e.g. a homeware distributor" },
+          { "key": "hook", "label": "Your angle / what you noticed", "placeholder": "the specific reason you are reaching out" }
+        ],
+        template: `Write a cold email to {{recipient}} at {{company}}.
+
+My angle / what I noticed: {{hook}}
+
+Rules:
+- Under 100 words, 3 short paragraphs.
+- The first line is about THEM, not me. No "I hope this email finds you well."
+- One concrete benefit or number, not vague claims.
+- End with a low-pressure ask, not a hard sell.
+
+Check the email against every rule and fix anything that fails. Then give me 3 subject lines: one plain, one curiosity-based, one direct.`
+      },
+      {
+        id: "sales-follow-up",
+        category: "Sales",
+        title: "Follow-Up After Silence",
+        description: "A no-reply nudge that adds real value instead of an empty check-in.",
+        fields: [
+          { "key": "contact", "label": "Who it is to", "placeholder": "name" },
+          { "key": "context", "label": "What has happened so far", "placeholder": "e.g. met last month, sent samples, no reply" },
+          { "key": "new_value", "label": "New value to add", "placeholder": "a result, price break, or useful update" }
+        ],
+        template: `Write a follow-up email to {{contact}}. What has happened so far: {{context}}
+
+Add ONE new piece of value they did not have before: {{new_value}}. If that is blank, ask me for one before writing, do not send an empty "just checking in".
+
+Rules: under 70 words, never apologise for following up, give them an easy way to say no. Give me a warm version and a shorter direct version.`
+      },
+      {
+        id: "sales-objection",
+        category: "Sales",
+        title: "Objection Handler",
+        description: "Decode what they really mean and get a spoken reply, a reopening question, and the trap to avoid.",
+        fields: [
+          { "key": "product", "label": "What you sell", "placeholder": "e.g. eco packaging, coaching, software" },
+          { "key": "objection", "label": "Their exact words", "placeholder": "e.g. it is too expensive" }
+        ],
+        template: `I sell {{product}}. A prospect said: "{{objection}}"
+
+Give me:
+1. What they are really saying underneath (one line).
+2. A spoken reply for face to face: under 40 words, acknowledges their point first, no scripted-sounding lines.
+3. The one question that reopens the conversation instead of winning the argument.
+4. A short email version if I have already left.
+5. The trap: how salespeople usually mishandle this exact objection.`
+      },
+      {
+        id: "sales-discovery",
+        category: "Sales",
+        title: "Discovery Call Questions",
+        description: "Eight ordered questions that uncover whether a deal is real, ending on the money question.",
+        fields: [
+          { "key": "prospect", "label": "Who you are meeting", "placeholder": "role and company type" },
+          { "key": "product", "label": "What you are selling", "placeholder": "your product or service" }
+        ],
+        template: `I have a discovery call with {{prospect}} about {{product}}.
+
+Give me 8 questions to ask, ordered from easy to the hard money question. For each, add one line on what I am really trying to learn. Avoid questions that can be answered yes or no. End with the single question most likely to reveal whether this is a real opportunity or a waste of time.`
+      },
+      {
+        id: "garden-what-to-plant",
+        category: "Gardening",
+        title: "What To Plant Now",
+        description: "What to sow or plant this month for your climate and space, plus what to skip.",
+        fields: [
+          { "key": "location", "label": "Where you garden", "placeholder": "e.g. south-west UK" },
+          { "key": "month", "label": "Month", "placeholder": "e.g. July" },
+          { "key": "space", "label": "Your growing space", "placeholder": "e.g. raised beds, pots, allotment" }
+        ],
+        template: `I garden in {{location}} and it is {{month}}. My growing space: {{space}}.
+
+Tell me what to plant or sow right now. Give me:
+- 5 things to sow or plant this month, each with one line on why now.
+- 2 things it is too late or too early for, so I do not waste seed.
+- One job to do this month that is not planting (feeding, pruning, protecting).
+
+Keep it practical for my space and climate. If my location or space is unclear, ask before answering.`
+      },
+      {
+        id: "garden-diagnose",
+        category: "Gardening",
+        title: "Diagnose My Plant",
+        description: "Likely causes ranked, what to do this week, and when a plant is not worth saving.",
+        fields: [
+          { "key": "plant", "label": "The plant", "placeholder": "e.g. tomato, rose, lawn" },
+          { "key": "symptoms", "label": "What you are seeing", "placeholder": "yellow leaves, spots, wilting..." }
+        ],
+        template: `My {{plant}} has a problem. Symptoms: {{symptoms}}
+
+Act as an experienced gardener. Give me:
+1. The 3 most likely causes, most likely first, each with the tell-tale sign to check.
+2. For the top cause, exactly what to do this week.
+3. What to stop doing (over or under watering, feeding, position).
+4. When to expect improvement, and the point at which the plant is not worth saving.
+
+Do not guess wildly. If a symptom is missing that you need, ask me for it.`
+      },
+      {
+        id: "garden-planner",
+        category: "Gardening",
+        title: "Plan My Growing Space",
+        description: "A layout and season-by-season plan tailored to your space and goals.",
+        fields: [
+          { "key": "space", "label": "Your space", "placeholder": "size, sun, containers or beds" },
+          { "key": "goals", "label": "What you want from it", "placeholder": "e.g. salad all summer, cut flowers, low effort" }
+        ],
+        template: `Help me plan my growing space. Space: {{space}}. What I want from it: {{goals}}
+
+Give me:
+- A simple layout suggestion (what goes where and why: sun, height, access).
+- A short season-by-season plan of what to grow.
+- 3 beginner-friendly, high-reward crops for my goals.
+- One common mistake for a space like mine to avoid.
+
+Keep it realistic for someone who is not a full-time gardener.`
+      },
+      {
+        id: "garden-pest",
+        category: "Gardening",
+        title: "Pest & Problem Solver",
+        description: "Identify what is attacking a plant and fix it gently first, stronger only if needed.",
+        fields: [
+          { "key": "plant", "label": "The plant", "placeholder": "e.g. beans, apple tree" },
+          { "key": "problem", "label": "What you are seeing", "placeholder": "holes, sticky leaves, insects..." }
+        ],
+        template: `Something is attacking my {{plant}}. What I am seeing: {{problem}}
+
+Give me:
+1. The most likely culprit and how to confirm it.
+2. The gentlest fix first (physical or organic), then stronger options only if needed.
+3. How to stop it coming back.
+4. What NOT to do: common overreactions that harm the plant or helpful insects.`
+      },
+      {
+        id: "life-meal-plan",
+        category: "Life Admin",
+        title: "Meal Plan From What I Have",
+        description: "Turn the ingredients you already have into a few days of simple meals plus a short list.",
+        fields: [
+          { "key": "ingredients", "label": "What you have", "placeholder": "list what is in the fridge and cupboard" },
+          { "key": "days", "label": "How many days", "placeholder": "e.g. 3" },
+          { "key": "constraints", "label": "Anything to work around", "placeholder": "diet, dislikes, time" }
+        ],
+        template: `Plan meals from what I already have. Ingredients: {{ingredients}}. Number of days: {{days}}. Anything to work around: {{constraints}}
+
+Give me:
+- A meal per day using mostly what I have, flagging the few extra items I would need.
+- A short shopping list for only those extras.
+- One "use it up" tip for anything likely to go off first.
+
+Keep recipes simple: assume 20 to 30 minutes, not cheffy.`
+      },
+      {
+        id: "life-difficult-message",
+        category: "Life Admin",
+        title: "Difficult Message Drafter",
+        description: "Say the hard thing clearly and kindly, in a warmer and a firmer version.",
+        fields: [
+          { "key": "situation", "label": "The situation", "placeholder": "what the message is about" },
+          { "key": "recipient", "label": "Who it is to", "placeholder": "e.g. a landlord, a friend, a colleague" },
+          { "key": "tone", "label": "Tone you want", "placeholder": "e.g. kind but firm" }
+        ],
+        template: `Help me write a message I am finding hard to send. Situation: {{situation}}. Who it is to: {{recipient}}. Tone I want: {{tone}}
+
+Rules: say the difficult thing clearly and kindly, do not bury it in padding, no passive-aggression, keep it short.
+
+Give me two versions, one warmer and one firmer, and one line on when to use each. Ask me a question first if a key detail is missing.`
+      },
+      {
+        id: "life-decision",
+        category: "Life Admin",
+        title: "Decision Helper",
+        description: "Think a choice through properly instead of being told what to do.",
+        fields: [
+          { "key": "decision", "label": "The decision", "placeholder": "what you are trying to decide" },
+          { "key": "options", "label": "Options you are weighing", "placeholder": "list them" }
+        ],
+        template: `Help me think through a decision, do not just tell me what to do. Decision: {{decision}}. Options I am weighing: {{options}}
+
+Give me:
+1. The real question under this decision (often not the one I stated).
+2. For each option: the honest upside, the honest cost, and who or what it affects.
+3. The one piece of information that would make this clearer, that I do not have yet.
+4. A gentle recommendation, clearly marked as your opinion, with the reasoning.`
+      },
+      {
+        id: "life-todo",
+        category: "Life Admin",
+        title: "Declutter My To-Do List",
+        description: "Cut a messy list down to what matters today and unstick what you are avoiding.",
+        fields: [ { "key": "tasks", "label": "Your messy to-do list", "placeholder": "paste everything on your mind" } ],
+        template: `Here is my messy to-do list: {{tasks}}
+
+Sort it out for me:
+- The 3 that actually matter today, and why.
+- What can wait until next week without consequence.
+- Anything that can be deleted, delegated, or done in under 2 minutes right now.
+- One thing on here I am probably avoiding, and the first small step to unstick it.
+
+Be direct. Do not just reformat the list, cut it down.`
+      },
+      {
         id: "god-mode-research",
         category: "Research & Learning",
         title: "1. The God Mode Research Prompt",
