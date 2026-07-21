@@ -1882,6 +1882,7 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
           <button onclick="switchNBSection('studio')" id="nb-tab-studio" class="px-4 py-2 text-xs font-black rounded-xl bg-teal-600 text-white transition">🎬 Studio Prompts</button>
           <button onclick="switchNBSection('chat')" id="nb-tab-chat" class="px-4 py-2 text-xs font-black rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition">💬 Chat Prompts</button>
           <button onclick="switchNBSection('styles')" id="nb-tab-styles" class="px-4 py-2 text-xs font-black rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition">🎨 Style Guide</button>
+          <button onclick="switchNBSection('mine')" id="nb-tab-mine" class="px-4 py-2 text-xs font-black rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition">⭐ My Prompts</button>
         </div>
 
         <!-- Studio section -->
@@ -1903,6 +1904,20 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
         <!-- Style Guide section -->
         <div id="nb-content-styles" class="hidden">
           <div id="nb-styles-body"></div>
+        </div>
+
+        <!-- My Prompts section -->
+        <div id="nb-content-mine" class="hidden">
+          <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
+            <div class="bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800 rounded-xl p-3 text-[11px] text-teal-800 dark:text-teal-300 flex-1 min-w-[200px]">
+              💡 <strong>Found a great NotebookLM prompt?</strong> Save it here so it is one search away next time. Stored in this browser — back it up from Settings.
+            </div>
+            <button onclick="openAddNBPromptModal()" class="flex-shrink-0 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl text-sm flex items-center gap-2 transition shadow-sm whitespace-nowrap self-start">➕ Add NotebookLM Prompt</button>
+          </div>
+          <div id="nb-mine-empty" class="hidden text-center py-12 text-stone-400 dark:text-stone-500 text-sm">
+            No saved NotebookLM prompts yet. Click <strong>Add NotebookLM Prompt</strong> to save your first.
+          </div>
+          <div id="nb-mine-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </div>
 
       </div>
@@ -1973,6 +1988,41 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
         <div class="flex gap-3 pt-1">
           <button type="submit" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl text-sm transition">💾 Save Prompt</button>
           <button type="button" onclick="closeAddPromptModal()" class="px-5 py-2.5 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 font-bold rounded-xl text-sm transition">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add NotebookLM Prompt Modal -->
+  <div id="add-nb-prompt-modal" class="hidden fixed inset-0 z-50 bg-stone-950/70 flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white dark:bg-stone-900 rounded-2xl max-w-lg w-full p-6 border border-stone-200 dark:border-stone-800 shadow-2xl relative">
+      <button onclick="closeAddNBPromptModal()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition text-lg font-bold leading-none">✕</button>
+      <h3 class="text-lg font-extrabold text-stone-900 dark:text-white mb-1 flex items-center gap-2">⭐ Add NotebookLM Prompt</h3>
+      <p class="text-stone-500 dark:text-stone-400 text-xs mb-4">Save a NotebookLM prompt you have found. It appears under My Prompts and is searchable from Quick Find.</p>
+      <form id="add-nb-prompt-form" onsubmit="saveNBPrompt(event)" class="space-y-4">
+        <div>
+          <label class="block text-[10px] font-black uppercase text-stone-600 dark:text-stone-400 mb-1">Name <span class="text-teal-500">*</span></label>
+          <input type="text" required id="new-nb-name" placeholder="e.g. Timeline infographic style" class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-300 dark:border-stone-700 rounded-xl p-2 text-xs text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500">
+        </div>
+        <div>
+          <label class="block text-[10px] font-black uppercase text-stone-600 dark:text-stone-400 mb-1">Where it goes</label>
+          <select id="new-nb-where" class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-300 dark:border-stone-700 rounded-xl p-2 text-xs text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <option value="Studio">Studio panel (Infographic, Audio, Briefing, Study Guide)</option>
+            <option value="Chat">Chat box</option>
+            <option value="Either">Either</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[10px] font-black uppercase text-stone-600 dark:text-stone-400 mb-1">Prompt text <span class="text-teal-500">*</span></label>
+          <textarea required id="new-nb-text" rows="5" placeholder="Paste the full prompt here..." class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-300 dark:border-stone-700 rounded-xl p-2 text-xs text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500 resize-y"></textarea>
+        </div>
+        <div>
+          <label class="block text-[10px] font-black uppercase text-stone-600 dark:text-stone-400 mb-1">Tag <span class="text-stone-400 font-normal normal-case">(optional — e.g. Sales, Wisdom Bytes, Learning)</span></label>
+          <input type="text" id="new-nb-tag" placeholder="e.g. Wisdom Bytes" class="w-full bg-stone-50 dark:bg-stone-950 border border-stone-300 dark:border-stone-700 rounded-xl p-2 text-xs text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500">
+        </div>
+        <div class="flex gap-3 pt-1">
+          <button type="submit" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl text-sm transition">💾 Save Prompt</button>
+          <button type="button" onclick="closeAddNBPromptModal()" class="px-5 py-2.5 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 font-bold rounded-xl text-sm transition">Cancel</button>
         </div>
       </form>
     </div>
@@ -3474,7 +3524,7 @@ Present all 4 deliverables clearly labelled with full content — no summaries, 
     }
 
     // ─── BACKUP & RESTORE ────────────────────────────────────────────────────
-    const BACKUP_KEYS = ["cotswold_signoff", "cotswold_custom_skills", "pinned_skills", "recent_skills", "skill_usage_counts", "user_custom_prompts", "user_context_block", "context_prepend_enabled", "theme"];
+    const BACKUP_KEYS = ["cotswold_signoff", "cotswold_custom_skills", "pinned_skills", "recent_skills", "skill_usage_counts", "user_custom_prompts", "user_nb_prompts", "user_context_block", "context_prepend_enabled", "theme"];
     function exportCockpitData() {
       const data = {};
       for (let i = 0; i < localStorage.length; i++) {
@@ -5090,7 +5140,7 @@ Format as a clean update to the existing claude.md.`
 
     function switchNBSection(section) {
       activeNBSection = section;
-      ['studio', 'chat', 'styles'].forEach(s => {
+      ['studio', 'chat', 'styles', 'mine'].forEach(s => {
         const btn = document.getElementById('nb-tab-' + s);
         const content = document.getElementById('nb-content-' + s);
         if (btn) btn.className = s === section
@@ -5099,6 +5149,69 @@ Format as a clean update to the existing claude.md.`
         if (content) content.classList.toggle('hidden', s !== section);
       });
       if (section === 'styles') renderNBStylesSection();
+      if (section === 'mine') renderNBMinePrompts();
+    }
+
+    // ─── MY NOTEBOOKLM PROMPTS ───────────────────────────────────────────────
+    function getNBPrompts() { return JSON.parse(localStorage.getItem('user_nb_prompts') || '[]'); }
+    function _saveNBPrompts(list) { localStorage.setItem('user_nb_prompts', JSON.stringify(list)); }
+    function openAddNBPromptModal() {
+      document.getElementById('add-nb-prompt-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('new-nb-name').focus(), 50);
+    }
+    function closeAddNBPromptModal() {
+      document.getElementById('add-nb-prompt-modal').classList.add('hidden');
+      document.getElementById('add-nb-prompt-form').reset();
+    }
+    function saveNBPrompt(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-nb-name').value.trim();
+      const text = document.getElementById('new-nb-text').value.trim();
+      if (!name || !text) return;
+      const item = {
+        id: 'nb_' + Date.now(),
+        name,
+        where: document.getElementById('new-nb-where').value,
+        tag: document.getElementById('new-nb-tag').value.trim(),
+        text,
+        dateAdded: Date.now()
+      };
+      const list = getNBPrompts();
+      list.unshift(item);
+      _saveNBPrompts(list);
+      closeAddNBPromptModal();
+      renderNBMinePrompts();
+      showToast('"' + item.name + '" saved to My Prompts!');
+    }
+    function deleteNBPrompt(id) {
+      if (!confirm('Remove this saved prompt?')) return;
+      _saveNBPrompts(getNBPrompts().filter(p => p.id !== id));
+      renderNBMinePrompts();
+      showToast('Prompt removed.');
+    }
+    function copyNBMinePrompt(id) {
+      const p = getNBPrompts().find(x => x.id === id);
+      if (p) copyToClipboard(p.text, '"' + p.name + '" copied.');
+    }
+    function renderNBMinePrompts() {
+      const grid = document.getElementById('nb-mine-grid');
+      const empty = document.getElementById('nb-mine-empty');
+      if (!grid) return;
+      const list = getNBPrompts();
+      if (empty) empty.classList.toggle('hidden', list.length > 0);
+      grid.innerHTML = list.map(p => `
+        <div class="bg-white dark:bg-stone-950 rounded-2xl border border-stone-200 dark:border-stone-800 p-4 flex flex-col gap-3 hover:border-teal-400 dark:hover:border-teal-600 transition-all">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h4 class="font-black text-stone-900 dark:text-white text-sm leading-tight">${escHtml(p.name)}</h4>
+              <span class="text-[9px] bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300 px-1.5 py-0.5 rounded font-black uppercase tracking-wide whitespace-nowrap">${escHtml(p.where || 'Either')}</span>
+              ${p.tag ? `<span class="text-[9px] bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 px-1.5 py-0.5 rounded font-bold uppercase tracking-wide">${escHtml(p.tag)}</span>` : ''}
+            </div>
+            <button onclick="deleteNBPrompt('${p.id}')" title="Remove" class="flex-shrink-0 text-stone-300 dark:text-stone-700 hover:text-red-500 dark:hover:text-red-400 transition text-sm font-bold">✕</button>
+          </div>
+          <div class="bg-stone-50 dark:bg-stone-900 rounded-xl p-3 border border-stone-100 dark:border-stone-800 text-[11px] font-mono text-stone-700 dark:text-stone-300 leading-relaxed max-h-28 overflow-y-auto whitespace-pre-wrap">${escHtml(p.text)}</div>
+          <button onclick="copyNBMinePrompt('${p.id}')" class="w-full bg-teal-50 dark:bg-teal-950/40 hover:bg-teal-100 dark:hover:bg-teal-900/50 text-teal-700 dark:text-teal-300 text-xs py-2 rounded-xl font-bold transition flex items-center justify-center gap-1.5 border border-teal-200 dark:border-teal-800">📋 Copy Prompt</button>
+        </div>`).join('');
     }
 
     function renderNBStudioFilters() {
@@ -5411,6 +5524,42 @@ Format as a clean update to the existing claude.md.`
             if (target) { target.scrollIntoView({ block: 'center' }); flashElement(target); }
           });
         }
+      }));
+      // User's saved prompts (Templates tab)
+      (typeof getCustomPrompts === 'function' ? getCustomPrompts() : []).forEach(p => items.push({
+        type: 'My Prompt',
+        icon: p.emoji || '\u{1F4DD}',
+        title: p.title,
+        sub: 'Saved prompt' + (p.tag ? ' \u00B7 ' + p.tag : ''),
+        hay: (p.title + ' ' + (p.description || '') + ' ' + (p.tag || '') + ' ' + (p.text || '')).toLowerCase(),
+        go: () => { switchTab('templates'); requestAnimationFrame(() => { const s = document.getElementById('saved-prompts-section'); if (s) { s.scrollIntoView({ block: 'start' }); flashElement(s); } }); }
+      }));
+      // NotebookLM built-in Studio prompts
+      (typeof NB_STUDIO_DATA !== 'undefined' ? NB_STUDIO_DATA : []).forEach(t => (t.sections || []).forEach(sec => (sec.items || []).forEach(item => items.push({
+        type: 'NotebookLM',
+        icon: t.icon || '\u{1F4D3}',
+        title: item.name,
+        sub: 'NotebookLM \u00B7 ' + t.label + ' \u00B7 ' + sec.title,
+        hay: (item.name + ' ' + item.text + ' ' + t.label + ' ' + sec.title).toLowerCase(),
+        go: (() => { const tid = t.id; return () => { switchTab('notebooklm'); initNotebookLM(); switchNBSection('studio'); setNBStudioType(tid); requestAnimationFrame(() => { const c = document.getElementById('nb-studio-cards'); if (c) { c.scrollIntoView({ block: 'start' }); } }); }; })()
+      }))));
+      // NotebookLM built-in Chat prompts
+      (typeof NB_CHAT_DATA !== 'undefined' ? NB_CHAT_DATA : []).forEach(cat => (cat.items || []).forEach(item => items.push({
+        type: 'NotebookLM',
+        icon: '\u{1F4AC}',
+        title: item.name,
+        sub: 'NotebookLM \u00B7 Chat \u00B7 ' + cat.label,
+        hay: (item.name + ' ' + item.text + ' ' + cat.label).toLowerCase(),
+        go: (() => { const cid = cat.id; return () => { switchTab('notebooklm'); initNotebookLM(); switchNBSection('chat'); setNBChatCat(cid); requestAnimationFrame(() => { const c = document.getElementById('nb-chat-cards'); if (c) { c.scrollIntoView({ block: 'start' }); } }); }; })()
+      })));
+      // User's saved NotebookLM prompts
+      (typeof getNBPrompts === 'function' ? getNBPrompts() : []).forEach(p => items.push({
+        type: 'NotebookLM',
+        icon: '\u2B50',
+        title: p.name,
+        sub: 'NotebookLM \u00B7 My Prompts' + (p.tag ? ' \u00B7 ' + p.tag : ''),
+        hay: (p.name + ' ' + p.text + ' ' + (p.tag || '')).toLowerCase(),
+        go: () => { switchTab('notebooklm'); initNotebookLM(); switchNBSection('mine'); requestAnimationFrame(() => { const c = document.getElementById('nb-mine-grid'); if (c) { c.scrollIntoView({ block: 'start' }); flashElement(c); } }); }
       }));
       return items;
     }
