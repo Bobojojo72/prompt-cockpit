@@ -439,6 +439,14 @@
           <span class="guide-tile bg-rose-500/15">&#128203;</span>
           <span class="flex-1">My Templates</span>
         </button>
+        <button class="side-nav-item" data-tab="wisdombytes" onclick="switchTab('wisdombytes')">
+          <span class="guide-tile bg-fuchsia-500/20 text-fuchsia-300">&#127916;</span>
+          <span class="flex-1">
+            <span class="block">Wisdom Bytes</span>
+            <span class="block text-[10px] font-medium text-stone-500">Channel studio &amp; 90-day plan</span>
+          </span>
+          <span class="text-[10px] font-bold text-stone-500 bg-stone-800 rounded-full px-2 py-0.5">30</span>
+        </button>
       </div>
 
       <div>
@@ -611,6 +619,13 @@
           class="tab-button whitespace-nowrap px-4 py-2 font-semibold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5"
         >
           &#9989; Audit Lab
+        </button>
+        <button
+          onclick="switchTab('wisdombytes')"
+          id="tab-btn-wisdombytes"
+          class="tab-button whitespace-nowrap px-4 py-2 font-semibold text-sm rounded-xl transition-all text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5"
+        >
+          &#127916; Wisdom Bytes
         </button>
 
         <span class="self-center flex-shrink-0 w-px h-6 bg-stone-200 dark:bg-stone-700 mx-1" aria-hidden="true"></span>
@@ -1922,6 +1937,29 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
           </div>
           <div id="nb-mine-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </div>
+
+      </div>
+    </section>
+
+    <!-- TAB: WISDOM BYTES STUDIO -->
+    <section id="tab-content-wisdombytes" class="tab-content">
+      <div class="max-w-5xl mx-auto">
+
+        <div class="mb-5">
+          <h2 class="text-2xl font-black text-stone-900 dark:text-white mb-1">🎬 Wisdom Bytes Studio</h2>
+          <p class="text-stone-500 dark:text-stone-400 text-sm">Everything needed to get episodes filmed and published. Replace <code class="text-fuchsia-600 dark:text-fuchsia-400 bg-fuchsia-50 dark:bg-fuchsia-950/40 px-1.5 rounded text-[11px] font-mono">[BRACKETS]</code> with your specifics before sending.</p>
+        </div>
+
+        <div class="bg-gradient-to-r from-fuchsia-950 via-purple-950 to-stone-950 rounded-2xl p-4 mb-6 border border-fuchsia-800/50 flex flex-col sm:flex-row sm:items-center gap-3">
+          <span class="text-2xl flex-shrink-0">🚀</span>
+          <div class="flex-1 min-w-0">
+            <p class="text-fuchsia-200 text-xs font-black uppercase tracking-wider mb-0.5">90-Day Challenge · Goal: first 10 videos live</p>
+            <p class="text-fuchsia-100/70 text-[11px] leading-relaxed">Batch 1 scripts are already written. The blockers are the filming setup and picking locations, so start in <strong class="text-fuchsia-200">Filming &amp; Setup</strong>, get one test clip you're happy with, then everything else follows.</p>
+          </div>
+        </div>
+
+        <div id="wb-subnav" class="flex gap-2 mb-6 pb-4 border-b border-stone-200 dark:border-stone-800 flex-wrap"></div>
+        <div id="wb-cards"></div>
 
       </div>
     </section>
@@ -3934,7 +3972,8 @@ Format as a clean update to the existing claude.md.`
         'claude-code': ['Claude Code CLI', 'Terminal AI workflow guide'],
         'notebooklm': ['NotebookLM Hub', 'Research and audio studio guide'],
         'rules': ['Writing Rules', 'House style and writing constraints'],
-        'quick-modes': ['Quick Start Playbooks', 'Guided AI working sessions']
+        'quick-modes': ['Quick Start Playbooks', 'Guided AI working sessions'],
+        'wisdombytes': ['Wisdom Bytes Studio', 'Film, script and publish the channel']
       };
       const titleEl = document.getElementById('desktop-page-title');
       if (titleEl && TAB_META[tabName]) {
@@ -3943,6 +3982,7 @@ Format as a clean update to the existing claude.md.`
       }
 
       if (tabName === 'notebooklm') initNotebookLM();
+      if (tabName === 'wisdombytes') initWisdomBytes();
       document.getElementById(`tab-content-${tabName}`).classList.add('active');
     }
 
@@ -4330,6 +4370,12 @@ Format as a clean update to the existing claude.md.`
         } else {
           card.classList.add("hidden");
         }
+      });
+
+      // Filter Wisdom Bytes cards (only those currently rendered for the active sub-section)
+      document.querySelectorAll(".wb-card-item").forEach(card => {
+        const kw = (card.getAttribute("data-keywords") || "").toLowerCase();
+        card.classList.toggle("hidden", !(query.length === 0 || kw.includes(query)));
       });
 
       // Update Search indicators
@@ -5423,6 +5469,806 @@ Format as a clean update to the existing claude.md.`
         </div>`;
     }
 
+    // ─── WISDOM BYTES STUDIO ─────────────────────────────────────────────────
+
+    const WB_CONTEXT = `I run Wisdom Bytes, a YouTube channel teaching AI and everyday tech to adults aged 55 and over who are curious but nervous about it. I film alone on an iPhone and edit in CapCut. Tone is a trusted friend, never a lecturer. Plain English, British spelling, no em dashes, and never use the words "just" or "simply" about a step the viewer has to do.`;
+
+    const WB_SECTIONS = [
+      {
+        id: 'filming', label: 'Filming & Setup', icon: '🎥',
+        blurb: 'Start here. Pick your locations, sort the light and sound, and get one test clip you are happy with before you film a full episode.',
+        groups: [
+          {
+            title: 'Where to Film',
+            items: [
+              {
+                name: 'Scout My Whole Place',
+                desc: 'Score every room and outdoor spot you have, and get told which one to actually use.',
+                text: `${WB_CONTEXT}
+
+I need to decide where to film and I want an honest assessment, not encouragement.
+
+Here is every option I have:
+[LIST EACH ONE. For each: which way the windows face, what is in the background, how noisy it is, and roughly what time of day I would be filming there]
+
+Act as a location scout for solo creators. Score each option out of 10 on:
+- Light: does natural light land on my face rather than behind me
+- Background: interesting but not distracting, nothing embarrassing in shot
+- Sound: echo, traffic, neighbours, boiler, fridge, birds
+- Practicality: how long to set up, whether I can leave it set up
+
+Then give me:
+1. My primary location and the specific reason it wins
+2. My backup for when the primary is unusable
+3. The three things I must move or change to make the primary work
+4. Anything to rule out completely, and why
+
+If none of my options are good enough, say so plainly and tell me what would fix it.`
+              },
+              {
+                name: 'Build My Indoor Set',
+                desc: 'Turn one room into a repeatable set you can put up and take down in 10 minutes.',
+                text: `${WB_CONTEXT}
+
+I want to build a repeatable indoor filming set. Nothing permanent, because I need to put it up and take it down each session.
+
+The room: [SIZE, WHICH WAY THE WINDOW FACES, WALL COLOUR, FURNITURE, WHAT IS CURRENTLY VISIBLE BEHIND WHERE I WOULD SIT]
+My brand colours, if useful as small accents: Electric Violet #D500F9, Mango Burst #FF6D00, Sunshine #FFD600, Deep Space #12002F.
+
+Give me:
+1. Exactly where the camera goes and exactly where I sit or stand, described precisely enough that I could mark both spots on the floor with tape
+2. What to put in the background and what to remove, item by item
+3. How to hint at my brand colours without it looking staged or cluttered
+4. Anything I need to buy, cheapest first, and what I can skip entirely
+5. A 10-minute setup routine I can repeat so every episode looks identical
+
+Assume I have no lights, no crew, and limited money.`
+              },
+              {
+                name: 'Check My Outdoor Spot',
+                desc: 'Sun position, wind, background and the two best times of day for a specific outdoor location.',
+                text: `${WB_CONTEXT}
+
+I want to film outdoors and I need this location checked properly before I waste a session.
+
+The spot: [GARDEN / ALLOTMENT / PARK. Which way it faces, what is behind me, how close the nearest road or houses are]
+When I plan to film: [DAY AND TIME]
+Roughly where I am: [TOWN, UK]
+
+Tell me:
+1. Where the sun will be at that time, and exactly where to stand so my face is lit and I am not squinting
+2. The two best times of day to film here and the times to avoid completely
+3. What is most likely to ruin the audio here, and how to work round it with only an iPhone
+4. What is in the background that will pull attention off my face
+5. A backup plan for the same episode if it is too wet or too windy
+
+Give me compass directions and actual times, not general advice.`
+              },
+              {
+                name: 'Make Indoor & Outdoor Match',
+                desc: 'Stop two filming locations looking like two different channels.',
+                text: `${WB_CONTEXT}
+
+Some episodes will be filmed indoors and some outdoors. My worry is they will look like two different channels.
+
+Indoor spot: [DESCRIBE]
+Outdoor spot: [DESCRIBE]
+
+Tell me how to make both feel like the same show:
+1. What must be identical in both: framing, where I sit in the frame, camera height, what I wear, how I open and close
+2. What is allowed to differ without breaking the look
+3. Which kinds of episode suit indoors and which suit outdoors, and why
+4. Three CapCut adjustments I can apply to both so brightness and colour match
+5. One visual signature I can carry into both so viewers know instantly it is my channel
+
+Only suggest things I can control with an iPhone and free editing software.`
+              }
+            ]
+          },
+          {
+            title: 'Lighting',
+            items: [
+              {
+                name: 'Natural Light Plan',
+                desc: 'Work out where to sit and when to film using only the light you already have.',
+                text: `${WB_CONTEXT}
+
+I have no lighting equipment. I want to use natural light properly.
+
+Where I am filming: [ROOM AND WINDOW DIRECTION, or OUTDOOR SPOT]
+When I can realistically film: [DAYS AND TIMES I ACTUALLY HAVE FREE]
+
+Give me:
+1. Exactly where to position myself relative to the window or sun, and which way to face
+2. The best hour of the day to film in that spot, and what the light does to my face outside that window
+3. How to tell in three seconds whether the light is good enough, without a light meter
+4. The most common lighting mistake for someone filming themselves at home, and how to check I am not making it
+5. What changes between summer and winter in that spot
+
+Explain what I would see on screen when it is right and when it is wrong, so I can judge it myself.`
+              },
+              {
+                name: 'Rescue Bad Light',
+                desc: 'For dark evenings, grim winter days, or a room with one small window.',
+                text: `${WB_CONTEXT}
+
+My light is poor and I still need to film. This is my reality:
+[DESCRIBE: dark evenings only, north-facing room, one small window, overhead ceiling light, etc.]
+
+Give me:
+1. Three ways to improve this using things most people already own, such as lamps, a white sheet, a mirror, or a laptop screen
+2. Exactly where to place each one relative to my face and the camera
+3. What to do about the ceiling light: on, off, or something in between, and why
+4. If I buy one thing under thirty pounds, what should it be and where does it go
+5. What to fix in CapCut afterwards, and what cannot be fixed in editing no matter what
+
+Be specific about placement. Assume I have never lit anything before.`
+              }
+            ]
+          },
+          {
+            title: 'Camera, Angles & Sound',
+            items: [
+              {
+                name: 'Angle & Framing Check',
+                desc: 'Camera height, distance, headroom and eyeline for talking to camera.',
+                text: `${WB_CONTEXT}
+
+I am filming myself talking to camera and I want the framing to look right rather than amateur.
+
+My situation: [SITTING OR STANDING, WHAT I CAN REST THE PHONE ON, WHETHER I HAVE A TRIPOD]
+Format for this episode: [LANDSCAPE FOR YOUTUBE, or VERTICAL FOR SHORTS AND TIKTOK]
+
+Tell me:
+1. Exactly what height the camera should be, relative to my eyes, and why it matters
+2. How far away the phone should be from me, in feet or metres
+3. How much space to leave above my head and around my shoulders
+4. Where to look: at the lens, at my own image, or somewhere else, and how to stop myself drifting
+5. Three framing mistakes that instantly make a video look amateur, and how to spot each one in a test clip
+6. What changes between landscape and vertical, since I need both from one session
+
+If I have no tripod, tell me what to stack the phone on and how to keep it steady.`
+              },
+              {
+                name: 'iPhone Camera Settings',
+                desc: 'The exact settings to change before you press record.',
+                text: `${WB_CONTEXT}
+
+Walk me through the exact iPhone settings to use before filming, click by click, naming the actual menus and buttons.
+
+My phone: [IPHONE MODEL]
+
+Cover:
+1. Resolution and frame rate: what to set and where that setting lives
+2. Which lens to use for talking to camera and why not the others
+3. Whether to use the front or back camera, and the honest trade-off
+4. How to lock focus and exposure so it does not hunt about mid-sentence
+5. Anything to switch off that causes problems later in editing
+6. How to set up screen recording for the demo sections, including where the button is
+
+Then give me a short pre-record checklist I can run through in under a minute, including storage space and Do Not Disturb.`
+              },
+              {
+                name: 'Fix My Audio',
+                desc: 'Wind, echo and phone-mic distance, solved without buying much.',
+                text: `${WB_CONTEXT}
+
+Audio is the thing most likely to make my videos unwatchable and I need it sorted.
+
+Where I am filming: [INDOORS OR OUTDOORS, ROOM SIZE, HARD OR SOFT SURFACES, NEARBY NOISE]
+What I have: [PHONE ONLY, or NAME ANY MIC OR HEADPHONES]
+
+Give me:
+1. How far the phone should be from my mouth for usable sound, and what happens either side of that
+2. How to deal with echo indoors using furniture and soft furnishings, no purchases
+3. How to deal with wind outdoors with no windshield, including what actually works and what is a myth
+4. How to test the audio in 30 seconds before committing to a location
+5. If I buy one microphone under fifty pounds that works with my iPhone, what should it be and how do I use it
+6. What CapCut can repair afterwards and what is unrecoverable
+
+Assume I will not notice bad audio while filming, so tell me what to listen for on playback.`
+              }
+            ]
+          },
+          {
+            title: 'Test & Batch',
+            items: [
+              {
+                name: 'Review My Test Clip',
+                desc: 'Describe or upload a test clip and get a specific fix list, hardest problem first.',
+                text: `${WB_CONTEXT}
+
+I have filmed a short test clip and I want it assessed honestly before I film a full episode.
+
+[UPLOAD THE CLIP OR A SCREENSHOT, or DESCRIBE IT: what is in frame, how it sounds on playback, what feels wrong to me]
+
+Assess it as a video producer would, covering:
+- Lighting: is my face lit properly, any harsh shadows, is the background brighter than me
+- Framing: camera height, headroom, distance, eyeline
+- Audio: clarity, echo, wind, background noise, level
+- Background: anything distracting or unflattering
+- Delivery: pace and energy for an audience aged 55 and over
+
+Then give me:
+1. The single biggest problem and the exact fix
+2. A ranked list of everything else worth fixing, most damaging first
+3. What is already good and should not change
+4. Whether this is good enough to film a real episode with, yes or no
+
+Be direct. I would rather fix it now than film ten videos with the same fault.`
+              },
+              {
+                name: 'Saturday Batch Run-Sheet',
+                desc: 'An hour-by-hour plan for a batch filming session, so it does not collapse.',
+                text: `${WB_CONTEXT}
+
+I batch-film on Saturdays, up to five videos in a session. Build me an hour-by-hour run-sheet.
+
+Episodes I am filming: [LIST THEM, and mark which feels easiest and which feels hardest]
+Time available: [START AND FINISH TIME]
+Locations in use: [INDOOR, OUTDOOR, OR BOTH]
+
+The run-sheet must include:
+1. What order to film in, with a reason for the order rather than just a list
+2. Where the breaks go and how long each one is
+3. A setup block at the start and a check block at the end
+4. When to capture screen recordings, since they should be done in the same session
+5. When to grab the vertical cutdowns for Shorts and TikTok
+6. The checks to run before packing up, so I never discover a problem days later
+
+Also give me a Friday-evening prep list for the night before.
+
+Rules: I do not edit on filming day. If my time is not realistic for this many episodes, tell me how many to cut.`
+              },
+              {
+                name: 'Prep Screen Recordings',
+                desc: 'Capture the demo footage in advance so nothing goes wrong live on camera.',
+                text: `${WB_CONTEXT}
+
+For this episode I need screen recordings of the demo, captured in advance rather than live.
+
+Episode topic: [TOPIC]
+What I am demonstrating: [THE APP OR WEBSITE, AND WHAT THE VIEWER SHOULD END UP ABLE TO DO]
+Recording on: [IPHONE SCREEN, or LAPTOP SCREEN]
+
+Give me:
+1. A shot list of every screen recording needed, in order, each with a start point and an end point
+2. What to have ready before I hit record: accounts logged in, notifications off, tabs closed
+3. How slowly to move the cursor or finger, and where to pause so viewers can follow along on their own device
+4. What to blank out or avoid showing for privacy
+5. How to handle anything that needs a real email address or phone number on screen
+6. How long each recording should roughly be
+
+Remember my audience is following along on their own phone while watching, so pace matters more than polish.`
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'scripts', label: 'Scripts & Content', icon: '✍️',
+        blurb: 'Batch 1 scripts already exist. These are for writing the next ones, sharpening weak hooks, and packaging episodes so people actually click.',
+        groups: [
+          {
+            title: 'Writing Episodes',
+            items: [
+              {
+                name: 'Full Episode Script',
+                desc: 'A complete long-form script in SAY / SHOW / TEXT beats, plus the filming and thumbnail briefs.',
+                text: `${WB_CONTEXT}
+
+Write me a complete Wisdom Bytes episode, long-form, 5 to 10 minutes.
+
+Topic: [TOPIC]
+What the viewer can do by the end: [THE OUTCOME]
+Assumed starting point: [COMPLETE BEGINNER, or WHAT THEY ALREADY KNOW]
+
+Follow this structure:
+1. HOOK (0:00 to 0:30): a relatable problem or a bold promise. Never "hi, welcome to my channel". The first sentence has to earn the second.
+2. PROMISE (0:30 to 1:00): exactly what they will be able to do, plus reassurance along the lines of "if I can do this, you can do this".
+3. DEMO (1:00 to 7:00): show, do not tell. Numbered steps, slow, narrate the what and the why. Include at least one "here is the bit that confused me at first".
+4. TAKEAWAY (7:00 to 8:30): two or three plain sentences.
+5. CTA: subscribe, then invite comments, then the sign-off.
+
+Deliver:
+- The script as a numbered table with three columns: SAY (the exact spoken words), SHOW (me, screen recording, or b-roll), TEXT (on-screen overlay, six words maximum)
+- A filming checklist for this specific episode, listing which screen recordings I need
+- A CapCut edit sequence
+- A thumbnail brief: six words maximum, my expression, and which single word gets the highlight
+- A YouTube title, description and tags
+
+Keep every SAY line short enough to deliver in one breath. End with the sign-off exactly as: "One byte wiser, one less AI fear — I'm Jo, and I'm outta here!"`
+              },
+              {
+                name: 'Fix My Weak Hook',
+                desc: 'Rewrite a flat opening five different ways so the first eight seconds actually hold.',
+                text: `${WB_CONTEXT}
+
+My opening is not strong enough. Here it is:
+
+[PASTE YOUR CURRENT HOOK]
+
+Episode topic: [TOPIC]
+The fear or frustration this episode solves: [WHAT THEY ARE WORRIED ABOUT]
+
+Tell me in one or two sentences why this hook is weak, then rewrite it five ways:
+1. Name the fear directly
+2. Name the outcome they thought was out of reach
+3. Open on a surprising fact or a number
+4. Open mid-story, as though they walked in on me
+5. Open with a gentle, dry joke that still sets up the topic
+
+Each version: three seconds spoken maximum, no jargon, nothing that talks down. Then recommend one and explain the choice in a single sentence.
+
+Remember this audience switches off fast if something feels like it is not for them.`
+              },
+              {
+                name: 'Read-Aloud Check',
+                desc: 'Catch the lines you will stumble over before you are stood in front of the camera.',
+                text: `${WB_CONTEXT}
+
+Here is a script I am about to film:
+
+[PASTE THE SCRIPT]
+
+Check it as a script I have to say out loud, not as something to be read on a page. Find:
+1. Any sentence too long to say in one breath, and where to split it
+2. Tongue-twisters, awkward joins, and repeated words close together
+3. Anything that sounds written rather than spoken
+4. Places I will naturally speed up, where I need to slow down instead
+5. Any jargon that slipped in without a plain-English explanation beside it
+6. Anywhere I sound like a lecturer instead of a friend
+7. Any use of "just" or "simply" about something the viewer has to do
+
+Give me the corrected script with changes marked, then list the three lines most likely to need a second take so I can practise those first.`
+              },
+              {
+                name: 'Write the Reassure Beats',
+                desc: 'The "here is where you might panic, and it is fine" moments that stop people giving up.',
+                text: `${WB_CONTEXT}
+
+For this episode I want the moments where someone might get scared and quit, defused before they happen.
+
+Episode topic: [TOPIC]
+The steps I am walking through: [LIST THE STEPS]
+
+Find every point where someone aged 55 or over, nervous about technology, might stop and think they have broken something or that this is not for them. Common ones: being asked for a phone number, an unexpected pop-up, a screen looking different from mine, being asked to pay, wondering if it is safe.
+
+For each one give me:
+1. The exact moment it happens
+2. What they will be worried about, in their words
+3. A one or two sentence reassurance to say at that moment: honest, warm, never dismissive
+4. Where in the script it should sit
+
+Do not use "don't worry" on its own. Explain why it is fine, briefly. Never make anyone feel daft for asking.`
+              }
+            ]
+          },
+          {
+            title: 'Packaging & Ideas',
+            items: [
+              {
+                name: '10 Title Options',
+                desc: 'Ten titles built on proven formulas, ranked, with a matching hook for each.',
+                text: `${WB_CONTEXT}
+
+Give me 10 title options for this episode.
+
+Topic: [TOPIC]
+What the viewer gets: [THE OUTCOME]
+
+Rules: three to seven words each so they survive as thumbnail text, plain words only, no hype, no clickbait that the video does not deliver, nothing that talks down to the viewer.
+
+Use a spread of these angles and label which is which:
+- The fear named out loud
+- The outcome promised
+- The question they are already asking
+- The thing they did not know was possible
+- The number or time promise
+
+For each title, add a one-line hook that would open that video. Then recommend one and explain why in a single sentence.
+
+Also flag any title that would confuse someone who has never used the tool.`
+              },
+              {
+                name: 'Thumbnail Brief',
+                desc: 'Exact wording, expression and accent placement, built on the locked formula.',
+                text: `${WB_CONTEXT}
+
+Write me the thumbnail brief for this episode.
+
+Topic: [TOPIC]
+Title: [YOUR CHOSEN TITLE]
+
+My locked thumbnail formula:
+- Background: gradient from Deep Space #12002F to Electric Violet #D500F9, left to right
+- My face on the left 40 percent, well lit, big smile or surprised
+- Title text on the right, three to six bold words, white, very large
+- One Sunshine #FFD600 circle, arrow or underline on the key word
+- "WB" watermark bottom right, white, 30 percent opacity
+
+Give me:
+1. The exact thumbnail text, six words maximum, in capitals as it would appear
+2. Which single word gets the Sunshine highlight, and what shape marks it
+3. My exact facial expression, described so I can reproduce it
+4. Anything else in the frame, or confirmation it stays clean
+5. Whether this passes the squint test at 120 by 68 pixels, and if not what to cut
+
+Do not propose anything outside this formula. Keep the wording different from the video title so the two work together rather than repeating.`
+              },
+              {
+                name: 'Description & Tags',
+                desc: 'YouTube description with chapters, plus a TikTok caption and hashtags.',
+                text: `${WB_CONTEXT}
+
+Write the full publishing package for this episode.
+
+Topic: [TOPIC]
+Title: [TITLE]
+Script or summary: [PASTE OR SUMMARISE]
+Length: [DURATION]
+
+Give me:
+1. YouTube description: an opening line that repeats the promise, then two or three sentences on what they will learn, written for someone deciding whether to watch
+2. Timestamped chapters, using plain language rather than clever names
+3. Any links or resources mentioned, marked where I need to fill them in
+4. A closing line and the sign-off
+5. Search terms worked in naturally, no keyword stuffing, based on what my audience would actually type
+6. A TikTok or Shorts caption where the first three words carry the hook
+7. Three to five hashtags, mixing broad and niche
+
+Write for someone who is nervous about the topic and needs to know this video is meant for them.`
+              },
+              {
+                name: 'Next 10 Episode Ideas',
+                desc: 'A ranked slate of ideas judged on demand, brand fit and how easy they are to film.',
+                text: `${WB_CONTEXT}
+
+Give me 10 episode ideas for what to make next.
+
+Already made or scripted: [LIST WHAT EXISTS, or say "nothing yet"]
+What I want to lean into: [ANY TOPIC OR THEME, or say "open"]
+
+My content pillars, so each idea maps to one:
+1. AI Made Simple: one AI tool or trick in plain English
+2. Tech Made Simple: practical everyday tech
+3. Real Talk: my honest journey building this
+4. You Can Do This: transformation stories
+5. Ask Me Anything: community questions
+
+Rank all 10 on:
+(a) how likely my audience is to search for it
+(b) how well it fits the trusted-friend promise
+(c) how simple it is to film alone on an iPhone
+
+For each: title, one-line hook, which pillar, difficulty out of 5, and what screen recordings it would need.
+
+Put the easiest strong idea first, because I need momentum more than I need ambition right now.`
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'edit', label: 'Edit & Publish', icon: '✂️',
+        blurb: 'Turn the footage into a finished episode, then squeeze every filming session into as many pieces of content as it will give you.',
+        groups: [
+          {
+            title: 'Editing',
+            items: [
+              {
+                name: 'CapCut Edit Sequence',
+                desc: 'A step-by-step edit order for one episode, in the right sequence.',
+                text: `${WB_CONTEXT}
+
+Walk me through editing this episode in CapCut, in order, naming the actual buttons and menus.
+
+Episode: [TOPIC]
+What I filmed: [NUMBER OF CLIPS, WHETHER SCREEN RECORDINGS ARE SEPARATE, ROUGH RAW LENGTH]
+Target finished length: [MINUTES]
+
+Cover in sequence:
+1. Import and ordering, and how to keep track of which take is which
+2. The first pass: what to cut and how ruthless to be about dead air
+3. Pacing: where to slow down for screen recordings, since viewers follow along on their own phone
+4. On-screen text: where it goes, how big, how long it stays up
+5. Captions: how to turn them on and which words to check the spelling of
+6. Music: where to find it, how loud relative to my voice
+7. The sign-off beat and how to finish with energy
+8. Export settings
+
+Also tell me the three edits that make the biggest difference to how professional it feels, so I do those even when I am short of time.`
+              },
+              {
+                name: 'On-Screen Text Plan',
+                desc: 'Where overlay text goes, what it says, and when it appears.',
+                text: `${WB_CONTEXT}
+
+Plan the on-screen text for this episode.
+
+Script or step list: [PASTE]
+
+For every step the viewer has to follow, give me:
+1. The overlay text, six words maximum, in the words they would use
+2. When it appears and how long it stays up
+3. Where it sits on screen so it never covers what I am pointing at
+4. Whether it needs a background panel to stay readable
+
+Also give me:
+- Any numbers, names or web addresses that must be shown as text because hearing them once is not enough
+- Where a step is complex enough to need the text held longer than feels natural
+- The text for the opening and closing frames
+
+My audience often watches with the sound off, so the text alone should carry the main steps. Font is Raleway ExtraBold, white, large. Keep everything inside the safe margins.`
+              }
+            ]
+          },
+          {
+            title: 'Publishing & Repurposing',
+            items: [
+              {
+                name: 'One Session, Many Assets',
+                desc: 'Turn a single filming session into every piece of content it can produce.',
+                text: `${WB_CONTEXT}
+
+I have just filmed a batch and I want everything it can give me, not one video per session.
+
+What I filmed: [LIST THE EPISODES AND ROUGHLY WHAT WAS COVERED]
+Where I post: YouTube (main), Instagram, TikTok, plus Facebook groups for distribution.
+
+Give me a full asset list from this footage:
+1. The long-form YouTube episodes
+2. Every vertical short worth cutting, with the exact moment each one starts and ends, and why that moment works standalone
+3. Still frames worth grabbing for thumbnails or posts
+4. Written posts I can draw from what I said, for Facebook groups
+5. An email or newsletter tip, if there is one in here
+6. Anything I clearly should have filmed and did not, to add to the next session
+
+For each asset: what it is, which platform, and roughly how long it takes to produce.
+
+Rank them so I do the highest-value, lowest-effort ones first, because my time is limited.`
+              },
+              {
+                name: 'Upload Day Checklist',
+                desc: 'Everything that has to happen on publish day, in order, so nothing is missed.',
+                text: `${WB_CONTEXT}
+
+Build me a publish-day checklist for this episode.
+
+Episode: [TOPIC AND TITLE]
+Platforms: YouTube first, then a vertical cut for TikTok and Shorts, then Facebook group posts.
+
+Give me a checklist in the order I should do it, covering:
+1. Everything on the YouTube upload page: title, description, thumbnail, tags, end screen, cards, playlist, visibility
+2. Anything easy to forget that would need re-uploading to fix
+3. The vertical cut and its caption and hashtags
+4. Which Facebook groups to post in and how to word it so it does not read as spam
+5. What to do in the first hour after publishing
+6. What to check the next day
+
+Format it so I can tick it off on my phone. Flag anything that cannot be changed after publishing, so I get those right first time.`
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'challenge', label: '90-Day Challenge', icon: '🚀',
+        blurb: 'Goal: 10 videos live and an audience that is actually watching. Plan it, keep it on track, and recover fast when a week goes wrong.',
+        groups: [
+          {
+            title: 'Planning & Tracking',
+            items: [
+              {
+                name: 'Build My 90-Day Plan',
+                desc: 'A realistic week-by-week plan to 10 published videos around a full-time job.',
+                text: `${WB_CONTEXT}
+
+Build me a 90-day plan to get my first 10 videos published.
+
+Where I am now: Batch 1 scripts are written but nothing is filmed. Channel, logo, banner and brand kit are all done.
+Time I actually have: [HOURS PER WEEK, AND WHICH EVENINGS OR DAYS]
+Start date: [DATE]
+Biggest blockers right now: getting the filming setup right, and settling on locations.
+
+Give me:
+1. A week-by-week plan across all 13 weeks, each week with one main outcome rather than a list of tasks
+2. Which weeks are filming weeks, which are editing weeks, which are publishing weeks
+3. Where the first video should go live, with the reasoning, since the setup has to be right first
+4. What to do in week 1 specifically, given my blockers are technical rather than creative
+5. Two catch-up weeks built in, because something will go wrong
+6. A simple weekly measure of whether I am on track
+
+Be realistic rather than optimistic. If 10 videos in 90 days is not achievable in my hours, say so and tell me what is.
+
+End with the first three things to do this week, in order.`
+              },
+              {
+                name: 'Weekly Reset',
+                desc: 'A short Sunday review that keeps the challenge on track without a spreadsheet.',
+                text: `${WB_CONTEXT}
+
+Run my weekly reset for the 90-day challenge.
+
+This week: [WHAT I ACTUALLY DID]
+Planned but not done: [WHAT SLIPPED]
+Videos live so far: [NUMBER]
+Week number: [N of 13]
+How it felt: [ONE HONEST LINE]
+
+Give me:
+1. An honest read on whether I am on track, behind, or ahead, based on the numbers not the feeling
+2. What is genuinely working, worth doing more of
+3. The real reason anything slipped, and whether it is a planning problem or a system problem
+4. The single most important thing for next week
+5. Three specific tasks for next week, each with a rough time on it
+6. One thing to drop or postpone if the week gets tight
+
+Be a sparring partner, not a cheerleader. If I am kidding myself, say so. If I have done well, say that plainly and move on.`
+              },
+              {
+                name: 'Behind Schedule Recovery',
+                desc: 'For when a week or two has gone and the plan has slipped.',
+                text: `${WB_CONTEXT}
+
+I have fallen behind on the 90-day challenge and I need to get back on track without abandoning it.
+
+Where I should be: [WEEK N, X VIDEOS LIVE]
+Where I actually am: [WHAT IS REALLY DONE]
+What got in the way: [BE HONEST]
+Time left: [WEEKS REMAINING]
+
+Give me:
+1. A recovery plan from where I actually am, not from where I was supposed to be
+2. What to cut from the original plan, and what is genuinely non-negotiable
+3. The lowest-effort way to get the next video published, even if it is not perfect
+4. Whether the original 10-video target still stands, and if not, the honest revised number
+5. One change to how I work that stops this happening again
+
+Do not make me feel bad about it. Do not pretend it is fine either. Give me the shortest path back to publishing.`
+              }
+            ]
+          },
+          {
+            title: 'Growth & Audience',
+            items: [
+              {
+                name: 'Community Distribution Plan',
+                desc: 'Get views without the algorithm, through the groups your audience is already in.',
+                text: `${WB_CONTEXT}
+
+In the early days I should assume YouTube search will not find me, so views have to come from communities I go to directly.
+
+My episode: [TOPIC AND TITLE]
+Communities I already have access to: [FACEBOOK GROUPS, CLUBS, WI GROUPS, GARDENING CLUBS, WHATSAPP GROUPS, ANYTHING ELSE]
+
+Give me:
+1. A plan for where to share this episode, ranked by where my audience actually is
+2. How to word a post so it reads as helpful rather than self-promotional, with an example for each type of group
+3. The group rules I need to check first, and how to approach admins where posting is restricted
+4. What to do offline: clubs, noticeboards, word of mouth
+5. How often I can share in the same place without wearing out my welcome
+6. How to turn one comment or question into the next episode
+
+Also suggest five kinds of UK community group I have probably not thought of where people aged 55 and over gather online.`
+              },
+              {
+                name: 'Read My Analytics',
+                desc: 'Work out what the numbers are actually telling you to make more of.',
+                text: `${WB_CONTEXT}
+
+Help me understand my YouTube numbers and what to do differently.
+
+Videos published: [NUMBER]
+For each one: [TITLE, VIEWS, AVERAGE VIEW DURATION OR PERCENTAGE WATCHED, LIKES, COMMENTS]
+Subscribers: [NUMBER]
+Where views are coming from: [TRAFFIC SOURCES IF I HAVE THEM]
+
+Tell me:
+1. Which video is genuinely performing best, and why, looking past raw view count
+2. Where people are dropping off, and what that suggests about my hooks or pacing
+3. What the numbers say about the topics my audience actually wants
+4. What is too early to judge, given how few videos I have out
+5. Two changes to make in the next video, based on evidence rather than guesswork
+6. One thing I should stop doing
+
+Be honest if the sample is too small to conclude anything. I would rather hear that than act on noise.`
+              },
+              {
+                name: 'Answer Every Comment',
+                desc: 'Draft warm, on-voice replies to a batch of comments in one go.',
+                text: `${WB_CONTEXT}
+
+Draft replies to these comments. I reply to every one, and it should always sound like me.
+
+Comments:
+[PASTE THEM]
+
+For each, draft a reply that:
+- Sounds like a warm, real person, not a brand account
+- Answers the actual question if there is one
+- Never makes anyone feel daft for asking, however basic
+- Stays short, two or three sentences, unless the question genuinely needs more
+- Ends with something inviting where it fits naturally, without begging for engagement
+
+Also flag:
+1. Any comment that would make a good future episode, and the title it suggests
+2. Any comment I should not reply to, and why
+3. Any question I should answer with a video instead of text
+
+British English, no em dashes, no "just" or "simply".`
+              }
+            ]
+          }
+        ]
+      }
+    ];
+
+    // Flat lookup for copy handlers
+    const WB_FLAT = {};
+    WB_SECTIONS.forEach(sec => sec.groups.forEach((g, gi) => g.items.forEach((item, ii) => {
+      WB_FLAT[`${sec.id}_${gi}_${ii}`] = item;
+    })));
+
+    let wbInitialised = false;
+    let activeWBSection = 'filming';
+
+    function initWisdomBytes() {
+      if (wbInitialised) return;
+      wbInitialised = true;
+      renderWBSubnav();
+      renderWBCards();
+    }
+
+    function setWBSection(id) {
+      activeWBSection = id;
+      renderWBSubnav();
+      renderWBCards();
+    }
+
+    function renderWBSubnav() {
+      const c = document.getElementById('wb-subnav');
+      if (!c) return;
+      c.innerHTML = WB_SECTIONS.map(s => {
+        const count = s.groups.reduce((n, g) => n + g.items.length, 0);
+        const active = s.id === activeWBSection;
+        return `<button onclick="setWBSection('${s.id}')" class="px-4 py-2 text-xs font-black rounded-xl transition ${active ? 'bg-fuchsia-600 text-white shadow-sm' : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'}">${s.icon} ${escHtml(s.label)} <span class="opacity-60">${count}</span></button>`;
+      }).join('');
+    }
+
+    function renderWBCards() {
+      const c = document.getElementById('wb-cards');
+      if (!c) return;
+      const sec = WB_SECTIONS.find(s => s.id === activeWBSection);
+      if (!sec) return;
+      c.innerHTML = `
+        <div class="bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl p-3 mb-6 text-[11px] text-stone-600 dark:text-stone-400 leading-relaxed">
+          ${escHtml(sec.blurb)}
+        </div>
+        ${sec.groups.map((g, gi) => `
+          <div class="mb-8">
+            <h3 class="text-xs font-black uppercase tracking-wider text-fuchsia-700 dark:text-fuchsia-400 mb-4">${escHtml(g.title)}</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              ${g.items.map((item, ii) => `
+                <div class="bg-white dark:bg-stone-950 rounded-2xl border border-stone-200 dark:border-stone-800 p-4 flex flex-col gap-3 hover:border-fuchsia-400 dark:hover:border-fuchsia-600 transition-all wb-card-item" data-keywords="${escHtml((item.name + ' ' + item.desc + ' wisdom bytes ' + sec.label).toLowerCase())}">
+                  <div>
+                    <h4 class="font-black text-stone-900 dark:text-white text-sm leading-tight mb-1">${escHtml(item.name)}</h4>
+                    <p class="text-stone-500 dark:text-stone-400 text-[11px] leading-relaxed">${escHtml(item.desc)}</p>
+                  </div>
+                  <div class="bg-stone-50 dark:bg-stone-900 rounded-xl p-3 border border-stone-100 dark:border-stone-800 text-[11px] font-mono text-stone-600 dark:text-stone-400 leading-relaxed max-h-28 overflow-y-auto whitespace-pre-wrap">${escHtml(item.text)}</div>
+                  <button onclick="copyWBPrompt('${sec.id}_${gi}_${ii}')" class="w-full bg-fuchsia-50 dark:bg-fuchsia-950/40 hover:bg-fuchsia-100 dark:hover:bg-fuchsia-900/50 text-fuchsia-700 dark:text-fuchsia-300 text-xs py-2 rounded-xl font-bold transition flex items-center justify-center gap-1.5 border border-fuchsia-200 dark:border-fuchsia-800">📋 Copy Prompt</button>
+                </div>`).join('')}
+            </div>
+          </div>`).join('')}`;
+      // Re-apply any active search to the freshly rendered cards
+      if (currentSearchQuery) filterGlobal();
+    }
+
+    function copyWBPrompt(key) {
+      const item = WB_FLAT[key];
+      if (item) copyToClipboard(item.text, '"' + item.name + '" copied!');
+    }
+
   </script>
 
   <!-- Command Palette -->
@@ -5571,6 +6417,15 @@ Format as a clean update to the existing claude.md.`
         hay: (p.name + ' ' + p.text + ' ' + (p.tag || '')).toLowerCase(),
         go: () => { switchTab('notebooklm'); initNotebookLM(); switchNBSection('mine'); requestAnimationFrame(() => { const c = document.getElementById('nb-mine-grid'); if (c) { c.scrollIntoView({ block: 'start' }); flashElement(c); } }); }
       }));
+      // Wisdom Bytes Studio prompts
+      (typeof WB_SECTIONS !== 'undefined' ? WB_SECTIONS : []).forEach(sec => (sec.groups || []).forEach(g => (g.items || []).forEach(item => items.push({
+        type: 'Wisdom Bytes',
+        icon: sec.icon || '\u{1F3AC}',
+        title: item.name,
+        sub: 'Wisdom Bytes · ' + sec.label + ' · ' + g.title,
+        hay: (item.name + ' ' + item.desc + ' ' + item.text + ' ' + sec.label + ' ' + g.title).toLowerCase(),
+        go: (() => { const sid = sec.id; return () => { switchTab('wisdombytes'); initWisdomBytes(); setWBSection(sid); requestAnimationFrame(() => { const c = document.getElementById('wb-cards'); if (c) { c.scrollIntoView({ block: 'start' }); } }); }; })()
+      }))));
       return items;
     }
 
