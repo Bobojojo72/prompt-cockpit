@@ -445,7 +445,7 @@
             <span class="block">Wisdom Bytes</span>
             <span class="block text-[10px] font-medium text-stone-500">Channel studio &amp; 90-day plan</span>
           </span>
-          <span class="text-[10px] font-bold text-stone-500 bg-stone-800 rounded-full px-2 py-0.5">30</span>
+          <span class="text-[10px] font-bold text-stone-500 bg-stone-800 rounded-full px-2 py-0.5">42</span>
         </button>
       </div>
 
@@ -5740,6 +5740,245 @@ Give me:
 6. How long each recording should roughly be
 
 Remember my audience is following along on their own phone while watching, so pace matters more than polish.`
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'research', label: 'NotebookLM Research', icon: '📓',
+        blurb: 'The bridge between your Wisdom Bytes notebook and a finished episode. Each card says whether it goes in the NotebookLM chat box or to Claude. NotebookLM only knows the sources you give it, so these are written to work from sources and to admit gaps rather than invent.',
+        groups: [
+          {
+            title: 'Build the Notebook',
+            items: [
+              {
+                name: 'What Sources Do I Need?',
+                desc: 'Ask Claude BEFORE building the notebook. Tells you exactly what to gather and why.',
+                text: `I am planning a Wisdom Bytes episode and want to build a NotebookLM notebook for it before writing anything. Wisdom Bytes teaches AI and everyday tech to adults aged 55 and over who are curious but nervous.
+
+Episode topic: [TOPIC]
+What the viewer should be able to do by the end: [THE OUTCOME]
+
+Tell me exactly what to gather as sources. Be specific, not general:
+1. The official help pages or documentation to pull in, and which sections of them actually matter
+2. Any recent changes to this tool or feature I need to check, because my audience follows along on a live screen and out-of-date steps break trust
+3. What real-world material would improve this episode: forum threads, community questions, reviews, news
+4. Two or three sources giving the sceptical or critical view, so I am not just repeating marketing copy
+5. Anything to deliberately leave out because it will confuse a beginner
+
+For each source, one line on why it earns its place. Then give me the search terms to find them.`
+              },
+              {
+                name: 'Notebook Gap Check',
+                desc: 'NotebookLM chat. Finds what your sources cannot yet support before you script it.',
+                text: `These sources are for a Wisdom Bytes episode. Wisdom Bytes teaches AI and everyday tech to adults aged 55 and over who are curious but nervous.
+
+Episode topic: [TOPIC]
+
+Working only from the sources in this notebook, tell me:
+1. What I can confidently explain and demonstrate from what is here
+2. What is missing that a complete beginner would need in order to follow along
+3. Any step the sources skip over or assume you already know
+4. Where the sources disagree with each other, or look out of date
+5. What a nervous first-time user would still be worried about after reading all of this
+
+Then list the specific extra sources I should add, most important first.
+
+Do not fill gaps from general knowledge. If the sources do not cover something, say so plainly.`
+              },
+              {
+                name: 'Turn Comments Into Research',
+                desc: 'Ask Claude. Converts real audience questions into a ranked research agenda.',
+                text: `Here are real questions and comments from my audience. Wisdom Bytes teaches AI and everyday tech to adults aged 55 and over.
+
+[PASTE COMMENTS, QUESTIONS FROM FRIENDS AND FAMILY, OR THINGS PEOPLE HAVE ASKED ME IN PERSON]
+
+Turn these into a research agenda:
+1. Group them into themes, naming each theme in the words my audience actually used
+2. Rank the themes by how many people are asking and how much worry sits behind them
+3. For each theme, what I would need to research or gather before answering it properly on camera
+4. Which of these is a single episode and which is a series
+5. Any question that reveals a misunderstanding I should correct gently rather than answer literally
+
+Keep their phrasing wherever you can. The way they ask is usually the way I should title it.`
+              }
+            ]
+          },
+          {
+            title: 'Research to Script',
+            items: [
+              {
+                name: 'Sources to Episode Script',
+                desc: 'NotebookLM chat. The main handoff: turns your sources into an accurate, ordered demo.',
+                text: `Working only from the sources in this notebook, help me build a Wisdom Bytes episode. Wisdom Bytes teaches AI and everyday tech to adults aged 55 and over who are curious but nervous. Tone is a trusted friend, never a lecturer. Plain English, British spelling, no jargon without an immediate one-line translation.
+
+Episode topic: [TOPIC]
+Target length: 5 to 10 minutes
+
+From the sources, give me:
+1. The single clearest promise this episode can honestly make, based on what the sources actually support
+2. The steps, in the exact order the sources say they happen, numbered, nothing skipped
+3. For every step, the precise wording of anything on screen the viewer has to find and click
+4. The moments where the sources suggest people get stuck or confused
+5. Anything the sources warn about: costs, sign-ups, privacy, limits
+6. The two or three facts worth putting on screen as text
+
+Flag clearly anything you cannot support from the sources rather than filling it in. I would rather have a gap I can go and research than a confident mistake on camera.`
+              },
+              {
+                name: "Mine the Audience's Own Words",
+                desc: 'NotebookLM chat. Pulls real phrasing from the sources for hooks and titles.',
+                text: `Working only from the sources in this notebook, I want the actual language ordinary people use about this topic. Not marketing language, not technical language.
+
+Topic: [TOPIC]
+My audience: adults aged 55 and over, curious about AI and technology but wary of it.
+
+Pull out:
+1. The exact words and phrases ordinary people use to describe this thing, quoted from the sources
+2. The words they use when they are worried, confused or frustrated
+3. The technical terms that appear, and the plain-English phrase people use instead
+4. Any question that comes up repeatedly, in the questioner's own wording
+5. Metaphors or comparisons people reach for to explain it
+
+Then give me:
+- Five video title options built from their words rather than mine
+- Three opening lines that would make someone think "that is exactly my problem"
+
+Quote directly wherever possible. Their phrasing beats mine every time.`
+              },
+              {
+                name: 'Fact-Check My Script',
+                desc: 'NotebookLM chat. Verifies every claim and button name against your sources before you film.',
+                text: `Here is a script I am about to film for Wisdom Bytes. Check it against the sources in this notebook.
+
+[PASTE THE SCRIPT]
+
+For every factual claim and every instruction, tell me which it is:
+1. Supported: the sources confirm it, and where
+2. Contradicted: the sources say something different, and what they say
+3. Unsupported: the sources do not cover it at all
+
+Pay particular attention to:
+- Menu names, button labels, and the exact wording the viewer has to look for
+- The order of the steps
+- Anything about cost, free tiers, limits or sign-up requirements
+- Anything that may have changed recently
+
+List every problem, most serious first. My audience follows along on their own screen, so a wrong button name means they stop and think they have broken something.`
+              },
+              {
+                name: 'Find the Myths to Bust',
+                desc: 'NotebookLM chat. Separates genuine misconceptions from reasonable fears you should validate.',
+                text: `Working from the sources in this notebook, find the misconceptions worth correcting on camera. Wisdom Bytes teaches AI and everyday tech to adults aged 55 and over who are often nervous or sceptical.
+
+Topic: [TOPIC]
+
+Give me:
+1. The myths and misunderstandings that appear in the sources, quoted where possible
+2. For each, what the sources actually say is true
+3. Which of these my audience specifically is most likely to believe, and why
+4. The fears that are actually reasonable and should be validated rather than dismissed
+5. Anything I should be careful not to overstate in the other direction
+
+For each myth, draft a two-sentence correction: warm, never making anyone feel foolish for having believed it.
+
+Keep genuine myths separate from legitimate concerns. Telling someone their reasonable worry is a myth destroys trust.`
+              }
+            ]
+          },
+          {
+            title: 'Plan a Series',
+            items: [
+              {
+                name: 'One Notebook, Five Episodes',
+                desc: 'NotebookLM chat. Turns one source set into a batch that works as a Saturday filming session.',
+                text: `Working from the sources in this notebook, plan a batch of five Wisdom Bytes episodes. I film five at a time in one Saturday session, so they need to work as a set. Audience is adults aged 55 and over, new to this topic.
+
+Notebook subject: [WHAT THESE SOURCES COVER]
+
+Give me:
+1. Five episodes drawn from these sources, each with a title, a one-line promise, and which parts of the sources it uses
+2. The order to publish them in, and why
+3. Which one to film first, bearing in mind I want to warm up on the easiest
+4. Where they overlap, so I do not repeat myself across the set
+5. Which ones share a filming setup or screen recording, so I can capture once and use twice
+6. What these five leave uncovered, for the next batch
+
+Keep each episode to one clear outcome. If the sources only really support three good episodes, say so rather than padding to five.`
+              },
+              {
+                name: 'Build the Beginner Ladder',
+                desc: 'NotebookLM chat. Puts a topic in true teaching order, from genuine zero.',
+                text: `Working from the sources in this notebook, put this topic into the right teaching order for someone starting from nothing.
+
+Topic: [TOPIC]
+Audience: adults aged 55 and over, no technical background, nervous about getting it wrong.
+
+Give me:
+1. The concepts in the order they must be learned, and what depends on what
+2. The genuine starting point assuming no prior knowledge at all, including anything the sources take for granted
+3. Which parts are easy, which are fiddly, and which are the ones people give up on
+4. What can safely be left out of a beginner's first encounter
+5. The point at which someone stops following instructions and actually understands it
+
+Then map this onto a series: which rungs are one episode each, and which need two.
+
+Be honest about the hard bits. I would rather slow down than lose people.`
+              },
+              {
+                name: 'Workshop From a Notebook',
+                desc: 'NotebookLM chat. Builds a paid Zoom workshop run-of-show from your sources.',
+                text: `Working from the sources in this notebook, build me a live workshop. I run these on Zoom for adults aged 55 and over learning AI, and people have paid to attend, so it has to deliver.
+
+Topic: [TOPIC]
+Length: [60 OR 90 MINUTES]
+Attendees: [ROUGH NUMBER AND THEIR LEVEL]
+
+Give me:
+1. A run of show with timings, built so nobody watches me talk for more than about eight minutes at a stretch
+2. The hands-on moments where they do it themselves, and exactly what should be on their own screen
+3. What will go wrong live, based on what the sources say trips people up, and how to handle each one calmly
+4. Three questions I will almost certainly be asked, with short answers
+5. What they should leave with: the one thing they can do tomorrow
+6. A one-page handout outline drawn from the sources
+
+Assume some are on a phone, some on a laptop, and at least one will stay very quiet because they are worried about looking daft.`
+              },
+              {
+                name: 'Lead Magnet From a Notebook',
+                desc: 'NotebookLM chat. A short print-friendly PDF to grow the email list.',
+                text: `Working from the sources in this notebook, help me build a free download to grow my email list. Wisdom Bytes teaches AI and everyday tech to adults aged 55 and over.
+
+Topic: [TOPIC]
+Format: a short PDF, no more than [NUMBER] pages
+
+Give me:
+1. A title promising one specific, immediate result
+2. The contents, drawn from the sources, limited to what someone can actually use the same day
+3. The exact steps or tips, in plain English with nothing assumed
+4. What to leave out, so it stays short enough to finish
+5. A closing that points to the channel without being pushy
+6. Any claim in here I need to verify before publishing, because it came from a source that may be out of date
+
+Make it print-friendly. Some of my audience will print this and keep it by the computer.`
+              },
+              {
+                name: 'Wisdom Bytes Research Chain',
+                desc: 'NotebookLM chat, run in order. The full source-to-script workflow in five steps.',
+                text: `CHAIN THESE IN ORDER in the NotebookLM chat box, one at a time, using each answer before moving on.
+
+1. "Working only from these sources, what are the five things a complete beginner most needs to understand about [TOPIC]? Assume they are aged 55 or over and nervous about technology."
+
+2. "Take point [N] from that list. Pull out everything the sources say about it: the steps, the exact on-screen wording, and anything that commonly goes wrong."
+
+3. "What would a nervous first-time user still be worried about after all that? Answer from the sources, and say clearly where the sources do not address the worry."
+
+4. "Using only what the sources support, draft the demo section of a video script for this: numbered steps, plain English, nothing assumed, exact button names included."
+
+5. "What in this notebook is missing, out of date, or contradicted elsewhere in the sources? What should I go and find before I film?"
+
+Run step 5 every single time. It is the one that stops a confident mistake ending up on camera.`
               }
             ]
           }
