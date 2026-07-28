@@ -1914,7 +1914,13 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
       <!-- Firecrawl Skills -->
       <div class="mb-10">
         <h3 class="text-sm font-black uppercase tracking-wider text-orange-600 dark:text-orange-400 mb-1 flex items-center gap-2"><span>🕷️</span> Firecrawl Web Skills</h3>
-        <p class="text-stone-500 dark:text-stone-400 text-xs mb-4">For reading websites properly, including pages that normally block automated reading. Say what you want in plain English and the right one fires. Genuinely useful for competitor research and for checking a tool's help pages before filming a tutorial.</p>
+        <p class="text-stone-500 dark:text-stone-400 text-xs mb-3">For reading websites properly, including pages that normally block automated reading. Say what you want in plain English and the right one fires. Genuinely useful for competitor research and for checking a tool's help pages before filming a tutorial.</p>
+        <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl p-3 mb-4 flex items-start gap-2">
+          <span class="text-amber-500 text-sm flex-shrink-0">⚠️</span>
+          <div class="text-[11px] text-amber-800 dark:text-amber-300 leading-relaxed">
+            <strong>Needs a one-off setup before any of these work.</strong> The plugin alone is not enough. In a terminal: <code class="font-mono bg-amber-100 dark:bg-amber-900/60 px-1 rounded">npm install -g firecrawl-cli</code> then <code class="font-mono bg-amber-100 dark:bg-amber-900/60 px-1 rounded">firecrawl login</code>. Free API key from <strong>firecrawl.dev/app/api-keys</strong>. Check it worked with <code class="font-mono bg-amber-100 dark:bg-amber-900/60 px-1 rounded">firecrawl --status</code>.
+          </div>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
           <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-3.5 shadow-sm"><span class="text-[11px] font-black text-orange-700 dark:text-orange-300 font-mono">firecrawl-scrape</span><p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed mt-1">Grab the clean text of one page. "Scrape this URL for me."</p></div>
           <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-3.5 shadow-sm"><span class="text-[11px] font-black text-orange-700 dark:text-orange-300 font-mono">firecrawl-crawl</span><p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed mt-1">Read a whole site or section. "Get me every page under their help docs."</p></div>
