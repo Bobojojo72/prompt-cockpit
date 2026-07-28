@@ -1800,13 +1800,139 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
             </ul>
           </div>
 
+          <!-- Workflow & Automation -->
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm">
+            <h4 class="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-3">Workflow &amp; Automation</h4>
+            <ul class="space-y-2">
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded shrink-0">/schedule</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Set up a cloud agent that runs on a timer, daily or weekly. Also does one-off "run this at 3pm"</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded shrink-0">/workflows</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Watch a multi-agent workflow running live. Enabled in your settings</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded shrink-0">/run</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Start the project's app so you can actually see a change working</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded shrink-0">/verify</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Prove a fix really works by running it and watching the behaviour, not just claiming it</span></li>
+            </ul>
+          </div>
+
+          <!-- Plugin Commands -->
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm">
+            <h4 class="text-[10px] font-black uppercase tracking-wider text-fuchsia-600 dark:text-fuchsia-400 mb-3">From Your Plugins</h4>
+            <ul class="space-y-2">
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-fuchsia-700 dark:text-fuchsia-300 bg-fuchsia-50 dark:bg-fuchsia-950/40 px-1.5 py-0.5 rounded shrink-0">/ultrathink</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Big jobs: runs a coordinator plus four specialists (architect, research, coder, tester)</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-fuchsia-700 dark:text-fuchsia-300 bg-fuchsia-50 dark:bg-fuchsia-950/40 px-1.5 py-0.5 rounded shrink-0">/commit</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Create a git commit</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-fuchsia-700 dark:text-fuchsia-300 bg-fuchsia-50 dark:bg-fuchsia-950/40 px-1.5 py-0.5 rounded shrink-0">/commit-push-pr</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Commit, push, and open a pull request in one go</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-fuchsia-700 dark:text-fuchsia-300 bg-fuchsia-50 dark:bg-fuchsia-950/40 px-1.5 py-0.5 rounded shrink-0">/clean_gone</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Tidy up local branches already deleted on GitHub</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-fuchsia-700 dark:text-fuchsia-300 bg-fuchsia-50 dark:bg-fuchsia-950/40 px-1.5 py-0.5 rounded shrink-0">/revise-claude-md</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Update CLAUDE.md with what was learned this session</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-fuchsia-700 dark:text-fuchsia-300 bg-fuchsia-50 dark:bg-fuchsia-950/40 px-1.5 py-0.5 rounded shrink-0">/skill-gen</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Build a whole new skill automatically from a documentation web page</span></li>
+            </ul>
+          </div>
+
+          <!-- Quality & Cleanup -->
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm">
+            <h4 class="text-[10px] font-black uppercase tracking-wider text-orange-600 dark:text-orange-400 mb-3">Quality &amp; Cleanup</h4>
+            <ul class="space-y-2">
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-orange-700 dark:text-orange-300 bg-orange-50 dark:bg-orange-950/40 px-1.5 py-0.5 rounded shrink-0">/simplify</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Tidy and simplify the code you just changed, then apply the fixes. Quality only, not bug hunting</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-orange-700 dark:text-orange-300 bg-orange-50 dark:bg-orange-950/40 px-1.5 py-0.5 rounded shrink-0">/security-review</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Check the current changes for security problems</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-orange-700 dark:text-orange-300 bg-orange-50 dark:bg-orange-950/40 px-1.5 py-0.5 rounded shrink-0">/fewer-permission-prompts</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Sick of approving the same thing? This builds an allowlist from your own history</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-orange-700 dark:text-orange-300 bg-orange-50 dark:bg-orange-950/40 px-1.5 py-0.5 rounded shrink-0">/update-config</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Change settings, permissions, or set up automatic "whenever X happens" hooks</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-orange-700 dark:text-orange-300 bg-orange-50 dark:bg-orange-950/40 px-1.5 py-0.5 rounded shrink-0">/keybindings-help</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Change or rebind keyboard shortcuts</span></li>
+            </ul>
+          </div>
+
+          <!-- Reference Lookups -->
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm">
+            <h4 class="text-[10px] font-black uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-3">Reference Lookups</h4>
+            <ul class="space-y-2">
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/40 px-1.5 py-0.5 rounded shrink-0">/claude-api</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Current model names, pricing and API details. Use this instead of trusting a guess</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/40 px-1.5 py-0.5 rounded shrink-0">/dataviz</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Design rules for any chart, graph or dashboard so they all look like one system</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/40 px-1.5 py-0.5 rounded shrink-0">/artifact-design</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Design guidance before building a shareable web page</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/40 px-1.5 py-0.5 rounded shrink-0">/mcp</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Manage connected apps (Gmail, Drive, Slack, Airtable) and sign in to them</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/40 px-1.5 py-0.5 rounded shrink-0">/agents</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Set up and manage your specialist sub-agents</span></li>
+              <li class="flex gap-2 items-start"><code class="text-[11px] font-mono font-bold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/40 px-1.5 py-0.5 rounded shrink-0">/hooks</code><span class="text-[11px] text-stone-600 dark:text-stone-400">Set up automatic actions that fire before or after Claude does something</span></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Installed Plugins -->
+      <div class="mb-10">
+        <h3 class="text-sm font-black uppercase tracking-wider text-fuchsia-600 dark:text-fuchsia-400 mb-1 flex items-center gap-2"><span>🧩</span> Your Installed Plugins</h3>
+        <p class="text-stone-500 dark:text-stone-400 text-xs mb-4">The 10 plugins actually installed in your setup, and what each one gives you. Manage them with <code class="font-mono text-[10px] bg-stone-100 dark:bg-stone-800 px-1 rounded">/plugin</code>, or browse more in Cowork under Customize.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm">
+            <div class="flex items-center justify-between gap-2 mb-1.5"><span class="text-xs font-black text-indigo-700 dark:text-indigo-300">superpowers</span><span class="text-[9px] font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 px-1.5 py-0.5 rounded">v6.1.1</span></div>
+            <p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed">14 workflow skills that fire automatically: brainstorming before building, plans before code, debugging discipline, verification before Claude claims it is done. Listed in full below.</p>
+          </div>
+
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm">
+            <div class="flex items-center justify-between gap-2 mb-1.5"><span class="text-xs font-black text-orange-700 dark:text-orange-300">firecrawl</span><span class="text-[9px] font-bold bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-300 px-1.5 py-0.5 rounded">v1.0.9</span></div>
+            <p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed">Reads websites properly, including ones that normally block scraping. 10 skills plus <code class="font-mono text-[10px]">/skill-gen</code>. Listed in full below.</p>
+          </div>
+
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm">
+            <div class="flex items-center justify-between gap-2 mb-1.5"><span class="text-xs font-black text-emerald-700 dark:text-emerald-300">code-review</span></div>
+            <p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed">Powers <code class="font-mono text-[10px]">/code-review</code>. Add <strong>ultra</strong> for the deep multi-agent cloud review, <code class="font-mono text-[10px]">--fix</code> to apply the findings.</p>
+          </div>
+
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm">
+            <div class="flex items-center justify-between gap-2 mb-1.5"><span class="text-xs font-black text-sky-700 dark:text-sky-300">commit-commands</span></div>
+            <p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed">Git without memorising git: <code class="font-mono text-[10px]">/commit</code>, <code class="font-mono text-[10px]">/commit-push-pr</code>, <code class="font-mono text-[10px]">/clean_gone</code>.</p>
+          </div>
+
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm">
+            <div class="flex items-center justify-between gap-2 mb-1.5"><span class="text-xs font-black text-violet-700 dark:text-violet-300">claude-md-management</span></div>
+            <p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed"><code class="font-mono text-[10px]">/revise-claude-md</code> updates a project's memory file with what was learned. Also audits CLAUDE.md quality across a repo.</p>
+          </div>
+
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm">
+            <div class="flex items-center justify-between gap-2 mb-1.5"><span class="text-xs font-black text-stone-700 dark:text-stone-300">github</span></div>
+            <p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed">Lets Claude work with GitHub directly: pull requests, issues, branches. This is what keeps your Prompt Cockpit deploying.</p>
+          </div>
+
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm">
+            <div class="flex items-center justify-between gap-2 mb-1.5"><span class="text-xs font-black text-fuchsia-700 dark:text-fuchsia-300">ultrathink</span></div>
+            <p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed">One command that splits a hard task across four specialists and pulls the answers back together. Best for genuinely big jobs.</p>
+          </div>
+
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm">
+            <div class="flex items-center justify-between gap-2 mb-1.5"><span class="text-xs font-black text-rose-700 dark:text-rose-300">frontend-design</span></div>
+            <p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed">Stops web pages looking like generic AI output. Fires whenever you ask for a page, component or interface.</p>
+          </div>
+
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm">
+            <div class="flex items-center justify-between gap-2 mb-1.5"><span class="text-xs font-black text-teal-700 dark:text-teal-300">document-skills</span></div>
+            <p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed">Real Word, Excel, PowerPoint and PDF files: <code class="font-mono text-[10px]">docx</code>, <code class="font-mono text-[10px]">xlsx</code>, <code class="font-mono text-[10px]">pptx</code>, <code class="font-mono text-[10px]">pdf</code>.</p>
+          </div>
+
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm">
+            <div class="flex items-center justify-between gap-2 mb-1.5"><span class="text-xs font-black text-amber-700 dark:text-amber-300">example-skills</span></div>
+            <p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed">A pack including <code class="font-mono text-[10px]">skill-creator</code>, <code class="font-mono text-[10px]">canvas-design</code>, <code class="font-mono text-[10px]">theme-factory</code>, <code class="font-mono text-[10px]">web-artifacts-builder</code>, <code class="font-mono text-[10px]">mcp-builder</code>, <code class="font-mono text-[10px]">algorithmic-art</code> and more.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Firecrawl Skills -->
+      <div class="mb-10">
+        <h3 class="text-sm font-black uppercase tracking-wider text-orange-600 dark:text-orange-400 mb-1 flex items-center gap-2"><span>🕷️</span> Firecrawl Web Skills</h3>
+        <p class="text-stone-500 dark:text-stone-400 text-xs mb-4">For reading websites properly, including pages that normally block automated reading. Say what you want in plain English and the right one fires. Genuinely useful for competitor research and for checking a tool's help pages before filming a tutorial.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-3.5 shadow-sm"><span class="text-[11px] font-black text-orange-700 dark:text-orange-300 font-mono">firecrawl-scrape</span><p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed mt-1">Grab the clean text of one page. "Scrape this URL for me."</p></div>
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-3.5 shadow-sm"><span class="text-[11px] font-black text-orange-700 dark:text-orange-300 font-mono">firecrawl-crawl</span><p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed mt-1">Read a whole site or section. "Get me every page under their help docs."</p></div>
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-3.5 shadow-sm"><span class="text-[11px] font-black text-orange-700 dark:text-orange-300 font-mono">firecrawl-search</span><p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed mt-1">Search the web and pull the results back as usable text.</p></div>
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-3.5 shadow-sm"><span class="text-[11px] font-black text-orange-700 dark:text-orange-300 font-mono">firecrawl-agent</span><p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed mt-1">Pulls structured data out of messy sites. "Get every product and price as a table."</p></div>
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-3.5 shadow-sm"><span class="text-[11px] font-black text-orange-700 dark:text-orange-300 font-mono">firecrawl-map</span><p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed mt-1">List every page on a site before deciding what to read.</p></div>
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-3.5 shadow-sm"><span class="text-[11px] font-black text-orange-700 dark:text-orange-300 font-mono">firecrawl-monitor</span><p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed mt-1">Watch a page and notice when it changes.</p></div>
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-3.5 shadow-sm"><span class="text-[11px] font-black text-orange-700 dark:text-orange-300 font-mono">firecrawl-interact</span><p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed mt-1">Click and fill things in on a page to reach content behind a form.</p></div>
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-3.5 shadow-sm"><span class="text-[11px] font-black text-orange-700 dark:text-orange-300 font-mono">firecrawl-parse</span><p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed mt-1">Turn a downloaded document into clean readable text.</p></div>
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-3.5 shadow-sm"><span class="text-[11px] font-black text-orange-700 dark:text-orange-300 font-mono">firecrawl-download</span><p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed mt-1">Download files a page links to.</p></div>
+          <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-3.5 shadow-sm"><span class="text-[11px] font-black text-orange-700 dark:text-orange-300 font-mono">firecrawl-cli</span><p class="text-[11px] text-stone-500 dark:text-stone-400 leading-relaxed mt-1">Run Firecrawl straight from the terminal.</p></div>
         </div>
       </div>
 
       <!-- Superpowers Skills -->
       <div class="mb-10">
         <h3 class="text-sm font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1 flex items-center gap-2"><span>🦸</span> Superpowers Skills</h3>
-        <p class="text-stone-500 dark:text-stone-400 text-xs mb-4">These trigger <strong>automatically</strong> at the right moment in Claude Code — you don't need to type them. They're part of the Superpowers plugin (v5.1.0) installed in your setup.</p>
+        <p class="text-stone-500 dark:text-stone-400 text-xs mb-4">These trigger <strong>automatically</strong> at the right moment in Claude Code — you don't need to type them. They're part of the Superpowers plugin (v6.1.1) installed in your setup.</p>
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
 
           <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm">
