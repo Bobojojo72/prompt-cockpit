@@ -940,6 +940,17 @@
         <div id="ccm-prompts-container"></div>
       </div>
 
+      <!-- Prompting Techniques -->
+      <div class="mb-10">
+        <h3 class="text-sm font-black uppercase tracking-wider text-violet-600 dark:text-violet-400 mb-1 flex items-center gap-2">
+          <span>🎯</span> Prompting Techniques
+        </h3>
+        <p class="text-stone-500 dark:text-stone-400 text-[11px] mb-4">
+          General techniques that work with any AI. The first group makes Claude gather what it needs <em>before</em> answering. The second turns your own chat history into feedback on how you prompt.
+        </p>
+        <div id="pt-prompts-container"></div>
+      </div>
+
       <!-- Life Area Quick-Starters -->
       <div class="mb-10">
         <h3 class="text-sm font-black uppercase tracking-wider text-rose-600 dark:text-rose-400 mb-4 flex items-center gap-2">
@@ -3610,6 +3621,7 @@ Present all 4 deliverables clearly labelled with full content — no summaries, 
       renderAll();
       renderCustomPrompts();
       renderCCMPrompts();
+      renderPTPrompts();
 
       // Close add-prompt modal on backdrop click
       document.getElementById('add-prompt-modal').addEventListener('click', function(e) {
@@ -3956,6 +3968,107 @@ Format as a clean update to the existing claude.md.`
     // Flat lookup for copy handlers
     const CCM_PROMPTS_FLAT = {};
     CCM_WORKFLOWS.forEach(wf => wf.prompts.forEach(p => { CCM_PROMPTS_FLAT[p.id] = p; }));
+
+    // ─── PERMANENT SECTION: Prompting Techniques ────────────────────────────────
+    // Promoted from Jo's phone-saved prompts (2 Aug 2026) so they sync across devices
+    // instead of living only in one browser's localStorage.
+    const PT_GROUPS = [
+      {
+        title: 'Before Claude Starts',
+        note: 'Make it gather what it needs before it answers',
+        prompts: [
+          {
+            id: 'pt_ask3', emoji: '❓', title: 'Ask 3 Questions',
+            description: 'Gets the best information out of you before it commits to an answer.',
+            text: `Before you answer, ask me three questions that would make your answer better.`
+          },
+          {
+            id: 'pt_improver', emoji: '🎤', title: 'Prompt Improver',
+            description: 'Turns a vague request into a proper brief by interviewing you first.',
+            text: `I want you to do [X]. Before you start, interview me for the context you need.`
+          },
+          {
+            id: 'pt_output', emoji: '🔧', title: 'Prompt / Output Improver',
+            description: 'Three ways to apply the same idea. Pick whichever fits the job.',
+            text: `Before you start, tell me what context you need from me to do this well.
+
+Restate what you think I'm asking for before you act.
+
+Ask me questions one at a time until you're confident you understand the job, then start.`
+          },
+          {
+            id: 'pt_research', emoji: '🔍', title: 'Research First',
+            description: 'Puts it in a loop of researching then checking. Works for a lot of things, and gets far more credible information.',
+            text: `Do online research first, and then fact-check what you find.`
+          },
+          {
+            id: 'pt_goal', emoji: '🎯', title: '/Goal (Claude Code)',
+            description: 'A Claude Code tip rather than a prompt to paste. Research first, then set the goal.',
+            text: `Claude tip: ask Claude to do its research first and then use /goal to set an appropriate goal. It results in massively better prompt and downstream results. All your prompts would start with requirements gathering and research and once done /goal`
+          }
+        ]
+      },
+      {
+        title: 'Learn From Your Own Usage',
+        note: 'Turn your chat history into feedback on how you prompt',
+        prompts: [
+          {
+            id: 'pt_insights', emoji: '💡', title: 'Chat Insights',
+            description: 'If you run out of questions to ask, pass the baton back and let it find the patterns.',
+            text: `What are the 10 most important insights you can glean from my AI usage to date?`
+          },
+          {
+            id: 'pt_audit', emoji: '🔬', title: 'Audit Chats',
+            description: 'Finds where conversations went wrong so you can prompt better next time.',
+            text: `Find the conversations where I got frustrated, gave up, or ended the conversation before the desired result was achieved. What went wrong, and how should I have prompted differently?`
+          },
+          {
+            id: 'pt_better', emoji: '📈', title: 'Get Better Results',
+            description: 'Spots the tasks you keep repeating and suggests how to get more out of them.',
+            text: `What tasks do I often ask you for repeated help with, and how could we get a better result from those tasks?`
+          }
+        ]
+      }
+    ];
+
+    const PT_FLAT = {};
+    PT_GROUPS.forEach(g => g.prompts.forEach(p => { PT_FLAT[p.id] = p; }));
+
+    function copyPTPrompt(id) {
+      const p = PT_FLAT[id];
+      if (p) copyToClipboard(p.text, '"' + p.title + '" copied!');
+    }
+
+    function renderPTPrompts() {
+      const container = document.getElementById('pt-prompts-container');
+      if (!container) return;
+      container.innerHTML = PT_GROUPS.map(g => `
+        <div class="mb-6 last:mb-0">
+          <div class="flex items-center gap-2 mb-3 flex-wrap">
+            <h4 class="text-xs font-black uppercase tracking-wider text-violet-700 dark:text-violet-400">${escHtml(g.title)}</h4>
+            <span class="text-[10px] text-stone-400 dark:text-stone-500">${escHtml(g.note)}</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${g.prompts.map(p => `
+              <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm hover:border-violet-400 dark:hover:border-violet-600 transition-all flex flex-col justify-between template-card-item" data-keywords="${escHtml((p.title + ' ' + p.description + ' ' + p.text + ' prompting technique').toLowerCase())}">
+                <div>
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xl">${p.emoji}</span>
+                    <span class="bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 text-[10px] font-extrabold uppercase tracking-wide px-2 py-0.5 rounded">Technique</span>
+                  </div>
+                  <h5 class="font-extrabold text-stone-900 dark:text-white text-sm mb-1">${escHtml(p.title)}</h5>
+                  <p class="text-stone-500 dark:text-stone-400 text-[11px] leading-relaxed mb-3">${escHtml(p.description)}</p>
+                  <div class="bg-stone-50 dark:bg-stone-950 rounded-xl p-2.5 border border-stone-100 dark:border-stone-800 text-[11px] font-mono text-stone-600 dark:text-stone-400 leading-relaxed max-h-24 overflow-y-auto whitespace-pre-wrap mb-1">${escHtml(p.text)}</div>
+                </div>
+                <div class="flex gap-1.5 pt-3 border-t border-stone-100 dark:border-stone-800">
+                  <button onclick="copyPTPrompt('${p.id}')" class="flex-1 bg-violet-600 hover:bg-violet-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs transition">📋 Copy</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
 
     function copyCCMPrompt(id) {
       const p = CCM_PROMPTS_FLAT[id];
@@ -6793,6 +6906,15 @@ British English, no em dashes, no "just" or "simply".`
         hay: (p.name + ' ' + p.text + ' ' + (p.tag || '')).toLowerCase(),
         go: () => { switchTab('notebooklm'); initNotebookLM(); switchNBSection('mine'); requestAnimationFrame(() => { const c = document.getElementById('nb-mine-grid'); if (c) { c.scrollIntoView({ block: 'start' }); flashElement(c); } }); }
       }));
+      // Prompting Techniques
+      (typeof PT_GROUPS !== 'undefined' ? PT_GROUPS : []).forEach(g => (g.prompts || []).forEach(p => items.push({
+        type: 'Technique',
+        icon: p.emoji || '\u{1F3AF}',
+        title: p.title,
+        sub: 'Prompting Techniques · ' + g.title,
+        hay: (p.title + ' ' + p.description + ' ' + p.text).toLowerCase(),
+        go: () => { switchTab('templates'); requestAnimationFrame(() => { const c = document.getElementById('pt-prompts-container'); if (c) { c.scrollIntoView({ block: 'start' }); flashElement(c); } }); }
+      })));
       // Wisdom Bytes Studio prompts
       (typeof WB_SECTIONS !== 'undefined' ? WB_SECTIONS : []).forEach(sec => (sec.groups || []).forEach(g => (g.items || []).forEach(item => items.push({
         type: 'Wisdom Bytes',
