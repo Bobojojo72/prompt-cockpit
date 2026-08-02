@@ -1915,10 +1915,15 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
       <div class="mb-10">
         <h3 class="text-sm font-black uppercase tracking-wider text-orange-600 dark:text-orange-400 mb-1 flex items-center gap-2"><span>🕷️</span> Firecrawl Web Skills</h3>
         <p class="text-stone-500 dark:text-stone-400 text-xs mb-3">For reading websites properly, including pages that normally block automated reading. Say what you want in plain English and the right one fires. Genuinely useful for competitor research and for checking a tool's help pages before filming a tutorial.</p>
-        <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl p-3 mb-4 flex items-start gap-2">
-          <span class="text-amber-500 text-sm flex-shrink-0">⚠️</span>
-          <div class="text-[11px] text-amber-800 dark:text-amber-300 leading-relaxed">
-            <strong>Needs a one-off setup before any of these work.</strong> The plugin alone is not enough. In a terminal: <code class="font-mono bg-amber-100 dark:bg-amber-900/60 px-1 rounded">npm install -g firecrawl-cli</code> then <code class="font-mono bg-amber-100 dark:bg-amber-900/60 px-1 rounded">firecrawl login</code>. Free API key from <strong>firecrawl.dev/app/api-keys</strong>. Check it worked with <code class="font-mono bg-amber-100 dark:bg-amber-900/60 px-1 rounded">firecrawl --status</code>.
+        <div class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl p-3 mb-4 flex items-start gap-2">
+          <span class="text-emerald-500 text-sm flex-shrink-0">✅</span>
+          <div class="text-[11px] text-emerald-800 dark:text-emerald-300 leading-relaxed">
+            <strong>Connected via MCP, no API key needed.</strong> Set up July 2026 using the OAuth route: sign in with a browser, nothing to copy or paste. Registered at <strong>user scope</strong>, so it works from every folder, not just one project.
+            <div class="mt-2 font-mono text-[10px] bg-emerald-100/60 dark:bg-emerald-900/40 rounded-lg p-2 leading-relaxed">
+              claude mcp add --scope user --transport http firecrawl https://mcp.firecrawl.dev/v2/mcp-oauth<br>
+              claude mcp login firecrawl
+            </div>
+            <div class="mt-2">Check it with <code class="font-mono bg-emerald-100 dark:bg-emerald-900/60 px-1 rounded">claude mcp list</code>, which should say <strong>Connected</strong>. These are <strong>terminal</strong> commands, not slash commands: typing them into a Claude chat makes Claude interpret them instead of running them. Two traps worth remembering: leave off <code class="font-mono bg-emerald-100 dark:bg-emerald-900/60 px-1 rounded">--scope user</code> and it only works in the folder you were in at the time; and the older route (<code class="font-mono bg-emerald-100 dark:bg-emerald-900/60 px-1 rounded">npm install -g firecrawl-cli</code> plus an API key) is a different, separate setup you no longer need.</div>
           </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
