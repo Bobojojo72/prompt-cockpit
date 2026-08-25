@@ -951,6 +951,17 @@
         <div id="pt-prompts-container"></div>
       </div>
 
+      <!-- Thinking Partner -->
+      <div class="mb-10">
+        <h3 class="text-sm font-black uppercase tracking-wider text-cyan-600 dark:text-cyan-400 mb-1 flex items-center gap-2">
+          <span>🪞</span> Thinking Partner
+        </h3>
+        <p class="text-stone-500 dark:text-stone-400 text-[11px] mb-4">
+          For hard conversations, forks in the road, and patterns you keep repeating. All five interview you one question at a time, and every one of them is told not to flatter you or take your side. Fill in the <code class="bg-stone-100 dark:bg-stone-800 px-1 rounded">[...]</code> sections before sending.
+        </p>
+        <div id="tp-prompts-container"></div>
+      </div>
+
       <!-- Life Area Quick-Starters -->
       <div class="mb-10">
         <h3 class="text-sm font-black uppercase tracking-wider text-rose-600 dark:text-rose-400 mb-4 flex items-center gap-2">
@@ -3622,6 +3633,7 @@ Present all 4 deliverables clearly labelled with full content — no summaries, 
       renderCustomPrompts();
       renderCCMPrompts();
       renderPTPrompts();
+      renderTPPrompts();
 
       // Close add-prompt modal on backdrop click
       document.getElementById('add-prompt-modal').addEventListener('click', function(e) {
@@ -4033,6 +4045,121 @@ Ask me questions one at a time until you're confident you understand the job, th
 
     const PT_FLAT = {};
     PT_GROUPS.forEach(g => g.prompts.forEach(p => { PT_FLAT[p.id] = p; }));
+
+    // ─── PERMANENT SECTION: Thinking Partner ────────────────────────────────────
+    // Added 2 Aug 2026. Interview-style prompts that push back rather than agree.
+    const TP_GROUPS = [
+      {
+        title: 'Before You Act',
+        note: 'Rehearse it, stress-test it, map it',
+        prompts: [
+          {
+            id: 'tp_conflict', emoji: '🥊', title: 'Conflict Rehearsal',
+            description: 'Argues the other person’s case as they would, so you can rehearse a hard conversation before having it.',
+            text: `Act as the person I am in conflict with or the person I'm trying to communicate with. Do not pretend that you know their inner life. Here's the situation in my own words: [...]
+Here's what I plan to say: [...]
+Do not take my side. Argue their case as they might, assuming they are smart and fair and have reasons that make sense to them. Then tell me the following:
+1. What they most likely feel that I'm not seeing.
+2. The weakest part of my argument.
+3. What they may need to hear from me.
+Do not flatter me. Do not turn this into a therapy session. Help me rehearse the actual conversation.`
+          },
+          {
+            id: 'tp_decision', emoji: '🔀', title: 'Decision Simulator',
+            description: 'Runs a separate pre-mortem on each option so you can see how each road fails differently.',
+            text: `Act as my decision simulator. I am facing a fork ahead.
+Option A is [...]
+Option B is [...]
+Here's what I know: [...]
+Interview me one question at a time to understand the decision. And then run a separate pre-mortem on each option. For each one, imagine that it's two years later, and that choice failed badly, and work backward from there, and tell me why. Treat them independently so I can compare how each road fails differently. And then for each road, tell me these three things:
+1. The most likely way it will fail.
+2. The warning signs I should see first.
+3. The cost I cannot reverse.
+Do not tell me what to choose. Be very rigorous and systematic about your analysis.`
+          },
+          {
+            id: 'tp_transform', emoji: '🗺️', title: 'Transformation Map',
+            description: 'Interviews you about where you are versus where you are going, then maps the gap into an action plan.',
+            text: `Act as my transformation partner. You are my map maker. Map out my next move. Here's where I am right now: [...]
+Here's where I'm trying to go: [...]
+Interview me, one question at a time, to find the gap. Then give me an action plan and a map that bridges that gap. After the interview, respond to these five questions:
+1. Which of my strengths still will carry over?
+2. Which strengths will become liabilities in this new chapter?
+3. What I need to leave behind, even though it's worked before.
+4. What I have never built but is now needed.
+5. What I should test for at least 30 days before I make a bigger commitment.
+Do not give me abstract purpose advice. Do not flatter me. Do not give me a ten year life plan. Give me a practical transformation map, and do not suck up to me.`
+          }
+        ]
+      },
+      {
+        title: 'After, And Ongoing',
+        note: 'Process what happened, and spot what you keep repeating',
+        prompts: [
+          {
+            id: 'tp_debrief', emoji: '🕯️', title: 'Debrief Partner',
+            description: 'For something difficult you have been through. Separates the facts from the story you have built around them. Will not try to fix it.',
+            text: `Act as a debrief partner for something difficult that I have gone through.
+Here's what happened: [...]
+The story I've been telling myself about this is this: [...]
+Interview me one question at a time. Do not comfort me or try to find a solution. I just want to talk. And then help me understand the following four things:
+1. The facts of what happened.
+2. The meaning I keep attributing that isn't about the facts.
+3. What was mine to control and what wasn't?
+4. One thing to carry forward. One thing to leave behind.`
+          },
+          {
+            id: 'tp_behaviour', emoji: '🔎', title: 'Behavior Investigator',
+            description: 'Investigates a pattern you keep repeating, using only your own answers as evidence. Replace the example pattern with your own.',
+            text: `Act as an investigator for my behavior. This is the pattern I keep repeating: I don't give candid feedback to my team members, even when I know it would help them. I focus on positives and avoid the uncomfortable conversations that could help them improve dramatically.
+I want to understand three things:
+1. Where my blind spots may be.
+2. Why I keep avoiding them.
+3. How do I catch them before they're triggered?
+Interview me one question at a time. Unpack my answer and based on it, ask me the next better question. Use only my answer as evidence. When you're ready, give me your best hypotheses, the evidence behind it and the evidence that's still missing. Be respectful, candid, and direct. Do not motivate me or flatter me. Do not suck up to me.`
+          }
+        ]
+      }
+    ];
+
+    const TP_FLAT = {};
+    TP_GROUPS.forEach(g => g.prompts.forEach(p => { TP_FLAT[p.id] = p; }));
+
+    function copyTPPrompt(id) {
+      const p = TP_FLAT[id];
+      if (p) copyToClipboard(p.text, '"' + p.title + '" copied!');
+    }
+
+    function renderTPPrompts() {
+      const container = document.getElementById('tp-prompts-container');
+      if (!container) return;
+      container.innerHTML = TP_GROUPS.map(g => `
+        <div class="mb-6 last:mb-0">
+          <div class="flex items-center gap-2 mb-3 flex-wrap">
+            <h4 class="text-xs font-black uppercase tracking-wider text-cyan-700 dark:text-cyan-400">${escHtml(g.title)}</h4>
+            <span class="text-[10px] text-stone-400 dark:text-stone-500">${escHtml(g.note)}</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${g.prompts.map(p => `
+              <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 shadow-sm hover:border-cyan-400 dark:hover:border-cyan-600 transition-all flex flex-col justify-between template-card-item" data-keywords="${escHtml((p.title + ' ' + p.description + ' ' + p.text + ' thinking partner coaching').toLowerCase())}">
+                <div>
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xl">${p.emoji}</span>
+                    <span class="bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 text-[10px] font-extrabold uppercase tracking-wide px-2 py-0.5 rounded">Thinking Partner</span>
+                  </div>
+                  <h5 class="font-extrabold text-stone-900 dark:text-white text-sm mb-1">${escHtml(p.title)}</h5>
+                  <p class="text-stone-500 dark:text-stone-400 text-[11px] leading-relaxed mb-3">${escHtml(p.description)}</p>
+                  <div class="bg-stone-50 dark:bg-stone-950 rounded-xl p-2.5 border border-stone-100 dark:border-stone-800 text-[11px] font-mono text-stone-600 dark:text-stone-400 leading-relaxed max-h-28 overflow-y-auto whitespace-pre-wrap mb-1">${escHtml(p.text)}</div>
+                </div>
+                <div class="flex gap-1.5 pt-3 border-t border-stone-100 dark:border-stone-800">
+                  <button onclick="copyTPPrompt('${p.id}')" class="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs transition">📋 Copy</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
 
     function copyPTPrompt(id) {
       const p = PT_FLAT[id];
@@ -6906,6 +7033,15 @@ British English, no em dashes, no "just" or "simply".`
         hay: (p.name + ' ' + p.text + ' ' + (p.tag || '')).toLowerCase(),
         go: () => { switchTab('notebooklm'); initNotebookLM(); switchNBSection('mine'); requestAnimationFrame(() => { const c = document.getElementById('nb-mine-grid'); if (c) { c.scrollIntoView({ block: 'start' }); flashElement(c); } }); }
       }));
+      // Thinking Partner
+      (typeof TP_GROUPS !== 'undefined' ? TP_GROUPS : []).forEach(g => (g.prompts || []).forEach(p => items.push({
+        type: 'Thinking Partner',
+        icon: p.emoji || '\u{1FA9E}',
+        title: p.title,
+        sub: 'Thinking Partner · ' + g.title,
+        hay: (p.title + ' ' + p.description + ' ' + p.text).toLowerCase(),
+        go: () => { switchTab('templates'); requestAnimationFrame(() => { const c = document.getElementById('tp-prompts-container'); if (c) { c.scrollIntoView({ block: 'start' }); flashElement(c); } }); }
+      })));
       // Prompting Techniques
       (typeof PT_GROUPS !== 'undefined' ? PT_GROUPS : []).forEach(g => (g.prompts || []).forEach(p => items.push({
         type: 'Technique',
