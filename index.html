@@ -2058,6 +2058,7 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
         <div class="flex gap-2 mb-6 pb-4 border-b border-stone-200 dark:border-stone-800 flex-wrap">
           <button onclick="switchNBSection('studio')" id="nb-tab-studio" class="px-4 py-2 text-xs font-black rounded-xl bg-teal-600 text-white transition">🎬 Studio Prompts</button>
           <button onclick="switchNBSection('chat')" id="nb-tab-chat" class="px-4 py-2 text-xs font-black rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition">💬 Chat Prompts</button>
+          <button onclick="switchNBSection('recruit')" id="nb-tab-recruit" class="px-4 py-2 text-xs font-black rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition">🎯 Recruitment</button>
           <button onclick="switchNBSection('styles')" id="nb-tab-styles" class="px-4 py-2 text-xs font-black rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition">🎨 Style Guide</button>
           <button onclick="switchNBSection('mine')" id="nb-tab-mine" class="px-4 py-2 text-xs font-black rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition">⭐ My Prompts</button>
         </div>
@@ -2076,6 +2077,15 @@ ASK: Please ask me clarifying questions one at a time until you are 95% confiden
           </div>
           <div id="nb-chat-filters" class="flex flex-wrap gap-2 mb-5"></div>
           <div id="nb-chat-cards"></div>
+        </div>
+
+        <!-- Recruitment section -->
+        <div id="nb-content-recruit" class="hidden">
+          <div class="bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 rounded-xl p-3 mb-5 flex items-start gap-2">
+            <span class="text-rose-500 text-sm flex-shrink-0">🎯</span>
+            <p class="text-[11px] text-rose-800 dark:text-rose-300 leading-relaxed"><strong>One notebook per job application.</strong> Add the job advert, the employer's website and careers page, your CV, and anything you can find on the interviewer. Then work down these in order — 1 to 7 go in the <strong>chat box</strong>, 8 to 10 go in <strong>Studio</strong>. Fill in any <code class="bg-rose-100 dark:bg-rose-900/60 px-1 rounded">[brackets]</code> before sending.</p>
+          </div>
+          <div id="nb-recruit-cards"></div>
         </div>
 
         <!-- Style Guide section -->
@@ -5549,6 +5559,44 @@ Interview me one question at a time. Unpack my answer and based on it, ask me th
       'Style: Risograph + 90s Video Game — grainy layered print with pixel art icons and neon accents',
     ];
 
+    // ─── PERMANENT SECTION: Recruitment (NotebookLM) ─────────────────────────
+    // Added 1 Oct 2026. One notebook per application. Steps 1-7 are chat box,
+    // 8-10 are Studio outputs. Worked in order.
+    const NB_RECRUIT = [
+      { step: 1, where: 'Chat', name: 'Role decoder and fit map', text: `Decode the job advert. List the 8 things this employer cares about most, ranked. Match each to my CV and rate it Match, Bridge (close, with how to frame it) or Gap (with how to handle it). Then flag practical red flags: hours, pay against my minimum, office days, commute, travel, physical demands, evening or weekend work, and training provided. Finish with an honest fit score out of 10 and a next step. Use a table.` },
+      { step: 2, where: 'Chat', name: 'Proof bank in the employer’s language', text: `Pick the 7 strongest examples from my CV for this role, ranked by relevance. For each give situation, action and result in plain words, using only facts in my CV. Then list 15 words or phrases from the advert, explain each simply, and show which part of my experience matches it and how to say it the way this employer would. Flag any example with no number and tell me what to check.` },
+      { step: 3, where: 'Chat', name: 'Question forecast', text: `Predict the 15 questions most likely to be asked, based on the interview details and the interviewer. Group them as role skills, working style, motivation and curveball. For each give the real reason they are asking and a 60 second answer built only from my CV, centred on getting work done and checking it is right. Mark the 3 I am most likely to find hard.` },
+      { step: 4, where: 'Chat', name: 'Hot seat', text: `Act as a sceptical interviewer. List every doubt this employer could have about me: 25 years at one company, a change of direction or sector, no formal vocabulary or qualification for this field, no direct experience of something in the advert, not wanting to manage people, and any physical demands. For each, state the doubt bluntly, then give a calm 3 sentence answer that is honest and ends on a strength. No apologising, no over explaining.` },
+      { step: 5, where: 'Chat', name: 'Pitch, redundancy answer, why this role', text: `Write these word for word: (a) a 45 second "tell me about yourself" ending on why this role; (b) an answer about leaving my last role after 25 years and being made redundant, two sentences at most, factual, positive and with no bitterness; (c) a "why this employer" answer using specific facts from the sources; (d) an honest answer to "do you want to progress into management" that explains I prefer hands on work.` },
+      { step: 6, where: 'Chat', name: 'Employer research and questions to ask', text: `Summarise what the sources say about this employer: what they do, size, signals of growth or change, and the problems the advert implies. Then write 8 ranked questions for me to ask. Include: what a normal day looks like, how training works on the job, how success is measured in the first 3 months, working pattern and homeworking, travel, and anything physical in the role. List what is still unknown and must be asked.` },
+      { step: 7, where: 'Chat', name: 'Practicalities and pay', text: `My minimum is [£X pro rata] and I want [X days / X hours], Monday to Friday, with homeworking and at most one office day a week. From the sources, tell me what is known and unknown on pay, hours, working pattern, office days, commute and training. Write the exact words to raise each point at the right stage. Add a script for an offer below my minimum, and a polite way to decline a role that does not fit.` },
+      { step: 8, where: 'Studio · Audio Overview', name: 'Audio Overview (Deep Dive, long)', text: `Two hosts act as warm, direct interview coaches preparing me for this exact interview. Do not summarise the documents. Open with the three things the interviewer most needs to believe about me, then walk through my strongest examples in plain words, rehearse the 5 hardest questions with model answers, and show how to turn my experience into this employer's vocabulary. Include the redundancy answer and what to say about changing direction. Be encouraging about my real strengths and honest about the traps. End with a 60 second checklist for the morning of the interview. British English, no jargon.` },
+      { step: 9, where: 'Studio · Slides', name: 'Interview study deck (10 slides)', text: `Slides: build a 10 slide study deck. 1 role decoded, 2 my pitch, 3 my best examples, 4 and 5 likely questions with answer outlines, 6 doubts and how to answer them, 7 the employer's vocabulary in plain English, 8 questions I ask, 9 practicalities and pay, 10 morning of checklist. Short bullets, no paragraphs.` },
+      { step: 9, where: 'Studio · Infographic', name: 'One page cheat card', text: `Infographic: a one page cheat card with my top 3 messages, my 3 strongest examples with evidence, 3 questions to ask, my two sentence redundancy answer, and one thing not to say.` },
+      { step: 10, where: 'Studio · Quiz / Flashcards', name: 'Mock interview drill and flashcards', text: `Create a hard mock interview drill using the toughest questions this interviewer could ask about my CV, the advert and the employer. Include 10 practical scenarios taken from the advert. Flashcards: question on the front, on the back a model answer in my voice, under 60 seconds, naming the example from my CV that supports it. Add 10 flashcards that test the advert's key terms in plain English.` }
+    ];
+
+    function copyNBRecruitPrompt(i) {
+      const p = NB_RECRUIT[i];
+      if (p) copyToClipboard(p.text, '"' + p.name + '" copied — paste into ' + (p.where === 'Chat' ? 'the NotebookLM chat box.' : 'NotebookLM Studio.'));
+    }
+
+    function renderNBRecruitCards() {
+      const c = document.getElementById('nb-recruit-cards');
+      if (!c) return;
+      c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        ${NB_RECRUIT.map((p, i) => `
+          <div class="bg-white dark:bg-stone-950 rounded-2xl border border-stone-200 dark:border-stone-800 p-4 flex flex-col gap-3 hover:border-rose-400 dark:hover:border-rose-600 transition-all">
+            <div class="flex items-start justify-between gap-2">
+              <h4 class="font-black text-stone-900 dark:text-white text-sm leading-tight"><span class="text-rose-500 dark:text-rose-400">${p.step}.</span> ${escHtml(p.name)}</h4>
+              <span class="text-[9px] bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 px-1.5 py-0.5 rounded font-black uppercase tracking-wide whitespace-nowrap flex-shrink-0">${escHtml(p.where)}</span>
+            </div>
+            <div class="bg-stone-50 dark:bg-stone-900 rounded-xl p-3 border border-stone-100 dark:border-stone-800 text-[11px] font-mono text-stone-700 dark:text-stone-300 leading-relaxed max-h-28 overflow-y-auto whitespace-pre-wrap">${escHtml(p.text)}</div>
+            <button onclick="copyNBRecruitPrompt(${i})" class="w-full bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-rose-700 dark:text-rose-300 text-xs py-2 rounded-xl font-bold transition flex items-center justify-center gap-1.5 border border-rose-200 dark:border-rose-800">📋 Copy Prompt</button>
+          </div>`).join('')}
+      </div>`;
+    }
+
     let nbInitialized = false;
     let activeNBSection = 'studio';
     let activeNBStudioType = 'infographic';
@@ -5566,7 +5614,7 @@ Interview me one question at a time. Unpack my answer and based on it, ask me th
 
     function switchNBSection(section) {
       activeNBSection = section;
-      ['studio', 'chat', 'styles', 'mine'].forEach(s => {
+      ['studio', 'chat', 'recruit', 'styles', 'mine'].forEach(s => {
         const btn = document.getElementById('nb-tab-' + s);
         const content = document.getElementById('nb-content-' + s);
         if (btn) btn.className = s === section
@@ -5574,6 +5622,7 @@ Interview me one question at a time. Unpack my answer and based on it, ask me th
           : 'px-4 py-2 text-xs font-black rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition';
         if (content) content.classList.toggle('hidden', s !== section);
       });
+      if (section === 'recruit') renderNBRecruitCards();
       if (section === 'styles') renderNBStylesSection();
       if (section === 'mine') renderNBMinePrompts();
     }
@@ -7024,6 +7073,15 @@ British English, no em dashes, no "just" or "simply".`
         hay: (item.name + ' ' + item.text + ' ' + cat.label).toLowerCase(),
         go: (() => { const cid = cat.id; return () => { switchTab('notebooklm'); initNotebookLM(); switchNBSection('chat'); setNBChatCat(cid); requestAnimationFrame(() => { const c = document.getElementById('nb-chat-cards'); if (c) { c.scrollIntoView({ block: 'start' }); } }); }; })()
       })));
+      // NotebookLM Recruitment pack
+      (typeof NB_RECRUIT !== 'undefined' ? NB_RECRUIT : []).forEach((p, i) => items.push({
+        type: 'NotebookLM',
+        icon: '\u{1F3AF}',
+        title: p.name,
+        sub: 'NotebookLM · Recruitment · Step ' + p.step + ' · ' + p.where,
+        hay: (p.name + ' ' + p.text + ' recruitment interview job application cv').toLowerCase(),
+        go: () => { switchTab('notebooklm'); initNotebookLM(); switchNBSection('recruit'); requestAnimationFrame(() => { const c = document.getElementById('nb-recruit-cards'); if (c) { c.scrollIntoView({ block: 'start' }); } }); }
+      }));
       // User's saved NotebookLM prompts
       (typeof getNBPrompts === 'function' ? getNBPrompts() : []).forEach(p => items.push({
         type: 'NotebookLM',
