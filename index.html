@@ -3671,11 +3671,7 @@ Present all 4 deliverables clearly labelled with full content — no summaries, 
 
       const clearSearchBtn = document.getElementById("clear-search-btn");
       if (clearSearchBtn) {
-        clearSearchBtn.addEventListener("click", function() {
-          if (searchBar) searchBar.value = "";
-          currentSearchQuery = "";
-          filterGlobal();
-        });
+        clearSearchBtn.addEventListener("click", clearGlobalSearch);
       }
     };
 
@@ -4691,6 +4687,15 @@ Interview me one question at a time. Unpack my answer and based on it, ask me th
       }
     }
 
+    function clearGlobalSearch() {
+      const bar = document.getElementById("global-search-bar");
+      if (bar) bar.value = "";
+      currentSearchQuery = "";
+      const hint = document.getElementById("search-xtab-hint");
+      if (hint) hint.classList.add("hidden");
+      filterGlobal();
+    }
+
     function filterGlobal() {
       const query = currentSearchQuery.toLowerCase().trim();
 
@@ -4774,6 +4779,14 @@ Interview me one question at a time. Unpack my answer and based on it, ask me th
         const kw = (card.getAttribute("data-keywords") || "").toLowerCase();
         card.classList.toggle("hidden", !(query.length === 0 || kw.includes(query)));
       });
+
+      // Always-visible "a filter is on" pill, so a search term left in the (scrolled-away) bar
+      // can never silently hide cards on another tab.
+      const filterPill = document.getElementById("filter-pill");
+      if (filterPill) {
+        filterPill.classList.toggle("hidden", query.length === 0);
+        document.getElementById("filter-pill-text").textContent = query.length ? "\u201C" + query + "\u201D is filtering every tab" : "";
+      }
 
       // Update Search indicators
       const indicator = document.getElementById("skills-search-indicator");
@@ -6947,6 +6960,11 @@ British English, no em dashes, no "just" or "simply".`
   </script>
 
   <!-- Command Palette -->
+  <div id="filter-pill" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40 max-w-[92vw] flex items-center gap-3 pl-4 pr-2 py-2 rounded-full shadow-2xl border border-amber-400 bg-amber-400 text-stone-900 text-xs font-bold" role="status" aria-live="polite">
+    <span id="filter-pill-text" class="truncate"></span>
+    <button type="button" onclick="clearGlobalSearch()" class="min-h-[32px] px-3 rounded-full bg-stone-900 text-white font-bold hover:bg-stone-700 transition">Clear</button>
+  </div>
+
   <div
     id="command-palette"
     class="hidden fixed inset-0 z-[60] bg-stone-950/60 backdrop-blur-sm flex items-start justify-center pt-[12vh] px-4"
@@ -7293,6 +7311,7 @@ British English, no em dashes, no "just" or "simply".`
       const item = paletteItems[i];
       if (!item) return;
       closeCommandPalette();
+      if (typeof clearGlobalSearch === 'function') clearGlobalSearch();
       item.go();
     }
 
@@ -7319,6 +7338,7 @@ British English, no em dashes, no "just" or "simply".`
         }, 150);
       });
       bar.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && bar.value) { e.preventDefault(); clearGlobalSearch(); return; }
         if (e.key === 'Enter' && bar.value.trim()) { e.preventDefault(); e.stopPropagation(); openCommandPalette(bar.value.trim()); }
       });
     })();
